@@ -1,0 +1,3 @@
+sources/*.js
+dist/
+node_modules/
