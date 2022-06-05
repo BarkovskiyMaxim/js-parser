@@ -21,7 +21,15 @@
 "=>"                        return '=>'
 "{"                         return '{'
 "}"                         return '}'
+"?"                         return '?'
+":"                         return ':'
 
+">"                         return 'BINARY'
+">="                        return 'BINARY'
+"<"                         return 'BINARY'
+"<="                        return 'BINARY'
+"=="                        return 'BINARY'
+"==="                       return 'BINARY'
 "*"                         return 'BINARY'
 "/"                         return 'BINARY'
 "-"                         return 'BINARY'
@@ -85,9 +93,9 @@ assign
     ;
 
 right_part
-    : value                           { $$ = { value: $1, type: 'value' }; }
-    | property                        { $$ = { name: $1, type: 'context' }; }
-    | right_part BINARY right_part    { $$ = { left: $1, right: $3, operation: $2, type: 'binary' }; }
+    : value                            { $$ = { value: $1, type: 'value' }; }
+    | property                         { $$ = { name: $1, type: 'context' }; }
+    | right_part BINARY right_part     { $$ = { left: $1, right: $3, operation: $2, type: 'binary' }; }
     ;
 
 value  

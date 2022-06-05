@@ -3,7 +3,7 @@ import { OperandBinary } from "../operands/operand-binary";
 import { OperandFunction } from "../operands/operand-function";
 import { IsAssign, IsBinary, IsContext, IsFunction, IsReturn, IsValue, Operands } from "../operands/operand-mapper";
 
-export type BinaryCommands = '+' | '-' | '/' | '*';
+export type BinaryCommands = '+' | '-' | '/' | '*' | '<' | '<=' | '>' | '>=' | '==' | '===' ;
 
 export type BinaryExecutor = {
     [K in BinaryCommands]: (operand: OperandBinary, context: jsContext) => any;
@@ -21,6 +21,24 @@ export var binaryCommands: BinaryExecutor = {
     },
     '*': (operand: OperandBinary, context: jsContext) => {
         return executeSingleOperation(operand.left, context) * executeSingleOperation(operand.right, context);
+    },
+    '<': (operand: OperandBinary, context: jsContext) => {
+        return executeSingleOperation(operand.left, context) < executeSingleOperation(operand.right, context);
+    },
+    '<=': (operand: OperandBinary, context: jsContext) => {
+        return executeSingleOperation(operand.left, context) <= executeSingleOperation(operand.right, context);
+    },
+    '>': (operand: OperandBinary, context: jsContext) => {
+        return executeSingleOperation(operand.left, context) > executeSingleOperation(operand.right, context);
+    },
+    '>=': (operand: OperandBinary, context: jsContext) => {
+        return executeSingleOperation(operand.left, context) >= executeSingleOperation(operand.right, context);
+    },
+    '==': (operand: OperandBinary, context: jsContext) => {
+        return executeSingleOperation(operand.left, context) == executeSingleOperation(operand.right, context);
+    },
+    '===': (operand: OperandBinary, context: jsContext) => {
+        return executeSingleOperation(operand.left, context) === executeSingleOperation(operand.right, context);
     }
 }
 

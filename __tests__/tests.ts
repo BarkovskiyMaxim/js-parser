@@ -87,3 +87,9 @@ test('function with assing test', () => {
     const func = execute(jsParser.parse(str))
     expect(func.apply(this, [1, 2])).toEqual(30);
 })
+
+test("binary condition operator context test", () => {
+    expect(execute(jsParser.parse("test > 2"), {
+        test: 1
+    })).toEqual(false);
+})
