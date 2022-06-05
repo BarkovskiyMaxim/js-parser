@@ -76,3 +76,14 @@ test('function test', () => {
     const func = execute(jsParser.parse(str))
     expect(func.apply(this, [1, 2])).toEqual(3);
 })
+
+test('function with assing test', () => {
+    const str = `
+        (testa, testb) => {
+            var c = testa + testb; 
+            return c * 10; 
+        }
+    `
+    const func = execute(jsParser.parse(str))
+    expect(func.apply(this, [1, 2])).toEqual(30);
+})
