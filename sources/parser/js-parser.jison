@@ -13,9 +13,14 @@
 
 "var"                       return 'VAR'
 "return"                    return 'RETURN'
-"function()"                return 'FUNC'
-"() => "                    return 'FUNC'
 ";"                         return 'EOL'
+"("                         return '('
+")"                         return ')'
+"function"                  return 'FUNC'
+","                         return ','
+"=>"                        return '=>'
+"{"                         return '{'
+"}"                         return '}'
 
 "*"                         return 'BINARY'
 "/"                         return 'BINARY'
@@ -48,17 +53,30 @@ result
     ;
 
 func
-    : FUNC '{' body '}' { $$ = { body: $2, type: 'func' }; }
+    : function '{' body '}' { $$ = { body: $3, args: $1.args, type: 'func' }; }
+    ;
+
+function
+    : FUNC '(' + arguments + ')'     { $$ = { args: $3 }; }
+    | '(' + arguments + ')' '=>'     { $$ = { args: $2 }; }
+    | FUNC '(' ')'                   { $$ = { args: [] }; }
+    | '(' ')' '=>'                   { $$ = { args: [] }; }
+    ;
+
+arguments
+    : NAME_SOFT               { $$ = [$1]; }
+    | arguments ',' NAME_SOFT { $$ = [].concat($1, [$3]); }
     ;
 
 body 
     : assign      { $$ = [$1]; }
+    | return      { $$ = [$1]; }
     | body assign { $$ = [].concat($1, [$2]); }
+    | body return { $$ = [].concat($1, [$2]); }
     ;
 
 return
-    : RETURN + NAME_SOFT { $$ = { value: $2, type: 'return' }; }
-    | RETURN + value     { $$ = { value: $2, type: 'return' }; }
+    : RETURN right_part EOL { $$ = { value: $2, type: 'return' }; }
     ;
 
 assign

@@ -1,4 +1,4 @@
-import { BinaryExecutor } from "../executors/binaryExecutor";
+import { BinaryExecutor } from "../executors/executor";
 import { OperandBase } from "./operand-base";
 import { Operands } from "./operand-mapper";
 

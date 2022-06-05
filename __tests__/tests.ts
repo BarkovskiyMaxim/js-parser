@@ -1,5 +1,9 @@
-import { execute } from '../sources/executors/binaryExecutor';
+import { execute } from '../sources/executors/executor';
+import { OperandContext } from '../sources/operands/oparand-context';
 import { OperandAssign } from '../sources/operands/operand-assign';
+import { OperandBinary } from '../sources/operands/operand-binary';
+import { OperandFunction } from '../sources/operands/operand-function';
+import { OperandReturn } from '../sources/operands/operand-return';
 import jsParser from '../sources/parser/js-parser';
 
 test("binary operator number test", () => {
@@ -41,4 +45,34 @@ test("binary operator assign test", () => {
         test: 1,
         myValue: 3
     });
+})
+
+test('function test', () => {
+    const str = `
+        function(testa, testb) {
+           return testa + testb; 
+        }
+    `
+    const operand = jsParser.parse(str) as OperandFunction;
+    expect(operand).toEqual(<OperandFunction>{
+        args: ["testa", "testb"],
+        body: [<OperandReturn>{
+            type: 'return',
+            value: <OperandBinary>{
+                left: <OperandContext>{
+                    name: 'testa',
+                    type: 'context'
+                },
+                operation: '+',
+                right: <OperandContext>{
+                    name: 'testb',
+                    type: 'context'
+                },
+                type: 'binary'
+            }
+        }],
+        type: 'func'
+    });
+    const func = execute(jsParser.parse(str))
+    expect(func.apply(this, [1, 2])).toEqual(3);
 })
