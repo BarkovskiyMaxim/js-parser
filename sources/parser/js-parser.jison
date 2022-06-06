@@ -95,6 +95,7 @@ assign
 right_part
     : value                            { $$ = { value: $1, type: 'value' }; }
     | property                         { $$ = { name: $1, type: 'context' }; }
+    | call                             { $$ = $1; }
     | right_part BINARY right_part     { $$ = { left: $1, right: $3, operation: $2, type: 'binary' }; }
     ;
 
@@ -106,4 +107,14 @@ value
 property
     : property '.' NAME_SOFT    { $$ = $1 + $2 + $3; }
     | NAME_SOFT                 { $$ = $1; }
+    ;
+
+call
+    : property '(' ')'           { $$ = { func: $1, args: [], type: 'call' }; }
+    | property '(' call_args ')' { $$ = { func: $1, args: $3.args, type: 'call' }; }
+    ;
+
+call_args
+    : right_part               { $$ = { args: [$1] }; }
+    | call_args ',' right_part { $$ = [].concat($1, [$3]); }
     ;

@@ -1,12 +1,18 @@
 import { OperandContext } from "./oparand-context";
 import { OperandAssign } from "./operand-assign";
-import { OperandBase } from "./operand-base";
 import { OperandBinary } from "./operand-binary";
+import { OperandCall } from "./operand-call";
 import { OperandFunction } from "./operand-function";
 import { OperandReturn } from "./operand-return";
 import { OperandValue } from "./operand-value";
 
-export type Operands = OperandBinary | OperandValue | OperandContext | OperandAssign | OperandBase | OperandReturn;
+export type Operands = OperandBinary |
+                       OperandValue |
+                       OperandContext |
+                       OperandAssign | 
+                       OperandReturn |
+                       OperandFunction |
+                       OperandCall;
 
 export function IsBinary(operand: Operands): operand is OperandBinary {
     return operand.type === 'binary';
@@ -25,9 +31,13 @@ export function IsAssign(operand: Operands): operand is OperandAssign {
 }
 
 export function IsFunction(operand: Operands): operand is OperandFunction {
-    return operand.type === 'func'
+    return operand.type === 'func';
 }
 
 export function IsReturn(operand: Operands): operand is OperandReturn {
-    return operand.type === 'return'
+    return operand.type === 'return';
+}
+
+export function IsCall(operand: Operands): operand is OperandCall {
+    return operand.type === 'call';
 }

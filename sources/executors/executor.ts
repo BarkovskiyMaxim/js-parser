@@ -1,7 +1,7 @@
 import { jsContext } from "../operands/js-context";
 import { OperandBinary } from "../operands/operand-binary";
 import { OperandFunction } from "../operands/operand-function";
-import { IsAssign, IsBinary, IsContext, IsFunction, IsReturn, IsValue, Operands } from "../operands/operand-mapper";
+import { IsAssign, IsBinary, IsCall, IsContext, IsFunction, IsReturn, IsValue, Operands } from "../operands/operand-mapper";
 
 export type BinaryCommands = '+' | '-' | '/' | '*' | '<' | '<=' | '>' | '>=' | '==' | '===' ;
 
@@ -64,6 +64,12 @@ export function executeSingleOperation(operand: Operands, context: jsContext = {
         return operand.value;
     } else if (IsBinary(operand)) {
         return binaryCommands[operand.operation](operand, context);
+    } else if (IsCall(operand)) {
+        var args = [];
+        for(var i = 0; i < operand.args.length; i++) {
+            args.push(context[operand.args[i]]);
+        }
+        return context[operand.func](...args);
     } else {
         return null;
     }
