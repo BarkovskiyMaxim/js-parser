@@ -55,7 +55,7 @@ export function generateFunction(operand: OperandFunction) {
     }
 }
 
-export function executeSingleOperation(operand: Operands, context: jsContext = {}) {
+export function executeSingleOperation(operand: Operands, context: jsContext = {}): any {
     if (IsFunction(operand)) {
         return generateFunction(operand);
     } else if (IsContext(operand)) {
@@ -65,11 +65,7 @@ export function executeSingleOperation(operand: Operands, context: jsContext = {
     } else if (IsBinary(operand)) {
         return binaryCommands[operand.operation](operand, context);
     } else if (IsCall(operand)) {
-        var args = [];
-        for(var i = 0; i < operand.args.length; i++) {
-            args.push(context[operand.args[i]]);
-        }
-        return context[operand.func](...args);
+        return context[operand.func](...operand.args.map(x => execute(x, context)));
     } else {
         return null;
     }

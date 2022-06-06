@@ -97,3 +97,13 @@ test("binary condition operator context test", () => {
         test: 3
     })).toEqual(true);
 })
+
+test("call function test", () => {
+    expect(execute(jsParser.parse("test(5) + 2"), {
+        test: (num: number) => num
+    })).toEqual(7);
+
+    expect(execute(jsParser.parse("test() > 2"), {
+        test: () => 0
+    })).toEqual(false);
+})
