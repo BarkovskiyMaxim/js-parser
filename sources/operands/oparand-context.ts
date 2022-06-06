@@ -1,6 +1,4 @@
-import { OperandBase } from "./operand-base";
-
-export type OperandContext = OperandBase & {
+export type OperandContext = {
     name: string;
     type: 'context';
 }

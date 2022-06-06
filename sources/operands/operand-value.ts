@@ -1,6 +1,4 @@
-import { OperandBase } from "./operand-base";
-
-export type OperandValue = OperandBase & {
+export type OperandValue = {
     value: any;
     type: 'value';
 }
