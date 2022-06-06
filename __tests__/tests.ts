@@ -107,3 +107,9 @@ test("call function test", () => {
         test: () => 0
     })).toEqual(false);
 })
+
+test("object test", () => {
+    expect(execute(jsParser.parse("test({ a: 3, b: 4 })"), {
+        test: (obj: { a: number, b: number }) => obj.a + obj.b
+    })).toEqual(7);
+})

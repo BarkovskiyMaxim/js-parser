@@ -1,7 +1,8 @@
 import { jsContext } from "../operands/js-context";
 import { OperandBinary } from "../operands/operand-binary";
 import { OperandFunction } from "../operands/operand-function";
-import { IsAssign, IsBinary, IsCall, IsContext, IsFunction, IsReturn, IsValue, Operands } from "../operands/operand-mapper";
+import { IsAssign, IsBinary, IsCall, IsContext, IsFunction, IsObject, IsReturn, IsValue, Operands } from "../operands/operand-mapper";
+import { OperandObject } from "../operands/operand-object";
 
 export type BinaryCommands = '+' | '-' | '/' | '*' | '<' | '<=' | '>' | '>=' | '==' | '===' ;
 
@@ -55,6 +56,14 @@ export function generateFunction(operand: OperandFunction) {
     }
 }
 
+export function generateObject(operand: OperandObject, context: jsContext) {
+    var result: { [key: string]: any } = {};
+    operand.fields.forEach((x) => {
+        result[x.name] = execute(x.value, context);
+    })
+    return result;
+}
+
 export function executeSingleOperation(operand: Operands, context: jsContext = {}): any {
     if (IsFunction(operand)) {
         return generateFunction(operand);
@@ -66,7 +75,9 @@ export function executeSingleOperation(operand: Operands, context: jsContext = {
         return binaryCommands[operand.operation](operand, context);
     } else if (IsCall(operand)) {
         return context[operand.func](...operand.args.map(x => execute(x, context)));
-    } else {
+    } else if(IsObject(operand)) {
+        return generateObject(operand, context);
+    } {
         return null;
     }
 }

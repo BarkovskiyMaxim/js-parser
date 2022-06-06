@@ -96,13 +96,15 @@ right_part
     : value                            { $$ = { value: $1, type: 'value' }; }
     | property                         { $$ = { name: $1, type: 'context' }; }
     | call                             { $$ = $1; }
+    | obj                              { $$ = $1; }
     | right_part BINARY right_part     { $$ = { left: $1, right: $3, operation: $2, type: 'binary' }; }
     ;
 
 value  
     : NUMBER  { $$ = parseFloat($1); }
     | STRING  { $$ = $1.substring(1, $1.length - 1); }
-    | BOOLEAN { $$ = $1 === 'true' };
+    | BOOLEAN { $$ = $1 === 'true' }
+    ;
 
 property
     : property '.' NAME_SOFT    { $$ = $1 + $2 + $3; }
@@ -111,10 +113,23 @@ property
 
 call
     : property '(' ')'           { $$ = { func: $1, args: [], type: 'call' }; }
-    | property '(' call_args ')' { $$ = { func: $1, args: $3.args, type: 'call' }; }
+    | property '(' call_args ')' { $$ = { func: $1, args: $3, type: 'call' }; }
     ;
 
 call_args
-    : right_part               { $$ = { args: [$1] }; }
+    : right_part               { $$ = [$1]; }
     | call_args ',' right_part { $$ = [].concat($1, [$3]); }
+    ;
+
+obj
+    : '{' objFields '}' { $$ = { fields: $2, type: 'obj' }; }
+    ;
+
+objFields
+    : objField               { $$ = [$1]; }
+    | objFields ',' objField { $$ = [].concat($1, [$3]); }
+    ;
+
+objField
+    : NAME_SOFT ':' right_part { $$ = { name: $1, value: $3 }; }
     ;
