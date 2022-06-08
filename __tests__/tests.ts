@@ -113,3 +113,28 @@ test("object test", () => {
         test: (obj: { a: number, b: number }) => obj.a + obj.b
     })).toEqual(7);
 })
+
+test('$name test', () => {
+    expect(execute(jsParser.parse("function($data, $context){ return $data + $context; }")).apply(this, [1, 2])).toEqual(3);
+})
+
+test('with operator test', () => {
+    expect(execute(jsParser.parse(`
+            var a = 0;
+            with($context) { 
+                a = $data;
+            }
+            return a;
+            `
+    ), { $context: { $data: 3 } })).toEqual(3);
+
+    expect(execute(jsParser.parse(`
+            function($context) {
+                var a = 0;
+                with($context) {
+                    a = $data;
+                }
+                return a;
+            }
+    `)).apply(this, [{ $data: 3 }])).toEqual(3);
+});
