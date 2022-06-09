@@ -90,10 +90,10 @@ export function executeSingleOperation(operand: Operands, context: jsContext = {
         }
         return result;
     } else if (IsIf(operand)) {
-        if(execute(operand.condition, context)) {
-            execute(operand.true, context);
+        if (execute(operand.condition, context)) {
+            return execute(operand.true, context);
         } else {
-            execute(operand.false, context);
+            return execute(operand.false, context);
         }
     } else {
         return null;

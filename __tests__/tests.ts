@@ -169,3 +169,14 @@ test('if/else/if operator test', () => {
     expect(execute(jsParser.parse(funcBody), { a: 0 })).toEqual(2);
     expect(execute(jsParser.parse(funcBody), { a: -2 })).toEqual(3);
 })
+
+test('ternary operator test', () => {
+    let funcBody = `
+    var result = a > 0 ? 1 : a === 0 ? 2 : 3;
+    return result;
+    `;
+
+    expect(execute(jsParser.parse(funcBody), { a: 2 })).toEqual(1);
+    expect(execute(jsParser.parse(funcBody), { a: 0 })).toEqual(2);
+    expect(execute(jsParser.parse(funcBody), { a: -2 })).toEqual(3);
+})

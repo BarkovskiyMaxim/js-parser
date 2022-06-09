@@ -24,8 +24,9 @@
 "=>"                        return '=>'
 "{"                         return '{'
 "}"                         return '}'
-"?"                         return '?'
+
 ":"                         return ':'
+"?"                         return '?'
 
 ">"                         return 'BINARY'
 ">="                        return 'BINARY'
@@ -46,8 +47,9 @@
 
 /lex
 
-%left      BINARY
-%right     ASSIGN
+%right        '?' ':'
+%left         BINARY
+%right        ASSIGN
 
 %start expressions
 
@@ -101,11 +103,12 @@ assign
     ;
 
 right_part
-    : value                            { $$ = { value: $1, type: 'value' }; }
-    | property                         { $$ = { name: $1, type: 'context' }; }
-    | call                             { $$ = $1; }
-    | obj                              { $$ = $1; }
-    | right_part BINARY right_part     { $$ = { left: $1, right: $3, operation: $2, type: 'binary' }; }
+    : value                                    { $$ = { value: $1, type: 'value' }; }
+    | property                                 { $$ = { name: $1, type: 'context' }; }
+    | call                                     { $$ = $1; }
+    | obj                                      { $$ = $1; }
+    | right_part BINARY right_part             { $$ = { left: $1, right: $3, operation: $2, type: 'binary' }; }
+    | right_part '?' right_part ':' right_part { $$ = { type: 'if', true: $3, condition: $1, false: $5 }; }
     ;
 
 value  
