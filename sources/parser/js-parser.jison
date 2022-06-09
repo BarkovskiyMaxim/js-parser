@@ -18,6 +18,8 @@
 ")"                         return ')'
 "function"                  return 'FUNC'
 "with"                      return 'WITH'
+"if"                        return 'IF'
+"else"                      return 'ELSE'
 ","                         return ','
 "=>"                        return '=>'
 "{"                         return '{'
@@ -29,8 +31,8 @@
 ">="                        return 'BINARY'
 "<"                         return 'BINARY'
 "<="                        return 'BINARY'
-"=="                        return 'BINARY'
 "==="                       return 'BINARY'
+"=="                        return 'BINARY'
 "*"                         return 'BINARY'
 "/"                         return 'BINARY'
 "-"                         return 'BINARY'
@@ -78,12 +80,15 @@ arguments
     ;
 
 body 
-    : assign      { $$ = [$1]; }
-    | with        { $$ = [$1]; }
-    | return      { $$ = [$1]; }
-    | body assign { $$ = [].concat($1, [$2]); }
-    | body return { $$ = [].concat($1, [$2]); }
-    | body with   { $$ = [].concat($1, [$2]); }
+    : line              { $$ = [$1]; }
+    | body line         { $$ = [].concat($1, [$2]); }
+    ;
+
+line
+    : assign       { $$ = $1; }
+    | if_condition { $$ = $1; }
+    | with         { $$ = $1; }
+    | return       { $$ = $1; }
     ;
 
 return
@@ -139,4 +144,18 @@ objField
 
 with
     : WITH '(' right_part ')' '{' body '}' { $$ = { type: 'with', context: $3, body: $6 }; }
+    ;
+
+if_condition
+    : if_part else_part { $$ = { type: 'if', condition: $1.condition, true: $1.true, false: $2.false } }
+    ;
+
+if_part
+    : IF '(' right_part ')' line          { $$ = { type: 'if', condition: $3, true: [$5], false: [] } }
+    | IF '(' right_part ')' '{' body '}'  { $$ = { type: 'if', condition: $3, true: $6, false: [] } }
+    ; 
+
+else_part 
+    : ELSE line          { $$ = { false: [$2] } }
+    | ELSE '{' body '}'  { $$ = { false: $3 } } 
     ;

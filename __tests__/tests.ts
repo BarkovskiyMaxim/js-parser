@@ -138,3 +138,34 @@ test('with operator test', () => {
             }
     `)).apply(this, [{ $data: 3 }])).toEqual(3);
 });
+
+test('if/else operator test', () => {
+    let funcBody = `
+    var result = 0;
+    if(a > 0) {
+        result = 1;
+    } else {
+        result = 2;
+    }
+    return result;
+`
+    expect(execute(jsParser.parse(funcBody), { a: 2 })).toEqual(1);
+    expect(execute(jsParser.parse(funcBody), { a: -2 })).toEqual(2);
+})
+
+test('if/else/if operator test', () => {
+    let funcBody = `
+    var result = 0;
+    if(a > 0) {
+        result = 1;
+    } else if(a === 0) {
+        result = 2;
+    } else {
+        result = 3;
+    }
+    return result;
+`
+    expect(execute(jsParser.parse(funcBody), { a: 2 })).toEqual(1);
+    expect(execute(jsParser.parse(funcBody), { a: 0 })).toEqual(2);
+    expect(execute(jsParser.parse(funcBody), { a: -2 })).toEqual(3);
+})
