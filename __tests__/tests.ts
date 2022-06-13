@@ -154,7 +154,7 @@ test('if/else operator test', () => {
 })
 
 test('if/else/if operator test', () => {
-    let funcBody = `
+    const funcBody = `
     var result = 0;
     if(a > 0) {
         result = 1;
@@ -171,7 +171,7 @@ test('if/else/if operator test', () => {
 })
 
 test('ternary operator test', () => {
-    let funcBody = `
+    const funcBody = `
     var result = a > 0 ? 1 : a === 0 ? 2 : 3;
     return result;
     `;
@@ -182,7 +182,7 @@ test('ternary operator test', () => {
 })
 
 test('|| operator test', () => {
-    let funcBody = `
+    const funcBody = `
     var a = b || 1;
     return a;
     `;
@@ -192,7 +192,7 @@ test('|| operator test', () => {
 })
 
 test('empty object test', () => {
-    let funcBody = `
+    const funcBody = `
     var a = {};
     return a;
     `;
@@ -201,7 +201,7 @@ test('empty object test', () => {
 })
 
 test('object with single quote', () => {
-    let funcBody = `
+    const funcBody = `
     var a = {'test': 'test'};
     return a;
     `;
@@ -210,7 +210,7 @@ test('object with single quote', () => {
 })
 
 test('object with function test', () => {
-    let funcBody = `
+    const funcBody = `
     var a = { 
         test: 'test',
         func: () => {
@@ -219,13 +219,13 @@ test('object with function test', () => {
     };
     return a;
     `
-    var testRes = execute(jsParser.parse(funcBody), {}) as any;
+    const testRes = execute(jsParser.parse(funcBody), {}) as any;
     expect(testRes['func']()).toEqual('a');
     expect(testRes['test']).toEqual('test');
 })
 
 test('return object test', () => {
-    let funcBody = `
+    const funcBody = `
     return { 
         test: 'test',
         func: () => {
@@ -233,7 +233,23 @@ test('return object test', () => {
         }
     };
     `
-    var testRes = execute(jsParser.parse(funcBody), {}) as any;
+    const testRes = execute(jsParser.parse(funcBody), {}) as any;
     expect(testRes['func']()).toEqual('a');
     expect(testRes['test']).toEqual('test');
+})
+
+test('use variable with point test', () => {
+    const funcBody = `
+        return 1 + a.b;
+    `;
+    expect(execute(jsParser.parse(funcBody), { a: { b: 3 } })).toEqual(4);
+})
+
+test('assign to object property test', () => {
+    const funcBody = `
+        var a = { b: 0 };
+        a.b = 3;
+        return a;
+    `;
+    expect(execute(jsParser.parse(funcBody))).toEqual({ b: 3 });
 })

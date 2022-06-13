@@ -21,6 +21,7 @@
 "if"                        return 'IF'
 "else"                      return 'ELSE'
 ","                         return ','
+"."                         return '.'
 "=>"                        return '=>'
 "{"                         return '{'
 "}"                         return '}'
@@ -100,7 +101,7 @@ return
 
 assign
     : VAR NAME_SOFT ASSIGN right_part EOL { $$ = { assignTo: $2, value: $4, type: 'assign' }; }
-    | NAME_SOFT ASSIGN right_part EOL     { $$ = { assignTo: $1, value: $3, type: 'assign' }; }
+    | property ASSIGN right_part EOL      { $$ = { assignTo: $1, value: $3, type: 'assign' }; }
     ;
 
 right_part

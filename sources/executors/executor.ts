@@ -63,20 +63,41 @@ export function generateFunction(operand: OperandFunction) {
 }
 
 export function generateObject(operand: OperandObject, context: jsContext) {
-    var result: { [key: string]: any } = {};
+    let result: { [key: string]: any } = {};
     operand.fields.forEach((x) => {
         result[x.name] = execute(x.value, context);
     })
     return result;
 }
 
+export function getPropertyByName(context: jsContext, name: string) {
+    let propertyPath = name.split('.');
+    let result = context;
+    for (let i = 0; i < propertyPath.length; i++) {
+        result = result[propertyPath[i]];
+    }
+    return result;
+}
+
+export function getAssignFunc(context: jsContext, name: string) {
+    let propertyPath = name.split('.');
+    let propertyName = propertyPath.pop() as string;
+    let result = context;
+    for (let i = 0; i < propertyPath.length; i++) {
+        result = result[propertyPath[i]];
+    }
+    return (val: any) => {
+        result[propertyName] = val;
+    };
+}
+
 export function executeSingleOperation(operand: Operands, context: jsContext = {}): any {
     if (IsFunction(operand)) {
         return generateFunction(operand);
     } else if (IsAssign(operand)) {
-        context[operand.assignTo] = execute(operand.value, context);
+        return getAssignFunc(context, operand.assignTo)(execute(operand.value, context));
     } else if (IsContext(operand)) {
-        return context[operand.name];
+        return getPropertyByName(context, operand.name);
     } else if (IsValue(operand)) {
         return operand.value;
     } else if (IsBinary(operand)) {
@@ -86,12 +107,12 @@ export function executeSingleOperation(operand: Operands, context: jsContext = {
     } else if (IsObject(operand)) {
         return generateObject(operand, context);
     } else if (IsWith(operand)) {
-        var innerContext = {
+        let innerContext = {
             ...context,
             ...(execute(operand.context, context))
         }
-        var result = execute(operand.body, innerContext);
-        for (var name in context) {
+        let result = execute(operand.body, innerContext);
+        for (let name in context) {
             context[name] = innerContext[name];
         }
         return result;
