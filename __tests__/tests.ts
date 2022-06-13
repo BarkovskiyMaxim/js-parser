@@ -180,3 +180,31 @@ test('ternary operator test', () => {
     expect(execute(jsParser.parse(funcBody), { a: 0 })).toEqual(2);
     expect(execute(jsParser.parse(funcBody), { a: -2 })).toEqual(3);
 })
+
+test('|| operator test', () => {
+    let funcBody = `
+    var a = b || 1;
+    return a;
+    `;
+
+    expect(execute(jsParser.parse(funcBody), { b: 0 })).toEqual(1);
+    expect(execute(jsParser.parse(funcBody), { b: 2 })).toEqual(2);
+})
+
+test('empty object test', () => {
+    let funcBody = `
+    var a = {};
+    return a;
+    `;
+
+    expect(execute(jsParser.parse(funcBody), {})).toEqual({});
+})
+
+test('object with single quote', () => {
+    let funcBody = `
+    var a = {'test': 'test'};
+    return a;
+    `;
+
+    expect(execute(jsParser.parse(funcBody), {})).toEqual({ 'test': 'test' });
+})

@@ -29,6 +29,8 @@
 "?"                         return '?'
 
 ">"                         return 'BINARY'
+"||"                        return 'BINARY'
+"&&"                        return 'BINARY'
 ">="                        return 'BINARY'
 "<"                         return 'BINARY'
 "<="                        return 'BINARY'

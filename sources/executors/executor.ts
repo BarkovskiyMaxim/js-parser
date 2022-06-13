@@ -4,7 +4,7 @@ import { OperandFunction } from "../operands/operand-function";
 import { IsAssign, IsBinary, IsCall, IsContext, IsFunction, IsIf, IsObject, IsReturn, IsValue, IsWith, Operands } from "../operands/operand-mapper";
 import { OperandObject } from "../operands/operand-object";
 
-export type BinaryCommands = '+' | '-' | '/' | '*' | '<' | '<=' | '>' | '>=' | '==' | '===';
+export type BinaryCommands = '+' | '-' | '/' | '*' | '<' | '<=' | '>' | '>=' | '==' | '===' | '||' | '&&';
 
 export type BinaryExecutor = {
     [K in BinaryCommands]: (operand: OperandBinary, context: jsContext) => any;
@@ -40,6 +40,12 @@ export var binaryCommands: BinaryExecutor = {
     },
     '===': (operand: OperandBinary, context: jsContext) => {
         return executeSingleOperation(operand.left, context) === executeSingleOperation(operand.right, context);
+    },
+    '||': (operand: OperandBinary, context: jsContext) => {
+        return executeSingleOperation(operand.left, context) || executeSingleOperation(operand.right, context);
+    },
+    '&&': (operand: OperandBinary, context: jsContext) => {
+        return executeSingleOperation(operand.left, context) && executeSingleOperation(operand.right, context);
     }
 }
 
