@@ -136,6 +136,7 @@ call_args
 
 obj
     : '{' objFields '}' { $$ = { fields: $2, type: 'obj' }; }
+    | '{' '}'           { $$ = { fields: [], type: 'obj' }; }
     ;
 
 objFields
@@ -144,7 +145,8 @@ objFields
     ;
 
 objField
-    : NAME_SOFT ':' right_part { $$ = { name: $1, value: $3 }; }
+    : NAME_SOFT ':' right_part       { $$ = { name: $1, value: $3 }; } 
+    | STRING ':' right_part          { $$ = { name: $1.substring(1, $1.length - 1), value: $3 }; } 
     ;
 
 with
