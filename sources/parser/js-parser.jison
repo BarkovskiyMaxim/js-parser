@@ -64,7 +64,6 @@ expressions
 result
     : body       { $$ = $1; }
     | right_part { $$ = $1; }
-    | func       { $$ = $1; }
     ;
 
 func
@@ -111,6 +110,7 @@ right_part
     | obj                                      { $$ = $1; }
     | right_part BINARY right_part             { $$ = { left: $1, right: $3, operation: $2, type: 'binary' }; }
     | right_part '?' right_part ':' right_part { $$ = { type: 'if', true: $3, condition: $1, false: $5 }; }
+    | func                                 { $$ = $1; }
     ;
 
 value  

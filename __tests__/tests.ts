@@ -208,3 +208,32 @@ test('object with single quote', () => {
 
     expect(execute(jsParser.parse(funcBody), {})).toEqual({ 'test': 'test' });
 })
+
+test('object with function test', () => {
+    let funcBody = `
+    var a = { 
+        test: 'test',
+        func: () => {
+            return 'a';
+        }
+    };
+    return a;
+    `
+    var testRes = execute(jsParser.parse(funcBody), {}) as any;
+    expect(testRes['func']()).toEqual('a');
+    expect(testRes['test']).toEqual('test');
+})
+
+test('return object test', () => {
+    let funcBody = `
+    return { 
+        test: 'test',
+        func: () => {
+            return 'a';
+        }
+    };
+    `
+    var testRes = execute(jsParser.parse(funcBody), {}) as any;
+    expect(testRes['func']()).toEqual('a');
+    expect(testRes['test']).toEqual('test');
+})
