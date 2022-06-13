@@ -97,6 +97,7 @@ line
 
 return
     : RETURN right_part EOL { $$ = { value: $2, type: 'return' }; }
+    | RETURN right_part     { $$ = { value: $2, type: 'return' }; }
     ;
 
 assign

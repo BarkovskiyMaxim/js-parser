@@ -253,3 +253,10 @@ test('assign to object property test', () => {
     `;
     expect(execute(jsParser.parse(funcBody))).toEqual({ b: 3 });
 })
+
+test('return without EOL', () => {
+    const funcBody = `
+        return { a: 3 }
+    `;
+    expect(execute(jsParser.parse(funcBody))).toEqual({ a: 3 });
+})
