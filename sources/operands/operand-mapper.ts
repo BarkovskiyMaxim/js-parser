@@ -6,6 +6,7 @@ import { OperandFunction } from "./operand-function";
 import { OperandIf } from "./operand-if";
 import { OperandObject } from "./operand-object";
 import { OperandReturn } from "./operand-return";
+import { OperandSequence } from "./operand-sequence";
 import { OperandValue } from "./operand-value";
 import { OperandWith } from "./operand-with";
 
@@ -18,6 +19,7 @@ export type Operands = OperandBinary |
                        OperandObject |
                        OperandWith |
                        OperandIf |
+                       OperandSequence |
                        OperandCall;
 
 export function IsBinary(operand: Operands): operand is OperandBinary {
@@ -58,4 +60,8 @@ export function IsWith(operand: Operands): operand is OperandWith {
 
 export function IsIf(operand: Operands): operand is OperandIf {
     return operand.type === 'if';
+}
+
+export function IsSequence(operand: Operands): operand is OperandSequence {
+    return operand.type === 'sequence';
 }

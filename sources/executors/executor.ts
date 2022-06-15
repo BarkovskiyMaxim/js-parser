@@ -1,7 +1,8 @@
 import { jsContext } from "../operands/js-context";
+import { OperandContext } from "../operands/oparand-context";
 import { OperandBinary } from "../operands/operand-binary";
 import { OperandFunction } from "../operands/operand-function";
-import { IsAssign, IsBinary, IsCall, IsContext, IsFunction, IsIf, IsObject, IsReturn, IsValue, IsWith, Operands } from "../operands/operand-mapper";
+import { IsAssign, IsBinary, IsCall, IsContext, IsFunction, IsIf, IsObject, IsReturn, IsSequence, IsValue, IsWith, Operands } from "../operands/operand-mapper";
 import { OperandObject } from "../operands/operand-object";
 
 export type BinaryCommands = '+' | '-' | '/' | '*' | '<' | '<=' | '>' | '>=' | '==' | '===' | '||' | '&&';
@@ -79,15 +80,14 @@ export function getPropertyByName(context: jsContext, name: string) {
     return result;
 }
 
-export function getAssignFunc(context: jsContext, name: string) {
-    let propertyPath = name.split('.');
-    let propertyName = propertyPath.pop() as string;
+export function getAssignFunc(context: jsContext, operands: OperandContext[]) {
     let result = context;
-    for (let i = 0; i < propertyPath.length; i++) {
-        result = result[propertyPath[i]];
+    let latestOperand = operands.pop() as OperandContext;
+    for (let i = 0; i < operands.length; i++) {
+        result = result[operands[i].name];
     }
     return (val: any) => {
-        result[propertyName] = val;
+        result[latestOperand.name] = val;
     };
 }
 
@@ -97,7 +97,7 @@ export function executeSingleOperation(operand: Operands, context: jsContext = {
     } else if (IsAssign(operand)) {
         return getAssignFunc(context, operand.assignTo)(execute(operand.value, context));
     } else if (IsContext(operand)) {
-        return getPropertyByName(context, operand.name);
+        return context[operand.name];
     } else if (IsValue(operand)) {
         return operand.value;
     } else if (IsBinary(operand)) {
@@ -122,6 +122,14 @@ export function executeSingleOperation(operand: Operands, context: jsContext = {
         } else {
             return execute(operand.false, context);
         }
+    } else if (IsSequence(operand)) {
+        let result = context;
+        for (let i = 0; i < operand.operands.length; i++) {
+            result = execute(operand.operands[i], result);
+            // for (let name in context)
+            //     context[name] = result[name] || context[name];
+        }
+        return result;
     } else {
         return null;
     }

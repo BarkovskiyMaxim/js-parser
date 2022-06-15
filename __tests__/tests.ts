@@ -37,7 +37,7 @@ test("binary operator assign test", () => {
     const operand = jsParser.parse(str) as OperandAssign[];
     expect(Array.isArray(operand));
     expect(operand[0].type).toEqual('assign');
-    expect(operand[0].assignTo).toEqual('myValue');
+    expect(operand[0].assignTo).toEqual([{ 'name': 'myValue', 'type': 'context'}]);
     expect(operand[0].value.type).toEqual('binary');
     const context = { test: 1 };
     execute(operand, context);
@@ -53,26 +53,6 @@ test('function test', () => {
            return testa + testb; 
         }
     `
-    const operand = jsParser.parse(str) as OperandFunction;
-    expect(operand).toEqual(<OperandFunction>{
-        args: ["testa", "testb"],
-        body: [<OperandReturn>{
-            type: 'return',
-            value: <OperandBinary>{
-                left: <OperandContext>{
-                    name: 'testa',
-                    type: 'context'
-                },
-                operation: '+',
-                right: <OperandContext>{
-                    name: 'testb',
-                    type: 'context'
-                },
-                type: 'binary'
-            }
-        }],
-        type: 'func'
-    });
     const func = execute(jsParser.parse(str))
     expect(func.apply(this, [1, 2])).toEqual(3);
 })
@@ -259,4 +239,12 @@ test('return without EOL', () => {
         return { a: 3 }
     `;
     expect(execute(jsParser.parse(funcBody))).toEqual({ a: 3 });
+})
+
+test('call functions with point', () => {
+    const funcBody = `
+        return 'a.b.c'.split('.').join(',');
+    `
+    const operands = jsParser.parse(funcBody);
+    expect(execute(operands)).toEqual('a,b,c');
 })

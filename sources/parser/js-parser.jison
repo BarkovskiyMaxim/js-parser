@@ -52,6 +52,7 @@
 
 %right        '?' ':'
 %left         BINARY
+%left         '.'
 %right        ASSIGN
 
 %start expressions
@@ -101,18 +102,17 @@ return
     ;
 
 assign
-    : VAR NAME_SOFT ASSIGN right_part EOL { $$ = { assignTo: $2, value: $4, type: 'assign' }; }
-    | property ASSIGN right_part EOL      { $$ = { assignTo: $1, value: $3, type: 'assign' }; }
+    : VAR NAME_SOFT ASSIGN right_part EOL { $$ = { assignTo: [{ name: $2, type: 'context'}], value: $4, type: 'assign' }; }
+    | sequence ASSIGN right_part EOL      { $$ = { assignTo: $1, value: $3, type: 'assign' }; }
     ;
 
 right_part
-    : value                                    { $$ = { value: $1, type: 'value' }; }
-    | property                                 { $$ = { name: $1, type: 'context' }; }
-    | call                                     { $$ = $1; }
+    : sequence                                 { $$ = { operands: $1, type: 'sequence' } }
     | obj                                      { $$ = $1; }
+    | obj '.' sequence                         { $$ = { operands: [].concat([$1], [3]), type: 'sequence' } }
     | right_part BINARY right_part             { $$ = { left: $1, right: $3, operation: $2, type: 'binary' }; }
     | right_part '?' right_part ':' right_part { $$ = { type: 'if', true: $3, condition: $1, false: $5 }; }
-    | func                                 { $$ = $1; }
+    | func                                     { $$ = $1; }
     ;
 
 value  
@@ -121,14 +121,16 @@ value
     | BOOLEAN { $$ = $1 === 'true' }
     ;
 
-property
-    : property '.' NAME_SOFT    { $$ = $1 + $2 + $3; }
-    | NAME_SOFT                 { $$ = $1; }
+sequence
+    : sequence '.' sequence     { $$ = [].concat($1, $3); }
+    | NAME_SOFT                 { $$ = [{ name: $1, type: 'context' }]; }
+    | value                     { $$ = [{ value: $1, type: 'value' }] }
+    | call                      { $$ = [$1] }
     ;
 
 call
-    : property '(' ')'           { $$ = { func: $1, args: [], type: 'call' }; }
-    | property '(' call_args ')' { $$ = { func: $1, args: $3, type: 'call' }; }
+    : NAME_SOFT '(' ')'           { $$ = { func: $1, args: [], type: 'call' }; }
+    | NAME_SOFT '(' call_args ')' { $$ = { func: $1, args: $3, type: 'call' }; }
     ;
 
 call_args
