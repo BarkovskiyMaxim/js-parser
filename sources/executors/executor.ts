@@ -95,9 +95,9 @@ export function getAssignFunc(context: jsContext, operands: OperandContext[]) {
 
 export function getContext(operand: OperandCall | OperandContext, context: any = {}, currentObj: any = {}) {
     let propertyName = IsContext(operand) ? operand.name : operand.func;
-    if(currentObj[propertyName] !== undefined) {
+    if (currentObj[propertyName] !== undefined) {
         return currentObj;
-    } else if(context[propertyName] !== undefined) {
+    } else if (context[propertyName] !== undefined) {
         return context;
     } else {
         return (window as any);
@@ -106,7 +106,7 @@ export function getContext(operand: OperandCall | OperandContext, context: any =
 
 export function executeSingleOperation(operand: Operands, context: jsContext = {}, currentObj?: any): any {
     if (IsFunction(operand)) {
-        return generateFunction(operand);
+        return generateFunction(operand, context);
     } else if (IsAssign(operand)) {
         return getAssignFunc(context, operand.assignTo)(execute(operand.value, context));
     } else if (IsContext(operand)) {
@@ -141,6 +141,8 @@ export function executeSingleOperation(operand: Operands, context: jsContext = {
             result = execute(operand.operands[i], context, result);
         }
         return result;
+    } else if (IsReturn(operand)) {
+        return execute(operand.value, context, currentObj);
     } else {
         return null;
     }
@@ -150,11 +152,7 @@ export function execute(operands: Operands[] | Operands, context: jsContext = {}
     if (Array.isArray(operands)) {
         let __result = undefined;
         operands.forEach((operand) => {
-            if (IsReturn(operand)) {
-                __result = executeSingleOperation(operand.value, context, currentObj);
-            } else {
-                executeSingleOperation(operand, context, currentObj);
-            }
+            __result = executeSingleOperation(operand, context, currentObj);
         })
         return __result;
     } else {

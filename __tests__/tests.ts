@@ -286,3 +286,15 @@ test('parse big function', () => {
     }`;
     expect(!!jsParser.parse(func)).toEqual(true);
 })
+
+test('return from inner context', () => {
+    const funcBody = `
+        if(a > 0) {
+            return '1';
+        } else {
+            return '2';
+        }
+    `
+    const operands = jsParser.parse(funcBody);
+    expect(execute(operands, { a: 1 })).toEqual('1');
+})
