@@ -1,4 +1,5 @@
 import { OperandContext } from "./oparand-context";
+import { OperandArray } from "./operand-array";
 import { OperandAssign } from "./operand-assign";
 import { OperandBinary } from "./operand-binary";
 import { OperandCall } from "./operand-call";
@@ -20,6 +21,7 @@ export type Operands = OperandBinary |
                        OperandWith |
                        OperandIf |
                        OperandSequence |
+                       OperandArray |
                        OperandCall;
 
 export function IsBinary(operand: Operands): operand is OperandBinary {
@@ -64,4 +66,8 @@ export function IsIf(operand: Operands): operand is OperandIf {
 
 export function IsSequence(operand: Operands): operand is OperandSequence {
     return operand.type === 'sequence';
+}
+
+export function IsArray(operand: Operands): operand is OperandArray {
+    return operand.type === 'array';
 }

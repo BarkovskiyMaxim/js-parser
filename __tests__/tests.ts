@@ -308,3 +308,12 @@ test('closure functional test', () => {
     const operands = jsParser.parse(funcBody);
     expect(execute(operands, { a: 1 })()).toEqual(1);
 })
+
+test('array operand test', () => {
+    const funcBody = `
+        return [a,b,3,4,'w']
+    `
+    expect(execute(jsParser.parse(funcBody), { a: 1, b: 2 })).toEqual(
+        [1,2,3,4,'w']
+    )
+})

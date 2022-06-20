@@ -25,6 +25,8 @@
 "=>"                        return '=>'
 "{"                         return '{'
 "}"                         return '}'
+"["                         return '['
+"]"                         return ']'
 
 ":"                         return ':'
 "?"                         return '?'
@@ -122,11 +124,17 @@ value
     | BOOLEAN { $$ = $1 === 'true' }
     ;
 
+array
+    : '[' ']'            { $$ = { type: 'array', values: [] }; }
+    | '[' call_args ']'  { $$ = { type: 'array', values: $2 }; }
+    ;
+
 sequence
     : sequence '.' sequence     { $$ = [].concat($1, $3); }
     | NAME_SOFT                 { $$ = [{ name: $1, type: 'context' }]; }
     | value                     { $$ = [{ value: $1, type: 'value' }] }
     | call                      { $$ = [$1] }
+    | array                     { $$ = [$1] }
     ;
 
 call
