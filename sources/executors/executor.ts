@@ -52,13 +52,16 @@ export var binaryCommands: BinaryExecutor = {
     }
 }
 
-export function generateFunction(operand: OperandFunction) {
+export function generateFunction(operand: OperandFunction, context: jsContext = {}) {
     return function () {
-        let context: jsContext = {};
+        let innerContext: jsContext = {};
         for (var i = 0; i < arguments.length; i++) {
-            context[operand.args[i]] = arguments[i];
+            innerContext[operand.args[i]] = arguments[i];
         }
-        let result = execute(operand.body, context);
+        let result = execute(operand.body, { 
+            ...context,
+            ...innerContext
+        });
         if (result != undefined) {
             return result;
         }

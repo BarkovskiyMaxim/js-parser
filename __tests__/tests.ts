@@ -298,3 +298,13 @@ test('return from inner context', () => {
     const operands = jsParser.parse(funcBody);
     expect(execute(operands, { a: 1 })).toEqual('1');
 })
+
+test('closure functional test', () => {
+    const funcBody = `
+        return () => {
+            return a;
+        }
+    `
+    const operands = jsParser.parse(funcBody);
+    expect(execute(operands, { a: 1 })()).toEqual(1);
+})
