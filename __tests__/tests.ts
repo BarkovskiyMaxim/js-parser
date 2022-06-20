@@ -257,3 +257,32 @@ test('call functions with point and context parameter', () => {
     const operands = jsParser.parse(funcBody);
     expect(execute(operands, { a: '.', b: ',' })).toEqual('a,b,c');
 })
+
+test('parse big function', () => {
+    const func = `function($context, $element) { 
+        with($context) {
+            with($data||{}) {
+                return {
+                    'checkedValue':function(){
+                        return $data 
+                    },
+                    'checked':function(){
+                        return $parent.currentTheme 
+                    },
+                    'attr':function(){
+                        return {
+                            'id':$data.split('.').join('')
+                        } 
+                    },'_ko_property_writers':function(){
+                        return {
+                            'checked':function(_z){
+                                Object($parent).currentTheme=_z
+                            } 
+                        } 
+                    }
+                }
+            }
+        } 
+    }`;
+    expect(!!jsParser.parse(func)).toEqual(true);
+})

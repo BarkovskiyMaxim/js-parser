@@ -1,6 +1,8 @@
 import { jsContext } from "../operands/js-context";
 import { OperandContext } from "../operands/oparand-context";
+import { OperandAssign } from "../operands/operand-assign";
 import { OperandBinary } from "../operands/operand-binary";
+import { OperandCall } from "../operands/operand-call";
 import { OperandFunction } from "../operands/operand-function";
 import { IsAssign, IsBinary, IsCall, IsContext, IsFunction, IsIf, IsObject, IsReturn, IsSequence, IsValue, IsWith, Operands } from "../operands/operand-mapper";
 import { OperandObject } from "../operands/operand-object";
@@ -91,19 +93,30 @@ export function getAssignFunc(context: jsContext, operands: OperandContext[]) {
     };
 }
 
+export function getContext(operand: OperandCall | OperandContext, context: any = {}, currentObj: any = {}) {
+    let propertyName = IsContext(operand) ? operand.name : operand.func;
+    if(currentObj[propertyName] !== undefined) {
+        return currentObj;
+    } else if(context[propertyName] !== undefined) {
+        return context;
+    } else {
+        return (window as any);
+    }
+}
+
 export function executeSingleOperation(operand: Operands, context: jsContext = {}, currentObj?: any): any {
     if (IsFunction(operand)) {
         return generateFunction(operand);
     } else if (IsAssign(operand)) {
         return getAssignFunc(context, operand.assignTo)(execute(operand.value, context));
     } else if (IsContext(operand)) {
-        return (currentObj || context)[operand.name];
+        return getContext(operand, context, currentObj)[operand.name];
     } else if (IsValue(operand)) {
         return operand.value;
     } else if (IsBinary(operand)) {
         return binaryCommands[operand.operation](operand, context);
     } else if (IsCall(operand)) {
-        return (currentObj || context)[operand.func](...operand.args.map(x => execute(x, context)));
+        return getContext(operand, context, currentObj)[operand.func](...operand.args.map(x => execute(x, context)));
     } else if (IsObject(operand)) {
         return generateObject(operand, context);
     } else if (IsWith(operand)) {

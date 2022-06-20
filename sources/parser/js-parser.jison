@@ -104,6 +104,7 @@ return
 assign
     : VAR NAME_SOFT ASSIGN right_part EOL { $$ = { assignTo: [{ name: $2, type: 'context'}], value: $4, type: 'assign' }; }
     | sequence ASSIGN right_part EOL      { $$ = { assignTo: $1, value: $3, type: 'assign' }; }
+    | sequence ASSIGN right_part          { $$ = { assignTo: $1, value: $3, type: 'assign' }; }
     ;
 
 right_part
