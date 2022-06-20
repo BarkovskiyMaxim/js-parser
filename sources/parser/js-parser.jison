@@ -31,6 +31,8 @@
 ":"                         return ':'
 "?"                         return '?'
 
+"!"                         return '!'
+
 ">"                         return 'BINARY'
 "||"                        return 'BINARY'
 "&&"                        return 'BINARY'
@@ -53,6 +55,7 @@
 /lex
 
 %right        '?' ':'
+%right        '!'
 %left         BINARY
 %left         '.'
 %right        ASSIGN
@@ -116,6 +119,7 @@ right_part
     | right_part BINARY right_part             { $$ = { left: $1, right: $3, operation: $2, type: 'binary' }; }
     | right_part '?' right_part ':' right_part { $$ = { type: 'if', true: $3, condition: $1, false: $5 }; }
     | func                                     { $$ = $1; }
+    | '!' '(' right_part ')'                   { $$ = { type: 'not', value: $3 } }
     ;
 
 value  
@@ -131,6 +135,7 @@ array
 
 sequence
     : sequence '.' sequence     { $$ = [].concat($1, $3); }
+    | '!' sequence              { $$ = [{ type: 'not', value: $2 }]; }
     | NAME_SOFT                 { $$ = [{ name: $1, type: 'context' }]; }
     | value                     { $$ = [{ value: $1, type: 'value' }] }
     | call                      { $$ = [$1] }

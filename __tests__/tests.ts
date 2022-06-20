@@ -37,7 +37,7 @@ test("binary operator assign test", () => {
     const operand = jsParser.parse(str) as OperandAssign[];
     expect(Array.isArray(operand));
     expect(operand[0].type).toEqual('assign');
-    expect(operand[0].assignTo).toEqual([{ 'name': 'myValue', 'type': 'context'}]);
+    expect(operand[0].assignTo).toEqual([{ 'name': 'myValue', 'type': 'context' }]);
     expect(operand[0].value.type).toEqual('binary');
     const context = { test: 1 };
     execute(operand, context);
@@ -314,6 +314,18 @@ test('array operand test', () => {
         return [a,b,3,4,'w']
     `
     expect(execute(jsParser.parse(funcBody), { a: 1, b: 2 })).toEqual(
-        [1,2,3,4,'w']
+        [1, 2, 3, 4, 'w']
     )
+})
+
+test('! operand test', () => {
+    let funcBody = `
+        return !a
+    `
+    expect(execute(jsParser.parse(funcBody), { a: true })).toEqual(false)
+
+    funcBody = `
+    return !a || b;
+`
+    expect(execute(jsParser.parse(funcBody), { a: true, b: 3 })).toEqual(3)
 })

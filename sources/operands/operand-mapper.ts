@@ -5,6 +5,7 @@ import { OperandBinary } from "./operand-binary";
 import { OperandCall } from "./operand-call";
 import { OperandFunction } from "./operand-function";
 import { OperandIf } from "./operand-if";
+import { OperandNot } from "./operand-not";
 import { OperandObject } from "./operand-object";
 import { OperandReturn } from "./operand-return";
 import { OperandSequence } from "./operand-sequence";
@@ -21,6 +22,7 @@ export type Operands = OperandBinary |
                        OperandWith |
                        OperandIf |
                        OperandSequence |
+                       OperandNot |
                        OperandArray |
                        OperandCall;
 
@@ -70,4 +72,8 @@ export function IsSequence(operand: Operands): operand is OperandSequence {
 
 export function IsArray(operand: Operands): operand is OperandArray {
     return operand.type === 'array';
+}
+
+export function IsNot(operand: Operands): operand is OperandNot {
+    return operand.type === 'not';
 }
