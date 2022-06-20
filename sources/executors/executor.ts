@@ -91,19 +91,19 @@ export function getAssignFunc(context: jsContext, operands: OperandContext[]) {
     };
 }
 
-export function executeSingleOperation(operand: Operands, context: jsContext = {}): any {
+export function executeSingleOperation(operand: Operands, context: jsContext = {}, currentObj?: any): any {
     if (IsFunction(operand)) {
         return generateFunction(operand);
     } else if (IsAssign(operand)) {
         return getAssignFunc(context, operand.assignTo)(execute(operand.value, context));
     } else if (IsContext(operand)) {
-        return context[operand.name];
+        return (currentObj || context)[operand.name];
     } else if (IsValue(operand)) {
         return operand.value;
     } else if (IsBinary(operand)) {
         return binaryCommands[operand.operation](operand, context);
     } else if (IsCall(operand)) {
-        return context[operand.func](...operand.args.map(x => execute(x, context)));
+        return (currentObj || context)[operand.func](...operand.args.map(x => execute(x, context)));
     } else if (IsObject(operand)) {
         return generateObject(operand, context);
     } else if (IsWith(operand)) {
@@ -125,9 +125,7 @@ export function executeSingleOperation(operand: Operands, context: jsContext = {
     } else if (IsSequence(operand)) {
         let result = context;
         for (let i = 0; i < operand.operands.length; i++) {
-            result = execute(operand.operands[i], result);
-            // for (let name in context)
-            //     context[name] = result[name] || context[name];
+            result = execute(operand.operands[i], context, result);
         }
         return result;
     } else {
@@ -135,18 +133,18 @@ export function executeSingleOperation(operand: Operands, context: jsContext = {
     }
 }
 
-export function execute(operands: Operands[] | Operands, context: jsContext = {}) {
+export function execute(operands: Operands[] | Operands, context: jsContext = {}, currentObj?: any) {
     if (Array.isArray(operands)) {
         let __result = undefined;
         operands.forEach((operand) => {
             if (IsReturn(operand)) {
-                __result = executeSingleOperation(operand.value, context);
+                __result = executeSingleOperation(operand.value, context, currentObj);
             } else {
-                executeSingleOperation(operand, context);
+                executeSingleOperation(operand, context, currentObj);
             }
         })
         return __result;
     } else {
-        return executeSingleOperation(operands, context);
+        return executeSingleOperation(operands, context, currentObj);
     }
 }

@@ -248,3 +248,12 @@ test('call functions with point', () => {
     const operands = jsParser.parse(funcBody);
     expect(execute(operands)).toEqual('a,b,c');
 })
+
+
+test('call functions with point and context parameter', () => {
+    const funcBody = `
+        return 'a.b.c'.split(a).join(b);
+    `
+    const operands = jsParser.parse(funcBody);
+    expect(execute(operands, { a: '.', b: ',' })).toEqual('a,b,c');
+})
