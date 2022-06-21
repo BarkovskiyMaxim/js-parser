@@ -109,19 +109,18 @@ return
 
 assign
     : VAR NAME_SOFT ASSIGN right_part EOL { $$ = { assignTo: [{ name: $2, type: 'context'}], value: $4, type: 'assign' }; }
-    | sequence ASSIGN right_part EOL      { $$ = { assignTo: $1, value: $3, type: 'assign' }; }
-    | sequence ASSIGN right_part          { $$ = { assignTo: $1, value: $3, type: 'assign' }; }
+    | sequence ASSIGN right_part EOL      { $$ = { assignTo: $1.operands, value: $3, type: 'assign' }; }
+    | sequence ASSIGN right_part          { $$ = { assignTo: $1.operands, value: $3, type: 'assign' }; }
     ;
 
 right_part
-    : sequence                                 { $$ = { operands: $1, type: 'sequence' } }
-    | obj                                      { $$ = $1; }
-    | obj '.' sequence                         { $$ = { operands: [].concat([$1], [3]), type: 'sequence' } }
+    : simple_right_part                        { $$ = $1; }
     | right_part BINARY right_part             { $$ = { left: $1, right: $3, operation: $2, type: 'binary' }; }
     | right_part '?' right_part ':' right_part { $$ = { type: 'if', true: $3, condition: $1, false: $5 }; }
-    | func                                     { $$ = $1; }
     | '!' '(' right_part ')'                   { $$ = { type: 'not', value: $3 } }
     | '(' right_part ')'                       { $$ = $2; }
+    | TYPEOF '(' right_part ')'                { $$ = { type: 'typeof', value: $3 } }
+    | func                                     { $$ = $1; }
     ;
 
 value  
@@ -136,15 +135,30 @@ array
     | '[' call_args ']'  { $$ = { type: 'array', values: $2 }; }
     ;
 
+simple_right_part
+    : sequence                 { $$ = $1 }
+    | '!' simple_right_part    { $$ = { type: 'not', value: $2 } }
+    | TYPEOF sequence          { $$ = { type: 'typeof', value: $2 } }
+    ;
+
 sequence
-    : sequence '.' NAME_SOFT    { $$ = [].concat($1, [{ name: $3, type: 'context' }]); }
-    | sequence '.' call         { $$ = [].concat($1, $3); }
-    | TYPEOF sequence           { $$ = [{ value: $2, type: 'typeof' }]; }
-    | '!' sequence              { $$ = [{ type: 'not', value: $2 }]; }
-    | NAME_SOFT                 { $$ = [{ name: $1, type: 'context' }]; }
+    : right_part_value               { $$ = { operands: $1, type: 'sequence' } }
+    | right_part_value sequence_tail { $$ = { operands: [].concat($1, $2), type: 'sequence' } }
+    ;
+
+sequence_tail
+    : '.' NAME_SOFT                        { $$ = [{ name: $2, type: 'context' }]; }
+    | '.' call                             { $$ = [$2] }
+    | sequence_tail '.' NAME_SOFT          { $$ = [].concat($1,[{ name: $3, type: 'context' }]); }
+    | sequence_tail '.' call               { $$ = [].concat($1,$3); }
+    ;
+
+right_part_value
+    : NAME_SOFT                 { $$ = [{ name: $1, type: 'context' }]; }
     | value                     { $$ = [{ value: $1, type: 'value' }] }
     | call                      { $$ = [$1] }
     | array                     { $$ = [$1] }
+    | obj                       { $$ = [$1] }
     ;
 
 call
