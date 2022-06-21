@@ -92,7 +92,9 @@ arguments
 
 body 
     : line              { $$ = [$1]; }
-    | body line         { $$ = [].concat($1, [$2]); }
+    | line body         { $$ = [].concat([$1], $2); }
+    | line EOL          { $$ = [$1]; }
+    | line EOL body     { $$ = [].concat([$1], $3); }
     ;
 
 line
@@ -103,14 +105,12 @@ line
     ;
 
 return
-    : RETURN right_part EOL { $$ = { value: $2, type: 'return' }; }
-    | RETURN right_part     { $$ = { value: $2, type: 'return' }; }
+    : RETURN right_part     { $$ = { value: $2, type: 'return' }; }
     ;
 
 assign
-    : VAR NAME_SOFT ASSIGN right_part EOL { $$ = { assignTo: [{ name: $2, type: 'context'}], value: $4, type: 'assign' }; }
-    | sequence ASSIGN right_part EOL      { $$ = { assignTo: $1.operands, value: $3, type: 'assign' }; }
-    | sequence ASSIGN right_part          { $$ = { assignTo: $1.operands, value: $3, type: 'assign' }; }
+    : VAR NAME_SOFT ASSIGN right_part { $$ = { assignTo: [{ name: $2, type: 'context'}], value: $4, type: 'assign' }; }
+    | sequence ASSIGN right_part      { $$ = { assignTo: $1.operands, value: $3, type: 'assign' }; }
     ;
 
 right_part
