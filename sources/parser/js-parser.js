@@ -72,12 +72,12 @@
   }
 */
 var jsParser = (function(){
-var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[1,18],$V1=[1,28],$V2=[1,29],$V3=[1,14],$V4=[1,23],$V5=[1,20],$V6=[1,9],$V7=[1,24],$V8=[1,25],$V9=[1,26],$Va=[1,27],$Vb=[1,22],$Vc=[1,30],$Vd=[1,34],$Ve=[1,35],$Vf=[1,36],$Vg=[5,11,17,24,26,34,36,37,38,40,46,49],$Vh=[2,22],$Vi=[1,38],$Vj=[1,37],$Vk=[5,11,15,17,18,24,25,26,31,32,33,34,36,37,38,40,41,46,49,50],$Vl=[5,11,17,24,26,34,36,37,38,40,46,49,50],$Vm=[5,11,15,17,18,24,25,26,27,30,31,32,33,34,36,37,38,40,41,46,49,50],$Vn=[1,46],$Vo=[1,47],$Vp=[1,61],$Vq=[5,11,15,17,18,24,25,26,30,31,32,33,34,36,37,38,40,41,46,49,50],$Vr=[11,18],$Vs=[1,82],$Vt=[15,18,41],$Vu=[1,86],$Vv=[15,18];
+var o=function(k,v,o,l){for(o=o||{},l=k.length;l--;o[k[l]]=v);return o},$V0=[1,20],$V1=[1,31],$V2=[1,10],$V3=[1,16],$V4=[1,25],$V5=[1,22],$V6=[1,9],$V7=[1,26],$V8=[1,27],$V9=[1,28],$Va=[1,29],$Vb=[1,30],$Vc=[1,15],$Vd=[1,32],$Ve=[1,24],$Vf=[1,36],$Vg=[1,37],$Vh=[1,38],$Vi=[5,11,17,24,26,34,36,37,38,39,41,45,48,49],$Vj=[2,21],$Vk=[1,40],$Vl=[1,39],$Vm=[5,11,15,17,18,24,25,26,31,32,33,34,36,37,38,39,41,42,45,48,49,52],$Vn=[5,11,17,24,26,34,36,37,38,39,41,45,48,49,52],$Vo=[5,11,15,17,18,24,25,26,27,30,31,32,33,34,36,37,38,39,41,42,45,48,49,52],$Vp=[1,48],$Vq=[1,52],$Vr=[1,53],$Vs=[1,54],$Vt=[1,55],$Vu=[5,11,15,17,18,24,25,26,27,31,32,33,34,36,37,38,39,41,42,45,48,49,52],$Vv=[5,11,15,17,18,24,25,26,30,31,32,33,34,36,37,38,39,41,42,45,48,49,52],$Vw=[11,18],$Vx=[1,91],$Vy=[15,18,42],$Vz=[15,18];
 var parser = {trace: function trace () { },
 yy: {},
-symbols_: {"error":2,"expressions":3,"result":4,"EOF":5,"body":6,"right_part":7,"func":8,"function":9,"{":10,"}":11,"FUNC":12,"(":13,"arguments":14,")":15,"=>":16,"NAME_SOFT":17,",":18,"line":19,"assign":20,"if_condition":21,"with":22,"return":23,"RETURN":24,"EOL":25,"VAR":26,"ASSIGN":27,"sequence":28,"obj":29,".":30,"BINARY":31,"?":32,":":33,"!":34,"value":35,"NUMBER":36,"STRING":37,"BOOLEAN":38,"array":39,"[":40,"]":41,"call_args":42,"call":43,"objFields":44,"objField":45,"WITH":46,"if_part":47,"else_part":48,"IF":49,"ELSE":50,"$accept":0,"$end":1},
-terminals_: {2:"error",5:"EOF",10:"{",11:"}",12:"FUNC",13:"(",15:")",16:"=>",17:"NAME_SOFT",18:",",24:"RETURN",25:"EOL",26:"VAR",27:"ASSIGN",30:".",31:"BINARY",32:"?",33:":",34:"!",36:"NUMBER",37:"STRING",38:"BOOLEAN",40:"[",41:"]",46:"WITH",49:"IF",50:"ELSE"},
-productions_: [0,[3,2],[4,1],[4,1],[8,4],[9,4],[9,4],[9,3],[9,3],[14,1],[14,3],[6,1],[6,2],[19,1],[19,1],[19,1],[19,1],[23,3],[23,2],[20,5],[20,4],[20,3],[7,1],[7,1],[7,3],[7,3],[7,5],[7,1],[7,4],[35,1],[35,1],[35,1],[39,2],[39,3],[28,3],[28,2],[28,1],[28,1],[28,1],[28,1],[43,3],[43,4],[42,1],[42,3],[29,3],[29,2],[44,1],[44,3],[45,3],[45,3],[22,7],[21,2],[47,5],[47,7],[48,2],[48,4]],
+symbols_: {"error":2,"expressions":3,"result":4,"EOF":5,"body":6,"right_part":7,"func":8,"function":9,"{":10,"}":11,"FUNC":12,"(":13,"arguments":14,")":15,"=>":16,"NAME_SOFT":17,",":18,"line":19,"assign":20,"if_condition":21,"with":22,"return":23,"RETURN":24,"EOL":25,"VAR":26,"ASSIGN":27,"sequence":28,"obj":29,".":30,"BINARY":31,"?":32,":":33,"!":34,"value":35,"NUMBER":36,"STRING":37,"BOOLEAN":38,"NULL":39,"array":40,"[":41,"]":42,"call_args":43,"call":44,"TYPEOF":45,"objFields":46,"objField":47,"IF":48,"WITH":49,"if_part":50,"else_part":51,"ELSE":52,"$accept":0,"$end":1},
+terminals_: {2:"error",5:"EOF",10:"{",11:"}",12:"FUNC",13:"(",15:")",16:"=>",17:"NAME_SOFT",18:",",24:"RETURN",25:"EOL",26:"VAR",27:"ASSIGN",30:".",31:"BINARY",32:"?",33:":",34:"!",36:"NUMBER",37:"STRING",38:"BOOLEAN",39:"NULL",41:"[",42:"]",45:"TYPEOF",48:"IF",49:"WITH",52:"ELSE"},
+productions_: [0,[3,2],[4,1],[4,1],[8,4],[9,4],[9,3],[9,3],[14,1],[14,3],[6,1],[6,2],[19,1],[19,1],[19,1],[19,1],[23,3],[23,2],[20,5],[20,4],[20,3],[7,1],[7,1],[7,3],[7,3],[7,5],[7,1],[7,4],[7,3],[35,1],[35,1],[35,1],[35,1],[40,2],[40,3],[28,3],[28,3],[28,2],[28,2],[28,1],[28,1],[28,1],[28,1],[44,3],[44,4],[43,1],[43,3],[29,3],[29,2],[46,1],[46,3],[47,3],[47,3],[47,3],[47,3],[22,7],[21,2],[50,5],[50,7],[51,2],[51,4]],
 performAction: function anonymous(yytext, yyleng, yylineno, yy, yystate /* action[1] */, $$ /* vstack */, _$ /* lstack */) {
 /* this == yyval */
 
@@ -86,7 +86,7 @@ switch (yystate) {
 case 1:
  return $$[$0-1]; 
 break;
-case 2: case 3: case 13: case 14: case 15: case 16: case 23: case 27:
+case 2: case 3: case 12: case 13: case 14: case 15: case 22: case 26:
  this.$ = $$[$0]; 
 break;
 case 4:
@@ -95,50 +95,50 @@ break;
 case 5:
  this.$ = { args: $$[$0-1] }; 
 break;
-case 6:
- this.$ = { args: $$[$0-2] }; 
-break;
-case 7: case 8:
+case 6: case 7:
  this.$ = { args: [] }; 
 break;
-case 9: case 11: case 42: case 46:
+case 8: case 10: case 45: case 49:
  this.$ = [$$[$0]]; 
 break;
-case 10: case 43: case 47:
+case 9: case 46: case 50:
  this.$ = [].concat($$[$0-2], [$$[$0]]); 
 break;
-case 12:
+case 11:
  this.$ = [].concat($$[$0-1], [$$[$0]]); 
 break;
-case 17:
+case 16:
  this.$ = { value: $$[$0-1], type: 'return' }; 
 break;
-case 18:
+case 17:
  this.$ = { value: $$[$0], type: 'return' }; 
 break;
-case 19:
+case 18:
  this.$ = { assignTo: [{ name: $$[$0-3], type: 'context'}], value: $$[$0-1], type: 'assign' }; 
 break;
-case 20:
+case 19:
  this.$ = { assignTo: $$[$0-3], value: $$[$0-1], type: 'assign' }; 
 break;
-case 21:
+case 20:
  this.$ = { assignTo: $$[$0-2], value: $$[$0], type: 'assign' }; 
 break;
-case 22:
+case 21:
  this.$ = { operands: $$[$0], type: 'sequence' } 
 break;
-case 24:
+case 23:
  this.$ = { operands: [].concat([$$[$0-2]], [3]), type: 'sequence' } 
 break;
-case 25:
+case 24:
  this.$ = { left: $$[$0-2], right: $$[$0], operation: $$[$0-1], type: 'binary' }; 
 break;
-case 26:
+case 25:
  this.$ = { type: 'if', true: $$[$0-2], condition: $$[$0-4], false: $$[$0] }; 
 break;
-case 28:
+case 27:
  this.$ = { type: 'not', value: $$[$0-1] } 
+break;
+case 28:
+ this.$ = $$[$0-1]; 
 break;
 case 29:
  this.$ = parseFloat($$[$0]); 
@@ -150,66 +150,81 @@ case 31:
  this.$ = $$[$0] === 'true' 
 break;
 case 32:
- this.$ = { type: 'array', values: [] }; 
+ this.$ = null; 
 break;
 case 33:
- this.$ = { type: 'array', values: $$[$0-1] }; 
+ this.$ = { type: 'array', values: [] }; 
 break;
 case 34:
- this.$ = [].concat($$[$0-2], $$[$0]); 
+ this.$ = { type: 'array', values: $$[$0-1] }; 
 break;
 case 35:
- this.$ = [{ type: 'not', value: $$[$0] }]; 
+ this.$ = [].concat($$[$0-2], [{ name: $$[$0], type: 'context' }]); 
 break;
 case 36:
- this.$ = [{ name: $$[$0], type: 'context' }]; 
+ this.$ = [].concat($$[$0-2], $$[$0]); 
 break;
 case 37:
- this.$ = [{ value: $$[$0], type: 'value' }] 
+ this.$ = [{ value: $$[$0], type: 'typeof' }]; 
 break;
-case 38: case 39:
- this.$ = [$$[$0]] 
+case 38:
+ this.$ = [{ type: 'not', value: $$[$0] }]; 
+break;
+case 39:
+ this.$ = [{ name: $$[$0], type: 'context' }]; 
 break;
 case 40:
+ this.$ = [{ value: $$[$0], type: 'value' }] 
+break;
+case 41: case 42:
+ this.$ = [$$[$0]] 
+break;
+case 43:
  this.$ = { func: $$[$0-2], args: [], type: 'call' }; 
 break;
-case 41:
+case 44:
  this.$ = { func: $$[$0-3], args: $$[$0-1], type: 'call' }; 
 break;
-case 44:
+case 47:
  this.$ = { fields: $$[$0-1], type: 'obj' }; 
 break;
-case 45:
+case 48:
  this.$ = { fields: [], type: 'obj' }; 
 break;
-case 48:
+case 51:
  this.$ = { name: $$[$0-2], value: $$[$0] }; 
 break;
-case 49:
+case 52:
  this.$ = { name: $$[$0-2].substring(1, $$[$0-2].length - 1), value: $$[$0] }; 
 break;
-case 50:
- this.$ = { type: 'with', context: $$[$0-4], body: $$[$0-1] }; 
-break;
-case 51:
- this.$ = { type: 'if', condition: $$[$0-1].condition, true: $$[$0-1].true, false: $$[$0].false } 
-break;
-case 52:
- this.$ = { type: 'if', condition: $$[$0-2], true: [$$[$0]], false: [] } 
-break;
 case 53:
- this.$ = { type: 'if', condition: $$[$0-4], true: $$[$0-1], false: [] } 
+ this.$ = { name: 'if', value: $$[$0] }; 
 break;
 case 54:
- this.$ = { false: [$$[$0]] } 
+ this.$ = { name: 'with', value: $$[$0] }; 
 break;
 case 55:
+ this.$ = { type: 'with', context: $$[$0-4], body: $$[$0-1] }; 
+break;
+case 56:
+ this.$ = { type: 'if', condition: $$[$0-1].condition, true: $$[$0-1].true, false: $$[$0].false } 
+break;
+case 57:
+ this.$ = { type: 'if', condition: $$[$0-2], true: [$$[$0]], false: [] } 
+break;
+case 58:
+ this.$ = { type: 'if', condition: $$[$0-4], true: $$[$0-1], false: [] } 
+break;
+case 59:
+ this.$ = { false: [$$[$0]] } 
+break;
+case 60:
  this.$ = { false: $$[$0-1] } 
 break;
 }
 },
-table: [{3:1,4:2,6:3,7:4,8:8,9:19,10:$V0,12:$V1,13:$V2,17:$V3,19:5,20:10,21:11,22:12,23:13,24:$V4,26:$V5,28:6,29:7,34:$V6,35:15,36:$V7,37:$V8,38:$V9,39:17,40:$Va,43:16,46:$Vb,47:21,49:$Vc},{1:[3]},{5:[1,31]},{5:[2,2],17:$V3,19:32,20:10,21:11,22:12,23:13,24:$V4,26:$V5,28:33,34:$Vd,35:15,36:$V7,37:$V8,38:$V9,39:17,40:$Va,43:16,46:$Vb,47:21,49:$Vc},{5:[2,3],31:$Ve,32:$Vf},o($Vg,[2,11]),o([5,31,32],$Vh,{27:$Vi,30:$Vj}),o($Vk,[2,23],{30:[1,39]}),o($Vk,[2,27]),{13:[1,40],17:$V3,28:41,34:$Vd,35:15,36:$V7,37:$V8,38:$V9,39:17,40:$Va,43:16},o($Vl,[2,13]),o($Vl,[2,14]),o($Vl,[2,15]),o($Vl,[2,16]),o($Vm,[2,36],{13:[1,42]}),o($Vm,[2,37]),o($Vm,[2,38]),o($Vm,[2,39]),{11:[1,44],17:$Vn,37:$Vo,44:43,45:45},{10:[1,48]},{17:[1,49]},{48:50,50:[1,51]},{13:[1,52]},{7:53,8:8,9:19,10:$V0,12:$V1,13:$V2,17:$V3,28:54,29:7,34:$V6,35:15,36:$V7,37:$V8,38:$V9,39:17,40:$Va,43:16},o($Vm,[2,29]),o($Vm,[2,30]),o($Vm,[2,31]),{7:57,8:8,9:19,10:$V0,12:$V1,13:$V2,17:$V3,28:54,29:7,34:$V6,35:15,36:$V7,37:$V8,38:$V9,39:17,40:$Va,41:[1,55],42:56,43:16},{13:[1,58]},{14:59,15:[1,60],17:$Vp},{13:[1,62]},{1:[2,1]},o($Vg,[2,12]),{27:$Vi,30:$Vj},{17:$V3,28:41,34:$Vd,35:15,36:$V7,37:$V8,38:$V9,39:17,40:$Va,43:16},{7:63,8:8,9:19,10:$V0,12:$V1,13:$V2,17:$V3,28:54,29:7,34:$V6,35:15,36:$V7,37:$V8,38:$V9,39:17,40:$Va,43:16},{7:64,8:8,9:19,10:$V0,12:$V1,13:$V2,17:$V3,28:54,29:7,34:$V6,35:15,36:$V7,37:$V8,38:$V9,39:17,40:$Va,43:16},{17:$V3,28:65,34:$Vd,35:15,36:$V7,37:$V8,38:$V9,39:17,40:$Va,43:16},{7:66,8:8,9:19,10:$V0,12:$V1,13:$V2,17:$V3,28:54,29:7,34:$V6,35:15,36:$V7,37:$V8,38:$V9,39:17,40:$Va,43:16},{17:$V3,28:67,34:$Vd,35:15,36:$V7,37:$V8,38:$V9,39:17,40:$Va,43:16},{7:68,8:8,9:19,10:$V0,12:$V1,13:$V2,17:$V3,28:54,29:7,34:$V6,35:15,36:$V7,37:$V8,38:$V9,39:17,40:$Va,43:16},o([5,11,15,17,18,24,25,26,27,31,32,33,34,36,37,38,40,41,46,49,50],[2,35],{30:$Vj}),{7:57,8:8,9:19,10:$V0,12:$V1,13:$V2,15:[1,69],17:$V3,28:54,29:7,34:$V6,35:15,36:$V7,37:$V8,38:$V9,39:17,40:$Va,42:70,43:16},{11:[1,71],18:[1,72]},o($Vq,[2,45]),o($Vr,[2,46]),{33:[1,73]},{33:[1,74]},{6:75,17:$V3,19:5,20:10,21:11,22:12,23:13,24:$V4,26:$V5,28:33,34:$Vd,35:15,36:$V7,37:$V8,38:$V9,39:17,40:$Va,43:16,46:$Vb,47:21,49:$Vc},{27:[1,76]},o($Vl,[2,51]),{10:[1,78],17:$V3,19:77,20:10,21:11,22:12,23:13,24:$V4,26:$V5,28:33,34:$Vd,35:15,36:$V7,37:$V8,38:$V9,39:17,40:$Va,43:16,46:$Vb,47:21,49:$Vc},{7:79,8:8,9:19,10:$V0,12:$V1,13:$V2,17:$V3,28:54,29:7,34:$V6,35:15,36:$V7,37:$V8,38:$V9,39:17,40:$Va,43:16},o($Vl,[2,18],{25:[1,80],31:$Ve,32:$Vf}),o($Vk,$Vh,{30:$Vj}),o($Vm,[2,32]),{18:$Vs,41:[1,81]},o($Vt,[2,42],{31:$Ve,32:$Vf}),{14:83,15:[1,84],17:$Vp},{15:[1,85],18:$Vu},{16:[1,87]},o($Vv,[2,9]),{7:88,8:8,9:19,10:$V0,12:$V1,13:$V2,17:$V3,28:54,29:7,34:$V6,35:15,36:$V7,37:$V8,38:$V9,39:17,40:$Va,43:16},o($Vk,[2,25]),{31:$Ve,32:$Vf,33:[1,89]},o($Vm,[2,34]),o($Vl,[2,21],{25:[1,90],31:$Ve,32:$Vf}),o($Vk,[2,24],{30:$Vj}),{15:[1,91],31:$Ve,32:$Vf},o($Vm,[2,40]),{15:[1,92],18:$Vs},o($Vq,[2,44]),{17:$Vn,37:$Vo,45:93},{7:94,8:8,9:19,10:$V0,12:$V1,13:$V2,17:$V3,28:54,29:7,34:$V6,35:15,36:$V7,37:$V8,38:$V9,39:17,40:$Va,43:16},{7:95,8:8,9:19,10:$V0,12:$V1,13:$V2,17:$V3,28:54,29:7,34:$V6,35:15,36:$V7,37:$V8,38:$V9,39:17,40:$Va,43:16},{11:[1,96],17:$V3,19:32,20:10,21:11,22:12,23:13,24:$V4,26:$V5,28:33,34:$Vd,35:15,36:$V7,37:$V8,38:$V9,39:17,40:$Va,43:16,46:$Vb,47:21,49:$Vc},{7:97,8:8,9:19,10:$V0,12:$V1,13:$V2,17:$V3,28:54,29:7,34:$V6,35:15,36:$V7,37:$V8,38:$V9,39:17,40:$Va,43:16},o($Vl,[2,54]),{6:98,17:$V3,19:5,20:10,21:11,22:12,23:13,24:$V4,26:$V5,28:33,34:$Vd,35:15,36:$V7,37:$V8,38:$V9,39:17,40:$Va,43:16,46:$Vb,47:21,49:$Vc},{15:[1,99],31:$Ve,32:$Vf},o($Vl,[2,17]),o($Vm,[2,33]),{7:100,8:8,9:19,10:$V0,12:$V1,13:$V2,17:$V3,28:54,29:7,34:$V6,35:15,36:$V7,37:$V8,38:$V9,39:17,40:$Va,43:16},{15:[1,101],18:$Vu},{10:[2,7]},{16:[1,102]},{17:[1,103]},{10:[2,8]},{15:[1,104],31:$Ve,32:$Vf},{7:105,8:8,9:19,10:$V0,12:$V1,13:$V2,17:$V3,28:54,29:7,34:$V6,35:15,36:$V7,37:$V8,38:$V9,39:17,40:$Va,43:16},o($Vl,[2,20]),o($Vk,[2,28]),o($Vm,[2,41]),o($Vr,[2,47]),o($Vr,[2,48],{31:$Ve,32:$Vf}),o($Vr,[2,49],{31:$Ve,32:$Vf}),o($Vk,[2,4]),{25:[1,106],31:$Ve,32:$Vf},{11:[1,107],17:$V3,19:32,20:10,21:11,22:12,23:13,24:$V4,26:$V5,28:33,34:$Vd,35:15,36:$V7,37:$V8,38:$V9,39:17,40:$Va,43:16,46:$Vb,47:21,49:$Vc},{10:[1,108]},o($Vt,[2,43],{31:$Ve,32:$Vf}),{10:[2,5]},{10:[2,6]},o($Vv,[2,10]),{10:[1,110],17:$V3,19:109,20:10,21:11,22:12,23:13,24:$V4,26:$V5,28:33,34:$Vd,35:15,36:$V7,37:$V8,38:$V9,39:17,40:$Va,43:16,46:$Vb,47:21,49:$Vc},o([5,11,15,17,18,24,25,26,33,34,36,37,38,40,41,46,49,50],[2,26],{31:$Ve,32:$Vf}),o($Vl,[2,19]),o($Vl,[2,55]),{6:111,17:$V3,19:5,20:10,21:11,22:12,23:13,24:$V4,26:$V5,28:33,34:$Vd,35:15,36:$V7,37:$V8,38:$V9,39:17,40:$Va,43:16,46:$Vb,47:21,49:$Vc},{50:[2,52]},{6:112,17:$V3,19:5,20:10,21:11,22:12,23:13,24:$V4,26:$V5,28:33,34:$Vd,35:15,36:$V7,37:$V8,38:$V9,39:17,40:$Va,43:16,46:$Vb,47:21,49:$Vc},{11:[1,113],17:$V3,19:32,20:10,21:11,22:12,23:13,24:$V4,26:$V5,28:33,34:$Vd,35:15,36:$V7,37:$V8,38:$V9,39:17,40:$Va,43:16,46:$Vb,47:21,49:$Vc},{11:[1,114],17:$V3,19:32,20:10,21:11,22:12,23:13,24:$V4,26:$V5,28:33,34:$Vd,35:15,36:$V7,37:$V8,38:$V9,39:17,40:$Va,43:16,46:$Vb,47:21,49:$Vc},o($Vl,[2,50]),{50:[2,53]}],
-defaultActions: {31:[2,1],84:[2,7],87:[2,8],101:[2,5],102:[2,6],109:[2,52],114:[2,53]},
+table: [{3:1,4:2,6:3,7:4,8:8,9:21,10:$V0,12:$V1,13:$V2,17:$V3,19:5,20:11,21:12,22:13,23:14,24:$V4,26:$V5,28:6,29:7,34:$V6,35:17,36:$V7,37:$V8,38:$V9,39:$Va,40:19,41:$Vb,44:18,45:$Vc,48:$Vd,49:$Ve,50:23},{1:[3]},{5:[1,33]},{5:[2,2],17:$V3,19:34,20:11,21:12,22:13,23:14,24:$V4,26:$V5,28:35,34:$Vf,35:17,36:$V7,37:$V8,38:$V9,39:$Va,40:19,41:$Vb,44:18,45:$Vc,48:$Vd,49:$Ve,50:23},{5:[2,3],31:$Vg,32:$Vh},o($Vi,[2,10]),o([5,31,32],$Vj,{27:$Vk,30:$Vl}),o($Vm,[2,22],{30:[1,41]}),o($Vm,[2,26]),{13:[1,42],17:$V3,28:43,34:$Vf,35:17,36:$V7,37:$V8,38:$V9,39:$Va,40:19,41:$Vb,44:18,45:$Vc},{7:44,8:8,9:21,10:$V0,12:$V1,13:$V2,15:[1,45],17:$V3,28:46,29:7,34:$V6,35:17,36:$V7,37:$V8,38:$V9,39:$Va,40:19,41:$Vb,44:18,45:$Vc},o($Vn,[2,12]),o($Vn,[2,13]),o($Vn,[2,14]),o($Vn,[2,15]),{17:$V3,28:47,34:$Vf,35:17,36:$V7,37:$V8,38:$V9,39:$Va,40:19,41:$Vb,44:18,45:$Vc},o($Vo,[2,39],{13:$Vp}),o($Vo,[2,40]),o($Vo,[2,41]),o($Vo,[2,42]),{11:[1,50],17:$Vq,37:$Vr,46:49,47:51,48:$Vs,49:$Vt},{10:[1,56]},{17:[1,57]},{51:58,52:[1,59]},{13:[1,60]},{7:61,8:8,9:21,10:$V0,12:$V1,13:$V2,17:$V3,28:46,29:7,34:$V6,35:17,36:$V7,37:$V8,38:$V9,39:$Va,40:19,41:$Vb,44:18,45:$Vc},o($Vo,[2,29]),o($Vo,[2,30]),o($Vo,[2,31]),o($Vo,[2,32]),{7:64,8:8,9:21,10:$V0,12:$V1,13:$V2,17:$V3,28:46,29:7,34:$V6,35:17,36:$V7,37:$V8,38:$V9,39:$Va,40:19,41:$Vb,42:[1,62],43:63,44:18,45:$Vc},{13:[1,65]},{13:[1,66]},{1:[2,1]},o($Vi,[2,11]),{27:$Vk,30:$Vl},{17:$V3,28:43,34:$Vf,35:17,36:$V7,37:$V8,38:$V9,39:$Va,40:19,41:$Vb,44:18,45:$Vc},{7:67,8:8,9:21,10:$V0,12:$V1,13:$V2,17:$V3,28:46,29:7,34:$V6,35:17,36:$V7,37:$V8,38:$V9,39:$Va,40:19,41:$Vb,44:18,45:$Vc},{7:68,8:8,9:21,10:$V0,12:$V1,13:$V2,17:$V3,28:46,29:7,34:$V6,35:17,36:$V7,37:$V8,38:$V9,39:$Va,40:19,41:$Vb,44:18,45:$Vc},{17:[1,69],44:70},{7:71,8:8,9:21,10:$V0,12:$V1,13:$V2,17:$V3,28:46,29:7,34:$V6,35:17,36:$V7,37:$V8,38:$V9,39:$Va,40:19,41:$Vb,44:18,45:$Vc},{17:$V3,28:72,34:$Vf,35:17,36:$V7,37:$V8,38:$V9,39:$Va,40:19,41:$Vb,44:18,45:$Vc},{7:73,8:8,9:21,10:$V0,12:$V1,13:$V2,17:$V3,28:46,29:7,34:$V6,35:17,36:$V7,37:$V8,38:$V9,39:$Va,40:19,41:$Vb,44:18,45:$Vc},o($Vu,[2,38],{30:$Vl}),{15:[1,74],31:$Vg,32:$Vh},{16:[1,75]},o($Vm,$Vj,{30:$Vl}),o($Vu,[2,37],{30:$Vl}),{7:64,8:8,9:21,10:$V0,12:$V1,13:$V2,15:[1,76],17:$V3,28:46,29:7,34:$V6,35:17,36:$V7,37:$V8,38:$V9,39:$Va,40:19,41:$Vb,43:77,44:18,45:$Vc},{11:[1,78],18:[1,79]},o($Vv,[2,48]),o($Vw,[2,49]),{33:[1,80]},{33:[1,81]},{33:[1,82]},{33:[1,83]},{6:84,17:$V3,19:5,20:11,21:12,22:13,23:14,24:$V4,26:$V5,28:35,34:$Vf,35:17,36:$V7,37:$V8,38:$V9,39:$Va,40:19,41:$Vb,44:18,45:$Vc,48:$Vd,49:$Ve,50:23},{27:[1,85]},o($Vn,[2,56]),{10:[1,87],17:$V3,19:86,20:11,21:12,22:13,23:14,24:$V4,26:$V5,28:35,34:$Vf,35:17,36:$V7,37:$V8,38:$V9,39:$Va,40:19,41:$Vb,44:18,45:$Vc,48:$Vd,49:$Ve,50:23},{7:88,8:8,9:21,10:$V0,12:$V1,13:$V2,17:$V3,28:46,29:7,34:$V6,35:17,36:$V7,37:$V8,38:$V9,39:$Va,40:19,41:$Vb,44:18,45:$Vc},o($Vn,[2,17],{25:[1,89],31:$Vg,32:$Vh}),o($Vo,[2,33]),{18:$Vx,42:[1,90]},o($Vy,[2,45],{31:$Vg,32:$Vh}),{14:92,15:[1,93],17:[1,94]},{7:95,8:8,9:21,10:$V0,12:$V1,13:$V2,17:$V3,28:46,29:7,34:$V6,35:17,36:$V7,37:$V8,38:$V9,39:$Va,40:19,41:$Vb,44:18,45:$Vc},o($Vm,[2,24]),{31:$Vg,32:$Vh,33:[1,96]},o($Vo,[2,35],{13:$Vp}),o($Vo,[2,36]),o($Vn,[2,20],{25:[1,97],31:$Vg,32:$Vh}),o($Vm,[2,23],{30:$Vl}),{15:[1,98],31:$Vg,32:$Vh},o($Vm,[2,28]),{10:[2,7]},o($Vo,[2,43]),{15:[1,99],18:$Vx},o($Vv,[2,47]),{17:$Vq,37:$Vr,47:100,48:$Vs,49:$Vt},{7:101,8:8,9:21,10:$V0,12:$V1,13:$V2,17:$V3,28:46,29:7,34:$V6,35:17,36:$V7,37:$V8,38:$V9,39:$Va,40:19,41:$Vb,44:18,45:$Vc},{7:102,8:8,9:21,10:$V0,12:$V1,13:$V2,17:$V3,28:46,29:7,34:$V6,35:17,36:$V7,37:$V8,38:$V9,39:$Va,40:19,41:$Vb,44:18,45:$Vc},{7:103,8:8,9:21,10:$V0,12:$V1,13:$V2,17:$V3,28:46,29:7,34:$V6,35:17,36:$V7,37:$V8,38:$V9,39:$Va,40:19,41:$Vb,44:18,45:$Vc},{7:104,8:8,9:21,10:$V0,12:$V1,13:$V2,17:$V3,28:46,29:7,34:$V6,35:17,36:$V7,37:$V8,38:$V9,39:$Va,40:19,41:$Vb,44:18,45:$Vc},{11:[1,105],17:$V3,19:34,20:11,21:12,22:13,23:14,24:$V4,26:$V5,28:35,34:$Vf,35:17,36:$V7,37:$V8,38:$V9,39:$Va,40:19,41:$Vb,44:18,45:$Vc,48:$Vd,49:$Ve,50:23},{7:106,8:8,9:21,10:$V0,12:$V1,13:$V2,17:$V3,28:46,29:7,34:$V6,35:17,36:$V7,37:$V8,38:$V9,39:$Va,40:19,41:$Vb,44:18,45:$Vc},o($Vn,[2,59]),{6:107,17:$V3,19:5,20:11,21:12,22:13,23:14,24:$V4,26:$V5,28:35,34:$Vf,35:17,36:$V7,37:$V8,38:$V9,39:$Va,40:19,41:$Vb,44:18,45:$Vc,48:$Vd,49:$Ve,50:23},{15:[1,108],31:$Vg,32:$Vh},o($Vn,[2,16]),o($Vo,[2,34]),{7:109,8:8,9:21,10:$V0,12:$V1,13:$V2,17:$V3,28:46,29:7,34:$V6,35:17,36:$V7,37:$V8,38:$V9,39:$Va,40:19,41:$Vb,44:18,45:$Vc},{15:[1,110],18:[1,111]},{10:[2,6]},o($Vz,[2,8]),{15:[1,112],31:$Vg,32:$Vh},{7:113,8:8,9:21,10:$V0,12:$V1,13:$V2,17:$V3,28:46,29:7,34:$V6,35:17,36:$V7,37:$V8,38:$V9,39:$Va,40:19,41:$Vb,44:18,45:$Vc},o($Vn,[2,19]),o($Vm,[2,27]),o($Vo,[2,44]),o($Vw,[2,50]),o($Vw,[2,51],{31:$Vg,32:$Vh}),o($Vw,[2,52],{31:$Vg,32:$Vh}),o($Vw,[2,53],{31:$Vg,32:$Vh}),o($Vw,[2,54],{31:$Vg,32:$Vh}),o($Vm,[2,4]),{25:[1,114],31:$Vg,32:$Vh},{11:[1,115],17:$V3,19:34,20:11,21:12,22:13,23:14,24:$V4,26:$V5,28:35,34:$Vf,35:17,36:$V7,37:$V8,38:$V9,39:$Va,40:19,41:$Vb,44:18,45:$Vc,48:$Vd,49:$Ve,50:23},{10:[1,116]},o($Vy,[2,46],{31:$Vg,32:$Vh}),{10:[2,5]},{17:[1,117]},{10:[1,119],17:$V3,19:118,20:11,21:12,22:13,23:14,24:$V4,26:$V5,28:35,34:$Vf,35:17,36:$V7,37:$V8,38:$V9,39:$Va,40:19,41:$Vb,44:18,45:$Vc,48:$Vd,49:$Ve,50:23},o([5,11,15,17,18,24,25,26,33,34,36,37,38,39,41,42,45,48,49,52],[2,25],{31:$Vg,32:$Vh}),o($Vn,[2,18]),o($Vn,[2,60]),{6:120,17:$V3,19:5,20:11,21:12,22:13,23:14,24:$V4,26:$V5,28:35,34:$Vf,35:17,36:$V7,37:$V8,38:$V9,39:$Va,40:19,41:$Vb,44:18,45:$Vc,48:$Vd,49:$Ve,50:23},o($Vz,[2,9]),{52:[2,57]},{6:121,17:$V3,19:5,20:11,21:12,22:13,23:14,24:$V4,26:$V5,28:35,34:$Vf,35:17,36:$V7,37:$V8,38:$V9,39:$Va,40:19,41:$Vb,44:18,45:$Vc,48:$Vd,49:$Ve,50:23},{11:[1,122],17:$V3,19:34,20:11,21:12,22:13,23:14,24:$V4,26:$V5,28:35,34:$Vf,35:17,36:$V7,37:$V8,38:$V9,39:$Va,40:19,41:$Vb,44:18,45:$Vc,48:$Vd,49:$Ve,50:23},{11:[1,123],17:$V3,19:34,20:11,21:12,22:13,23:14,24:$V4,26:$V5,28:35,34:$Vf,35:17,36:$V7,37:$V8,38:$V9,39:$Va,40:19,41:$Vb,44:18,45:$Vc,48:$Vd,49:$Ve,50:23},o($Vn,[2,55]),{52:[2,58]}],
+defaultActions: {33:[2,1],75:[2,7],93:[2,6],110:[2,5],118:[2,57],123:[2,58]},
 parseError: function parseError (str, hash) {
     if (hash.recoverable) {
         this.trace(str);
@@ -694,9 +709,9 @@ case 3:return 38
 break;
 case 4:return 38
 break;
-case 5:return 'NULL'
+case 5:return 39
 break;
-case 6:return 'NULL'
+case 6:return 39
 break;
 case 7:return 26
 break;
@@ -710,33 +725,33 @@ case 11:return 15
 break;
 case 12:return 12
 break;
-case 13:return 46
+case 13:return 45
 break;
 case 14:return 49
 break;
-case 15:return 50
+case 15:return 48
 break;
-case 16:return 18
+case 16:return 52
 break;
-case 17:return 30
+case 17:return 18
 break;
-case 18:return 16
+case 18:return 30
 break;
-case 19:return 10
+case 19:return 16
 break;
-case 20:return 11
+case 20:return 10
 break;
-case 21:return 40
+case 21:return 11
 break;
 case 22:return 41
 break;
-case 23:return 33
+case 23:return 42
 break;
-case 24:return 32
+case 24:return 33
 break;
-case 25:return 34
+case 25:return 32
 break;
-case 26:return 31
+case 26:return 34
 break;
 case 27:return 31
 break;
@@ -760,16 +775,18 @@ case 36:return 31
 break;
 case 37:return 31
 break;
-case 38:return 27
+case 38:return 31
 break;
-case 39:return 17
+case 39:return 27
 break;
-case 40:return 5
+case 40:return 17
+break;
+case 41:return 5
 break;
 }
 },
-rules: [/^(?:\s+)/i,/^(?:'(?:[^\']|(?:('')))*')/i,/^(?:[0-9]+(\.[0-9]+([mfMF]{1})?|[bsiluBSILU]{1})?)/i,/^(?:true\b)/i,/^(?:false\b)/i,/^(?:null\b)/i,/^(?:undefined\b)/i,/^(?:var\b)/i,/^(?:return\b)/i,/^(?:;)/i,/^(?:\()/i,/^(?:\))/i,/^(?:function\b)/i,/^(?:with\b)/i,/^(?:if\b)/i,/^(?:else\b)/i,/^(?:,)/i,/^(?:\.)/i,/^(?:=>)/i,/^(?:\{)/i,/^(?:\})/i,/^(?:\[)/i,/^(?:\])/i,/^(?::)/i,/^(?:\?)/i,/^(?:!)/i,/^(?:>)/i,/^(?:\|\|)/i,/^(?:&&)/i,/^(?:>=)/i,/^(?:<)/i,/^(?:<=)/i,/^(?:===)/i,/^(?:==)/i,/^(?:\*)/i,/^(?:\/)/i,/^(?:-)/i,/^(?:\+)/i,/^(?:=)/i,/^(?:[\$_\u0041-\u005A\u0061-\u007A\u00AA\u00B5\u00BA\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02C1\u02C6-\u02D1\u02E0-\u02E4\u02EC\u02EE\u0370-\u0374\u0376-\u0377\u037A-\u037D\u037F\u0386\u0388-\u038A\u038C\u038E-\u03A1\u03A3-\u03F5\u03F7-\u0481\u048A-\u052F\u0531-\u0556\u0559\u0561-\u0587\u05D0-\u05EA\u05F0-\u05F2\u0620-\u064A\u066E-\u066F\u0671-\u06D3\u06D5\u06E5-\u06E6\u06EE-\u06EF\u06FA-\u06FC\u06FF\u0710\u0712-\u072F\u074D-\u07A5\u07B1\u07CA-\u07EA\u07F4-\u07F5\u07FA\u0800-\u0815\u081A\u0824\u0828\u0840-\u0858\u08A0-\u08B4\u0904-\u0939\u093D\u0950\u0958-\u0961\u0971-\u0980\u0985-\u098C\u098F-\u0990\u0993-\u09A8\u09AA-\u09B0\u09B2\u09B6-\u09B9\u09BD\u09CE\u09DC-\u09DD\u09DF-\u09E1\u09F0-\u09F1\u0A05-\u0A0A\u0A0F-\u0A10\u0A13-\u0A28\u0A2A-\u0A30\u0A32-\u0A33\u0A35-\u0A36\u0A38-\u0A39\u0A59-\u0A5C\u0A5E\u0A72-\u0A74\u0A85-\u0A8D\u0A8F-\u0A91\u0A93-\u0AA8\u0AAA-\u0AB0\u0AB2-\u0AB3\u0AB5-\u0AB9\u0ABD\u0AD0\u0AE0-\u0AE1\u0AF9\u0B05-\u0B0C\u0B0F-\u0B10\u0B13-\u0B28\u0B2A-\u0B30\u0B32-\u0B33\u0B35-\u0B39\u0B3D\u0B5C-\u0B5D\u0B5F-\u0B61\u0B71\u0B83\u0B85-\u0B8A\u0B8E-\u0B90\u0B92-\u0B95\u0B99-\u0B9A\u0B9C\u0B9E-\u0B9F\u0BA3-\u0BA4\u0BA8-\u0BAA\u0BAE-\u0BB9\u0BD0\u0C05-\u0C0C\u0C0E-\u0C10\u0C12-\u0C28\u0C2A-\u0C39\u0C3D\u0C58-\u0C5A\u0C60-\u0C61\u0C85-\u0C8C\u0C8E-\u0C90\u0C92-\u0CA8\u0CAA-\u0CB3\u0CB5-\u0CB9\u0CBD\u0CDE\u0CE0-\u0CE1\u0CF1-\u0CF2\u0D05-\u0D0C\u0D0E-\u0D10\u0D12-\u0D3A\u0D3D\u0D4E\u0D5F-\u0D61\u0D7A-\u0D7F\u0D85-\u0D96\u0D9A-\u0DB1\u0DB3-\u0DBB\u0DBD\u0DC0-\u0DC6\u0E01-\u0E30\u0E32-\u0E33\u0E40-\u0E46\u0E81-\u0E82\u0E84\u0E87-\u0E88\u0E8A\u0E8D\u0E94-\u0E97\u0E99-\u0E9F\u0EA1-\u0EA3\u0EA5\u0EA7\u0EAA-\u0EAB\u0EAD-\u0EB0\u0EB2-\u0EB3\u0EBD\u0EC0-\u0EC4\u0EC6\u0EDC-\u0EDF\u0F00\u0F40-\u0F47\u0F49-\u0F6C\u0F88-\u0F8C\u1000-\u102A\u103F\u1050-\u1055\u105A-\u105D\u1061\u1065-\u1066\u106E-\u1070\u1075-\u1081\u108E\u10A0-\u10C5\u10C7\u10CD\u10D0-\u10FA\u10FC-\u1248\u124A-\u124D\u1250-\u1256\u1258\u125A-\u125D\u1260-\u1288\u128A-\u128D\u1290-\u12B0\u12B2-\u12B5\u12B8-\u12BE\u12C0\u12C2-\u12C5\u12C8-\u12D6\u12D8-\u1310\u1312-\u1315\u1318-\u135A\u1380-\u138F\u13A0-\u13F5\u13F8-\u13FD\u1401-\u166C\u166F-\u167F\u1681-\u169A\u16A0-\u16EA\u16F1-\u16F8\u1700-\u170C\u170E-\u1711\u1720-\u1731\u1740-\u1751\u1760-\u176C\u176E-\u1770\u1780-\u17B3\u17D7\u17DC\u1820-\u1877\u1880-\u18A8\u18AA\u18B0-\u18F5\u1900-\u191E\u1950-\u196D\u1970-\u1974\u1980-\u19AB\u19B0-\u19C9\u1A00-\u1A16\u1A20-\u1A54\u1AA7\u1B05-\u1B33\u1B45-\u1B4B\u1B83-\u1BA0\u1BAE-\u1BAF\u1BBA-\u1BE5\u1C00-\u1C23\u1C4D-\u1C4F\u1C5A-\u1C7D\u1CE9-\u1CEC\u1CEE-\u1CF1\u1CF5-\u1CF6\u1D00-\u1DBF\u1E00-\u1F15\u1F18-\u1F1D\u1F20-\u1F45\u1F48-\u1F4D\u1F50-\u1F57\u1F59\u1F5B\u1F5D\u1F5F-\u1F7D\u1F80-\u1FB4\u1FB6-\u1FBC\u1FBE\u1FC2-\u1FC4\u1FC6-\u1FCC\u1FD0-\u1FD3\u1FD6-\u1FDB\u1FE0-\u1FEC\u1FF2-\u1FF4\u1FF6-\u1FFC\u2071\u207F\u2090-\u209C\u2102\u2107\u210A-\u2113\u2115\u2119-\u211D\u2124\u2126\u2128\u212A-\u212D\u212F-\u2139\u213C-\u213F\u2145-\u2149\u214E\u2183-\u2184\u2C00-\u2C2E\u2C30-\u2C5E\u2C60-\u2CE4\u2CEB-\u2CEE\u2CF2-\u2CF3\u2D00-\u2D25\u2D27\u2D2D\u2D30-\u2D67\u2D6F\u2D80-\u2D96\u2DA0-\u2DA6\u2DA8-\u2DAE\u2DB0-\u2DB6\u2DB8-\u2DBE\u2DC0-\u2DC6\u2DC8-\u2DCE\u2DD0-\u2DD6\u2DD8-\u2DDE\u2E2F\u3005-\u3006\u3031-\u3035\u303B-\u303C\u3041-\u3096\u309D-\u309F\u30A1-\u30FA\u30FC-\u30FF\u3105-\u312D\u3131-\u318E\u31A0-\u31BA\u31F0-\u31FF\u3400-\u4DB5\u4E00-\u9FD5\uA000-\uA48C\uA4D0-\uA4FD\uA500-\uA60C\uA610-\uA61F\uA62A-\uA62B\uA640-\uA66E\uA67F-\uA69D\uA6A0-\uA6E5\uA717-\uA71F\uA722-\uA788\uA78B-\uA7AD\uA7B0-\uA7B7\uA7F7-\uA801\uA803-\uA805\uA807-\uA80A\uA80C-\uA822\uA840-\uA873\uA882-\uA8B3\uA8F2-\uA8F7\uA8FB\uA8FD\uA90A-\uA925\uA930-\uA946\uA960-\uA97C\uA984-\uA9B2\uA9CF\uA9E0-\uA9E4\uA9E6-\uA9EF\uA9FA-\uA9FE\uAA00-\uAA28\uAA40-\uAA42\uAA44-\uAA4B\uAA60-\uAA76\uAA7A\uAA7E-\uAAAF\uAAB1\uAAB5-\uAAB6\uAAB9-\uAABD\uAAC0\uAAC2\uAADB-\uAADD\uAAE0-\uAAEA\uAAF2-\uAAF4\uAB01-\uAB06\uAB09-\uAB0E\uAB11-\uAB16\uAB20-\uAB26\uAB28-\uAB2E\uAB30-\uAB5A\uAB5C-\uAB65\uAB70-\uABE2\uAC00-\uD7A3\uD7B0-\uD7C6\uD7CB-\uD7FB\uF900-\uFA6D\uFA70-\uFAD9\uFB00-\uFB06\uFB13-\uFB17\uFB1D\uFB1F-\uFB28\uFB2A-\uFB36\uFB38-\uFB3C\uFB3E\uFB40-\uFB41\uFB43-\uFB44\uFB46-\uFBB1\uFBD3-\uFD3D\uFD50-\uFD8F\uFD92-\uFDC7\uFDF0-\uFDFB\uFE70-\uFE74\uFE76-\uFEFC\uFF21-\uFF3A\uFF41-\uFF5A\uFF66-\uFFBE\uFFC2-\uFFC7\uFFCA-\uFFCF\uFFD2-\uFFD7\uFFDA-\uFFDC][\d_\u0041-\u005A\u0061-\u007A\u00AA\u00B5\u00BA\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02C1\u02C6-\u02D1\u02E0-\u02E4\u02EC\u02EE\u0370-\u0374\u0376-\u0377\u037A-\u037D\u037F\u0386\u0388-\u038A\u038C\u038E-\u03A1\u03A3-\u03F5\u03F7-\u0481\u048A-\u052F\u0531-\u0556\u0559\u0561-\u0587\u05D0-\u05EA\u05F0-\u05F2\u0620-\u064A\u066E-\u066F\u0671-\u06D3\u06D5\u06E5-\u06E6\u06EE-\u06EF\u06FA-\u06FC\u06FF\u0710\u0712-\u072F\u074D-\u07A5\u07B1\u07CA-\u07EA\u07F4-\u07F5\u07FA\u0800-\u0815\u081A\u0824\u0828\u0840-\u0858\u08A0-\u08B4\u0904-\u0939\u093D\u0950\u0958-\u0961\u0971-\u0980\u0985-\u098C\u098F-\u0990\u0993-\u09A8\u09AA-\u09B0\u09B2\u09B6-\u09B9\u09BD\u09CE\u09DC-\u09DD\u09DF-\u09E1\u09F0-\u09F1\u0A05-\u0A0A\u0A0F-\u0A10\u0A13-\u0A28\u0A2A-\u0A30\u0A32-\u0A33\u0A35-\u0A36\u0A38-\u0A39\u0A59-\u0A5C\u0A5E\u0A72-\u0A74\u0A85-\u0A8D\u0A8F-\u0A91\u0A93-\u0AA8\u0AAA-\u0AB0\u0AB2-\u0AB3\u0AB5-\u0AB9\u0ABD\u0AD0\u0AE0-\u0AE1\u0AF9\u0B05-\u0B0C\u0B0F-\u0B10\u0B13-\u0B28\u0B2A-\u0B30\u0B32-\u0B33\u0B35-\u0B39\u0B3D\u0B5C-\u0B5D\u0B5F-\u0B61\u0B71\u0B83\u0B85-\u0B8A\u0B8E-\u0B90\u0B92-\u0B95\u0B99-\u0B9A\u0B9C\u0B9E-\u0B9F\u0BA3-\u0BA4\u0BA8-\u0BAA\u0BAE-\u0BB9\u0BD0\u0C05-\u0C0C\u0C0E-\u0C10\u0C12-\u0C28\u0C2A-\u0C39\u0C3D\u0C58-\u0C5A\u0C60-\u0C61\u0C85-\u0C8C\u0C8E-\u0C90\u0C92-\u0CA8\u0CAA-\u0CB3\u0CB5-\u0CB9\u0CBD\u0CDE\u0CE0-\u0CE1\u0CF1-\u0CF2\u0D05-\u0D0C\u0D0E-\u0D10\u0D12-\u0D3A\u0D3D\u0D4E\u0D5F-\u0D61\u0D7A-\u0D7F\u0D85-\u0D96\u0D9A-\u0DB1\u0DB3-\u0DBB\u0DBD\u0DC0-\u0DC6\u0E01-\u0E30\u0E32-\u0E33\u0E40-\u0E46\u0E81-\u0E82\u0E84\u0E87-\u0E88\u0E8A\u0E8D\u0E94-\u0E97\u0E99-\u0E9F\u0EA1-\u0EA3\u0EA5\u0EA7\u0EAA-\u0EAB\u0EAD-\u0EB0\u0EB2-\u0EB3\u0EBD\u0EC0-\u0EC4\u0EC6\u0EDC-\u0EDF\u0F00\u0F40-\u0F47\u0F49-\u0F6C\u0F88-\u0F8C\u1000-\u102A\u103F\u1050-\u1055\u105A-\u105D\u1061\u1065-\u1066\u106E-\u1070\u1075-\u1081\u108E\u10A0-\u10C5\u10C7\u10CD\u10D0-\u10FA\u10FC-\u1248\u124A-\u124D\u1250-\u1256\u1258\u125A-\u125D\u1260-\u1288\u128A-\u128D\u1290-\u12B0\u12B2-\u12B5\u12B8-\u12BE\u12C0\u12C2-\u12C5\u12C8-\u12D6\u12D8-\u1310\u1312-\u1315\u1318-\u135A\u1380-\u138F\u13A0-\u13F5\u13F8-\u13FD\u1401-\u166C\u166F-\u167F\u1681-\u169A\u16A0-\u16EA\u16F1-\u16F8\u1700-\u170C\u170E-\u1711\u1720-\u1731\u1740-\u1751\u1760-\u176C\u176E-\u1770\u1780-\u17B3\u17D7\u17DC\u1820-\u1877\u1880-\u18A8\u18AA\u18B0-\u18F5\u1900-\u191E\u1950-\u196D\u1970-\u1974\u1980-\u19AB\u19B0-\u19C9\u1A00-\u1A16\u1A20-\u1A54\u1AA7\u1B05-\u1B33\u1B45-\u1B4B\u1B83-\u1BA0\u1BAE-\u1BAF\u1BBA-\u1BE5\u1C00-\u1C23\u1C4D-\u1C4F\u1C5A-\u1C7D\u1CE9-\u1CEC\u1CEE-\u1CF1\u1CF5-\u1CF6\u1D00-\u1DBF\u1E00-\u1F15\u1F18-\u1F1D\u1F20-\u1F45\u1F48-\u1F4D\u1F50-\u1F57\u1F59\u1F5B\u1F5D\u1F5F-\u1F7D\u1F80-\u1FB4\u1FB6-\u1FBC\u1FBE\u1FC2-\u1FC4\u1FC6-\u1FCC\u1FD0-\u1FD3\u1FD6-\u1FDB\u1FE0-\u1FEC\u1FF2-\u1FF4\u1FF6-\u1FFC\u2071\u207F\u2090-\u209C\u2102\u2107\u210A-\u2113\u2115\u2119-\u211D\u2124\u2126\u2128\u212A-\u212D\u212F-\u2139\u213C-\u213F\u2145-\u2149\u214E\u2183-\u2184\u2C00-\u2C2E\u2C30-\u2C5E\u2C60-\u2CE4\u2CEB-\u2CEE\u2CF2-\u2CF3\u2D00-\u2D25\u2D27\u2D2D\u2D30-\u2D67\u2D6F\u2D80-\u2D96\u2DA0-\u2DA6\u2DA8-\u2DAE\u2DB0-\u2DB6\u2DB8-\u2DBE\u2DC0-\u2DC6\u2DC8-\u2DCE\u2DD0-\u2DD6\u2DD8-\u2DDE\u2E2F\u3005-\u3006\u3031-\u3035\u303B-\u303C\u3041-\u3096\u309D-\u309F\u30A1-\u30FA\u30FC-\u30FF\u3105-\u312D\u3131-\u318E\u31A0-\u31BA\u31F0-\u31FF\u3400-\u4DB5\u4E00-\u9FD5\uA000-\uA48C\uA4D0-\uA4FD\uA500-\uA60C\uA610-\uA61F\uA62A-\uA62B\uA640-\uA66E\uA67F-\uA69D\uA6A0-\uA6E5\uA717-\uA71F\uA722-\uA788\uA78B-\uA7AD\uA7B0-\uA7B7\uA7F7-\uA801\uA803-\uA805\uA807-\uA80A\uA80C-\uA822\uA840-\uA873\uA882-\uA8B3\uA8F2-\uA8F7\uA8FB\uA8FD\uA90A-\uA925\uA930-\uA946\uA960-\uA97C\uA984-\uA9B2\uA9CF\uA9E0-\uA9E4\uA9E6-\uA9EF\uA9FA-\uA9FE\uAA00-\uAA28\uAA40-\uAA42\uAA44-\uAA4B\uAA60-\uAA76\uAA7A\uAA7E-\uAAAF\uAAB1\uAAB5-\uAAB6\uAAB9-\uAABD\uAAC0\uAAC2\uAADB-\uAADD\uAAE0-\uAAEA\uAAF2-\uAAF4\uAB01-\uAB06\uAB09-\uAB0E\uAB11-\uAB16\uAB20-\uAB26\uAB28-\uAB2E\uAB30-\uAB5A\uAB5C-\uAB65\uAB70-\uABE2\uAC00-\uD7A3\uD7B0-\uD7C6\uD7CB-\uD7FB\uF900-\uFA6D\uFA70-\uFAD9\uFB00-\uFB06\uFB13-\uFB17\uFB1D\uFB1F-\uFB28\uFB2A-\uFB36\uFB38-\uFB3C\uFB3E\uFB40-\uFB41\uFB43-\uFB44\uFB46-\uFBB1\uFBD3-\uFD3D\uFD50-\uFD8F\uFD92-\uFDC7\uFDF0-\uFDFB\uFE70-\uFE74\uFE76-\uFEFC\uFF21-\uFF3A\uFF41-\uFF5A\uFF66-\uFFBE\uFFC2-\uFFC7\uFFCA-\uFFCF\uFFD2-\uFFD7\uFFDA-\uFFDC]*)/i,/^(?:$)/i],
-conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40],"inclusive":true}}
+rules: [/^(?:\s+)/i,/^(?:'(?:[^\']|(?:('')))*')/i,/^(?:[0-9]+(\.[0-9]+([mfMF]{1})?|[bsiluBSILU]{1})?)/i,/^(?:true\b)/i,/^(?:false\b)/i,/^(?:null\b)/i,/^(?:undefined\b)/i,/^(?:var\b)/i,/^(?:return\b)/i,/^(?:;)/i,/^(?:\()/i,/^(?:\))/i,/^(?:function\b)/i,/^(?:typeof\b)/i,/^(?:with\b)/i,/^(?:if\b)/i,/^(?:else\b)/i,/^(?:,)/i,/^(?:\.)/i,/^(?:=>)/i,/^(?:\{)/i,/^(?:\})/i,/^(?:\[)/i,/^(?:\])/i,/^(?::)/i,/^(?:\?)/i,/^(?:!)/i,/^(?:>)/i,/^(?:\|\|)/i,/^(?:&&)/i,/^(?:>=)/i,/^(?:<)/i,/^(?:<=)/i,/^(?:===)/i,/^(?:==)/i,/^(?:\*)/i,/^(?:\/)/i,/^(?:-)/i,/^(?:\+)/i,/^(?:=)/i,/^(?:[\$_\u0041-\u005A\u0061-\u007A\u00AA\u00B5\u00BA\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02C1\u02C6-\u02D1\u02E0-\u02E4\u02EC\u02EE\u0370-\u0374\u0376-\u0377\u037A-\u037D\u037F\u0386\u0388-\u038A\u038C\u038E-\u03A1\u03A3-\u03F5\u03F7-\u0481\u048A-\u052F\u0531-\u0556\u0559\u0561-\u0587\u05D0-\u05EA\u05F0-\u05F2\u0620-\u064A\u066E-\u066F\u0671-\u06D3\u06D5\u06E5-\u06E6\u06EE-\u06EF\u06FA-\u06FC\u06FF\u0710\u0712-\u072F\u074D-\u07A5\u07B1\u07CA-\u07EA\u07F4-\u07F5\u07FA\u0800-\u0815\u081A\u0824\u0828\u0840-\u0858\u08A0-\u08B4\u0904-\u0939\u093D\u0950\u0958-\u0961\u0971-\u0980\u0985-\u098C\u098F-\u0990\u0993-\u09A8\u09AA-\u09B0\u09B2\u09B6-\u09B9\u09BD\u09CE\u09DC-\u09DD\u09DF-\u09E1\u09F0-\u09F1\u0A05-\u0A0A\u0A0F-\u0A10\u0A13-\u0A28\u0A2A-\u0A30\u0A32-\u0A33\u0A35-\u0A36\u0A38-\u0A39\u0A59-\u0A5C\u0A5E\u0A72-\u0A74\u0A85-\u0A8D\u0A8F-\u0A91\u0A93-\u0AA8\u0AAA-\u0AB0\u0AB2-\u0AB3\u0AB5-\u0AB9\u0ABD\u0AD0\u0AE0-\u0AE1\u0AF9\u0B05-\u0B0C\u0B0F-\u0B10\u0B13-\u0B28\u0B2A-\u0B30\u0B32-\u0B33\u0B35-\u0B39\u0B3D\u0B5C-\u0B5D\u0B5F-\u0B61\u0B71\u0B83\u0B85-\u0B8A\u0B8E-\u0B90\u0B92-\u0B95\u0B99-\u0B9A\u0B9C\u0B9E-\u0B9F\u0BA3-\u0BA4\u0BA8-\u0BAA\u0BAE-\u0BB9\u0BD0\u0C05-\u0C0C\u0C0E-\u0C10\u0C12-\u0C28\u0C2A-\u0C39\u0C3D\u0C58-\u0C5A\u0C60-\u0C61\u0C85-\u0C8C\u0C8E-\u0C90\u0C92-\u0CA8\u0CAA-\u0CB3\u0CB5-\u0CB9\u0CBD\u0CDE\u0CE0-\u0CE1\u0CF1-\u0CF2\u0D05-\u0D0C\u0D0E-\u0D10\u0D12-\u0D3A\u0D3D\u0D4E\u0D5F-\u0D61\u0D7A-\u0D7F\u0D85-\u0D96\u0D9A-\u0DB1\u0DB3-\u0DBB\u0DBD\u0DC0-\u0DC6\u0E01-\u0E30\u0E32-\u0E33\u0E40-\u0E46\u0E81-\u0E82\u0E84\u0E87-\u0E88\u0E8A\u0E8D\u0E94-\u0E97\u0E99-\u0E9F\u0EA1-\u0EA3\u0EA5\u0EA7\u0EAA-\u0EAB\u0EAD-\u0EB0\u0EB2-\u0EB3\u0EBD\u0EC0-\u0EC4\u0EC6\u0EDC-\u0EDF\u0F00\u0F40-\u0F47\u0F49-\u0F6C\u0F88-\u0F8C\u1000-\u102A\u103F\u1050-\u1055\u105A-\u105D\u1061\u1065-\u1066\u106E-\u1070\u1075-\u1081\u108E\u10A0-\u10C5\u10C7\u10CD\u10D0-\u10FA\u10FC-\u1248\u124A-\u124D\u1250-\u1256\u1258\u125A-\u125D\u1260-\u1288\u128A-\u128D\u1290-\u12B0\u12B2-\u12B5\u12B8-\u12BE\u12C0\u12C2-\u12C5\u12C8-\u12D6\u12D8-\u1310\u1312-\u1315\u1318-\u135A\u1380-\u138F\u13A0-\u13F5\u13F8-\u13FD\u1401-\u166C\u166F-\u167F\u1681-\u169A\u16A0-\u16EA\u16F1-\u16F8\u1700-\u170C\u170E-\u1711\u1720-\u1731\u1740-\u1751\u1760-\u176C\u176E-\u1770\u1780-\u17B3\u17D7\u17DC\u1820-\u1877\u1880-\u18A8\u18AA\u18B0-\u18F5\u1900-\u191E\u1950-\u196D\u1970-\u1974\u1980-\u19AB\u19B0-\u19C9\u1A00-\u1A16\u1A20-\u1A54\u1AA7\u1B05-\u1B33\u1B45-\u1B4B\u1B83-\u1BA0\u1BAE-\u1BAF\u1BBA-\u1BE5\u1C00-\u1C23\u1C4D-\u1C4F\u1C5A-\u1C7D\u1CE9-\u1CEC\u1CEE-\u1CF1\u1CF5-\u1CF6\u1D00-\u1DBF\u1E00-\u1F15\u1F18-\u1F1D\u1F20-\u1F45\u1F48-\u1F4D\u1F50-\u1F57\u1F59\u1F5B\u1F5D\u1F5F-\u1F7D\u1F80-\u1FB4\u1FB6-\u1FBC\u1FBE\u1FC2-\u1FC4\u1FC6-\u1FCC\u1FD0-\u1FD3\u1FD6-\u1FDB\u1FE0-\u1FEC\u1FF2-\u1FF4\u1FF6-\u1FFC\u2071\u207F\u2090-\u209C\u2102\u2107\u210A-\u2113\u2115\u2119-\u211D\u2124\u2126\u2128\u212A-\u212D\u212F-\u2139\u213C-\u213F\u2145-\u2149\u214E\u2183-\u2184\u2C00-\u2C2E\u2C30-\u2C5E\u2C60-\u2CE4\u2CEB-\u2CEE\u2CF2-\u2CF3\u2D00-\u2D25\u2D27\u2D2D\u2D30-\u2D67\u2D6F\u2D80-\u2D96\u2DA0-\u2DA6\u2DA8-\u2DAE\u2DB0-\u2DB6\u2DB8-\u2DBE\u2DC0-\u2DC6\u2DC8-\u2DCE\u2DD0-\u2DD6\u2DD8-\u2DDE\u2E2F\u3005-\u3006\u3031-\u3035\u303B-\u303C\u3041-\u3096\u309D-\u309F\u30A1-\u30FA\u30FC-\u30FF\u3105-\u312D\u3131-\u318E\u31A0-\u31BA\u31F0-\u31FF\u3400-\u4DB5\u4E00-\u9FD5\uA000-\uA48C\uA4D0-\uA4FD\uA500-\uA60C\uA610-\uA61F\uA62A-\uA62B\uA640-\uA66E\uA67F-\uA69D\uA6A0-\uA6E5\uA717-\uA71F\uA722-\uA788\uA78B-\uA7AD\uA7B0-\uA7B7\uA7F7-\uA801\uA803-\uA805\uA807-\uA80A\uA80C-\uA822\uA840-\uA873\uA882-\uA8B3\uA8F2-\uA8F7\uA8FB\uA8FD\uA90A-\uA925\uA930-\uA946\uA960-\uA97C\uA984-\uA9B2\uA9CF\uA9E0-\uA9E4\uA9E6-\uA9EF\uA9FA-\uA9FE\uAA00-\uAA28\uAA40-\uAA42\uAA44-\uAA4B\uAA60-\uAA76\uAA7A\uAA7E-\uAAAF\uAAB1\uAAB5-\uAAB6\uAAB9-\uAABD\uAAC0\uAAC2\uAADB-\uAADD\uAAE0-\uAAEA\uAAF2-\uAAF4\uAB01-\uAB06\uAB09-\uAB0E\uAB11-\uAB16\uAB20-\uAB26\uAB28-\uAB2E\uAB30-\uAB5A\uAB5C-\uAB65\uAB70-\uABE2\uAC00-\uD7A3\uD7B0-\uD7C6\uD7CB-\uD7FB\uF900-\uFA6D\uFA70-\uFAD9\uFB00-\uFB06\uFB13-\uFB17\uFB1D\uFB1F-\uFB28\uFB2A-\uFB36\uFB38-\uFB3C\uFB3E\uFB40-\uFB41\uFB43-\uFB44\uFB46-\uFBB1\uFBD3-\uFD3D\uFD50-\uFD8F\uFD92-\uFDC7\uFDF0-\uFDFB\uFE70-\uFE74\uFE76-\uFEFC\uFF21-\uFF3A\uFF41-\uFF5A\uFF66-\uFFBE\uFFC2-\uFFC7\uFFCA-\uFFCF\uFFD2-\uFFD7\uFFDA-\uFFDC][\d_\u0041-\u005A\u0061-\u007A\u00AA\u00B5\u00BA\u00C0-\u00D6\u00D8-\u00F6\u00F8-\u02C1\u02C6-\u02D1\u02E0-\u02E4\u02EC\u02EE\u0370-\u0374\u0376-\u0377\u037A-\u037D\u037F\u0386\u0388-\u038A\u038C\u038E-\u03A1\u03A3-\u03F5\u03F7-\u0481\u048A-\u052F\u0531-\u0556\u0559\u0561-\u0587\u05D0-\u05EA\u05F0-\u05F2\u0620-\u064A\u066E-\u066F\u0671-\u06D3\u06D5\u06E5-\u06E6\u06EE-\u06EF\u06FA-\u06FC\u06FF\u0710\u0712-\u072F\u074D-\u07A5\u07B1\u07CA-\u07EA\u07F4-\u07F5\u07FA\u0800-\u0815\u081A\u0824\u0828\u0840-\u0858\u08A0-\u08B4\u0904-\u0939\u093D\u0950\u0958-\u0961\u0971-\u0980\u0985-\u098C\u098F-\u0990\u0993-\u09A8\u09AA-\u09B0\u09B2\u09B6-\u09B9\u09BD\u09CE\u09DC-\u09DD\u09DF-\u09E1\u09F0-\u09F1\u0A05-\u0A0A\u0A0F-\u0A10\u0A13-\u0A28\u0A2A-\u0A30\u0A32-\u0A33\u0A35-\u0A36\u0A38-\u0A39\u0A59-\u0A5C\u0A5E\u0A72-\u0A74\u0A85-\u0A8D\u0A8F-\u0A91\u0A93-\u0AA8\u0AAA-\u0AB0\u0AB2-\u0AB3\u0AB5-\u0AB9\u0ABD\u0AD0\u0AE0-\u0AE1\u0AF9\u0B05-\u0B0C\u0B0F-\u0B10\u0B13-\u0B28\u0B2A-\u0B30\u0B32-\u0B33\u0B35-\u0B39\u0B3D\u0B5C-\u0B5D\u0B5F-\u0B61\u0B71\u0B83\u0B85-\u0B8A\u0B8E-\u0B90\u0B92-\u0B95\u0B99-\u0B9A\u0B9C\u0B9E-\u0B9F\u0BA3-\u0BA4\u0BA8-\u0BAA\u0BAE-\u0BB9\u0BD0\u0C05-\u0C0C\u0C0E-\u0C10\u0C12-\u0C28\u0C2A-\u0C39\u0C3D\u0C58-\u0C5A\u0C60-\u0C61\u0C85-\u0C8C\u0C8E-\u0C90\u0C92-\u0CA8\u0CAA-\u0CB3\u0CB5-\u0CB9\u0CBD\u0CDE\u0CE0-\u0CE1\u0CF1-\u0CF2\u0D05-\u0D0C\u0D0E-\u0D10\u0D12-\u0D3A\u0D3D\u0D4E\u0D5F-\u0D61\u0D7A-\u0D7F\u0D85-\u0D96\u0D9A-\u0DB1\u0DB3-\u0DBB\u0DBD\u0DC0-\u0DC6\u0E01-\u0E30\u0E32-\u0E33\u0E40-\u0E46\u0E81-\u0E82\u0E84\u0E87-\u0E88\u0E8A\u0E8D\u0E94-\u0E97\u0E99-\u0E9F\u0EA1-\u0EA3\u0EA5\u0EA7\u0EAA-\u0EAB\u0EAD-\u0EB0\u0EB2-\u0EB3\u0EBD\u0EC0-\u0EC4\u0EC6\u0EDC-\u0EDF\u0F00\u0F40-\u0F47\u0F49-\u0F6C\u0F88-\u0F8C\u1000-\u102A\u103F\u1050-\u1055\u105A-\u105D\u1061\u1065-\u1066\u106E-\u1070\u1075-\u1081\u108E\u10A0-\u10C5\u10C7\u10CD\u10D0-\u10FA\u10FC-\u1248\u124A-\u124D\u1250-\u1256\u1258\u125A-\u125D\u1260-\u1288\u128A-\u128D\u1290-\u12B0\u12B2-\u12B5\u12B8-\u12BE\u12C0\u12C2-\u12C5\u12C8-\u12D6\u12D8-\u1310\u1312-\u1315\u1318-\u135A\u1380-\u138F\u13A0-\u13F5\u13F8-\u13FD\u1401-\u166C\u166F-\u167F\u1681-\u169A\u16A0-\u16EA\u16F1-\u16F8\u1700-\u170C\u170E-\u1711\u1720-\u1731\u1740-\u1751\u1760-\u176C\u176E-\u1770\u1780-\u17B3\u17D7\u17DC\u1820-\u1877\u1880-\u18A8\u18AA\u18B0-\u18F5\u1900-\u191E\u1950-\u196D\u1970-\u1974\u1980-\u19AB\u19B0-\u19C9\u1A00-\u1A16\u1A20-\u1A54\u1AA7\u1B05-\u1B33\u1B45-\u1B4B\u1B83-\u1BA0\u1BAE-\u1BAF\u1BBA-\u1BE5\u1C00-\u1C23\u1C4D-\u1C4F\u1C5A-\u1C7D\u1CE9-\u1CEC\u1CEE-\u1CF1\u1CF5-\u1CF6\u1D00-\u1DBF\u1E00-\u1F15\u1F18-\u1F1D\u1F20-\u1F45\u1F48-\u1F4D\u1F50-\u1F57\u1F59\u1F5B\u1F5D\u1F5F-\u1F7D\u1F80-\u1FB4\u1FB6-\u1FBC\u1FBE\u1FC2-\u1FC4\u1FC6-\u1FCC\u1FD0-\u1FD3\u1FD6-\u1FDB\u1FE0-\u1FEC\u1FF2-\u1FF4\u1FF6-\u1FFC\u2071\u207F\u2090-\u209C\u2102\u2107\u210A-\u2113\u2115\u2119-\u211D\u2124\u2126\u2128\u212A-\u212D\u212F-\u2139\u213C-\u213F\u2145-\u2149\u214E\u2183-\u2184\u2C00-\u2C2E\u2C30-\u2C5E\u2C60-\u2CE4\u2CEB-\u2CEE\u2CF2-\u2CF3\u2D00-\u2D25\u2D27\u2D2D\u2D30-\u2D67\u2D6F\u2D80-\u2D96\u2DA0-\u2DA6\u2DA8-\u2DAE\u2DB0-\u2DB6\u2DB8-\u2DBE\u2DC0-\u2DC6\u2DC8-\u2DCE\u2DD0-\u2DD6\u2DD8-\u2DDE\u2E2F\u3005-\u3006\u3031-\u3035\u303B-\u303C\u3041-\u3096\u309D-\u309F\u30A1-\u30FA\u30FC-\u30FF\u3105-\u312D\u3131-\u318E\u31A0-\u31BA\u31F0-\u31FF\u3400-\u4DB5\u4E00-\u9FD5\uA000-\uA48C\uA4D0-\uA4FD\uA500-\uA60C\uA610-\uA61F\uA62A-\uA62B\uA640-\uA66E\uA67F-\uA69D\uA6A0-\uA6E5\uA717-\uA71F\uA722-\uA788\uA78B-\uA7AD\uA7B0-\uA7B7\uA7F7-\uA801\uA803-\uA805\uA807-\uA80A\uA80C-\uA822\uA840-\uA873\uA882-\uA8B3\uA8F2-\uA8F7\uA8FB\uA8FD\uA90A-\uA925\uA930-\uA946\uA960-\uA97C\uA984-\uA9B2\uA9CF\uA9E0-\uA9E4\uA9E6-\uA9EF\uA9FA-\uA9FE\uAA00-\uAA28\uAA40-\uAA42\uAA44-\uAA4B\uAA60-\uAA76\uAA7A\uAA7E-\uAAAF\uAAB1\uAAB5-\uAAB6\uAAB9-\uAABD\uAAC0\uAAC2\uAADB-\uAADD\uAAE0-\uAAEA\uAAF2-\uAAF4\uAB01-\uAB06\uAB09-\uAB0E\uAB11-\uAB16\uAB20-\uAB26\uAB28-\uAB2E\uAB30-\uAB5A\uAB5C-\uAB65\uAB70-\uABE2\uAC00-\uD7A3\uD7B0-\uD7C6\uD7CB-\uD7FB\uF900-\uFA6D\uFA70-\uFAD9\uFB00-\uFB06\uFB13-\uFB17\uFB1D\uFB1F-\uFB28\uFB2A-\uFB36\uFB38-\uFB3C\uFB3E\uFB40-\uFB41\uFB43-\uFB44\uFB46-\uFBB1\uFBD3-\uFD3D\uFD50-\uFD8F\uFD92-\uFDC7\uFDF0-\uFDFB\uFE70-\uFE74\uFE76-\uFEFC\uFF21-\uFF3A\uFF41-\uFF5A\uFF66-\uFFBE\uFFC2-\uFFC7\uFFCA-\uFFCF\uFFD2-\uFFD7\uFFDA-\uFFDC]*)/i,/^(?:$)/i],
+conditions: {"INITIAL":{"rules":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41],"inclusive":true}}
 });
 return lexer;
 })();

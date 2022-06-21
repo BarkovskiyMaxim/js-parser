@@ -17,6 +17,7 @@
 "("                         return '('
 ")"                         return ')'
 "function"                  return 'FUNC'
+"typeof"                    return 'TYPEOF'
 "with"                      return 'WITH'
 "if"                        return 'IF'
 "else"                      return 'ELSE'
@@ -57,6 +58,7 @@
 %right        '?' ':'
 %right        '!'
 %left         BINARY
+%left        TYPEOF
 %left         '.'
 %right        ASSIGN
 
@@ -78,8 +80,7 @@ func
     ;
 
 function
-    : FUNC '(' + arguments + ')'     { $$ = { args: $3 }; }
-    | '(' + arguments + ')' '=>'     { $$ = { args: $2 }; }
+    : FUNC '(' arguments ')'         { $$ = { args: $3 }; }
     | FUNC '(' ')'                   { $$ = { args: [] }; }
     | '(' ')' '=>'                   { $$ = { args: [] }; }
     ;
@@ -120,12 +121,14 @@ right_part
     | right_part '?' right_part ':' right_part { $$ = { type: 'if', true: $3, condition: $1, false: $5 }; }
     | func                                     { $$ = $1; }
     | '!' '(' right_part ')'                   { $$ = { type: 'not', value: $3 } }
+    | '(' right_part ')'                       { $$ = $2; }
     ;
 
 value  
     : NUMBER  { $$ = parseFloat($1); }
     | STRING  { $$ = $1.substring(1, $1.length - 1); }
     | BOOLEAN { $$ = $1 === 'true' }
+    | NULL    { $$ = null; }
     ;
 
 array
@@ -134,7 +137,9 @@ array
     ;
 
 sequence
-    : sequence '.' sequence     { $$ = [].concat($1, $3); }
+    : sequence '.' NAME_SOFT    { $$ = [].concat($1, [{ name: $3, type: 'context' }]); }
+    | sequence '.' call         { $$ = [].concat($1, $3); }
+    | TYPEOF sequence           { $$ = [{ value: $2, type: 'typeof' }]; }
     | '!' sequence              { $$ = [{ type: 'not', value: $2 }]; }
     | NAME_SOFT                 { $$ = [{ name: $1, type: 'context' }]; }
     | value                     { $$ = [{ value: $1, type: 'value' }] }
@@ -165,6 +170,8 @@ objFields
 objField
     : NAME_SOFT ':' right_part       { $$ = { name: $1, value: $3 }; } 
     | STRING ':' right_part          { $$ = { name: $1.substring(1, $1.length - 1), value: $3 }; } 
+    | IF ':' right_part              { $$ = { name: 'if', value: $3 }; } 
+    | WITH ':' right_part            { $$ = { name: 'with', value: $3 }; } 
     ;
 
 with

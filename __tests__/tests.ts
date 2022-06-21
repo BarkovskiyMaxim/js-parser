@@ -59,7 +59,7 @@ test('function test', () => {
 
 test('function with assing test', () => {
     const str = `
-        (testa, testb) => {
+        function(testa, testb) {
             var c = testa + testb; 
             return c * 10; 
         }
@@ -328,4 +328,105 @@ test('! operand test', () => {
     return !a || b;
 `
     expect(execute(jsParser.parse(funcBody), { a: true, b: 3 })).toEqual(3)
+})
+
+test('function case', () => {
+    const func = `function($context, $element) { 
+        with($context){
+            with($data||{}){
+                return{
+                    'visible':function(){
+                        return (!$data.designMode || designMode()) 
+                    },
+                    'cssArray':function(){
+                        return [$data.rootStyle,{
+                            'dx-rtl':$data.rtl,
+                            'dx-ltr':!$data.rtl
+                        }] 
+                    }
+                }
+            }
+        } 
+    }`;
+
+    expect(!!jsParser.parse(func)).toEqual(true);
+})
+
+test('function case2', () => {
+    const func = `function($context, $element) {
+         with($context){
+            with($data||{}){
+                return{
+                    'attr':function(){
+                        return {
+                            'aria-label':$data.displayText && $data.displayText() || text,
+                            'aria-hidden':ko.unwrap($data.visible) ?'false':'true',
+                            'aria-disabled':ko.unwrap($data.disabled) ?'true':'false',
+                            'aria-checked':$data.selected ?($data.selected() ?'true':'false'):null
+                        } 
+                    }
+                }
+            }
+        } 
+    }`;
+
+    expect(!!jsParser.parse(func)).toEqual(true);
+})
+
+test("typeof test", () => {
+    const func = `function(a) {
+        return typeof a === 'function';
+   }`;
+   expect(execute(jsParser.parse(func))(() => 1)).toEqual(true);
+   expect(execute(jsParser.parse(func))(2)).toEqual(false);
+})
+
+test("object with keyword fields test", () => {
+    const func = `function(a) {
+        return { 
+            if: a
+        }
+   }`;
+   expect(execute(jsParser.parse(func))(2)).toEqual({ if: 2 });
+})
+
+test("function case3", () => {
+    const func = `function($context, $element) {
+         with($context){
+            with($data||{}){
+                return{
+                    'template':function(){
+                        return {
+                             name:ko.unwrap($data.imageTemplateName),
+                             if:!!ko.unwrap($data.imageTemplateName)
+                            } 
+                        },
+                        'attr':function(){
+                            return { 
+                                class:'dxrd-toolbar-item-image dxd-state-normal dxd-icon-highlighted '+(ko.unwrap($data.imageClassName) ||''),
+                                title:$data.displayText && $data.displayText() || text
+                            } 
+                        },
+                        '}':function(){
+                            return undefined 
+                        },
+                        'dxclick':function(){
+                            return function(){ 
+                                if((typeof $data.disabled ==='function') && !disabled() || !disabled){ 
+                                    clickAction($root.model && $root.model());
+                                }
+                            } 
+                        },
+                        'css':function(){
+                            return {
+                                'dxrd-disabled-button':disabled,
+                                'dxd-button-back-color dxd-back-highlighted dxd-state-active':$data.selected
+                            } 
+                        }
+                    }
+                }
+            } 
+        }`;
+
+        expect(!!jsParser.parse(func)).toEqual(true);
 })

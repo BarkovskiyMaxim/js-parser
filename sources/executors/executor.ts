@@ -4,7 +4,7 @@ import { OperandAssign } from "../operands/operand-assign";
 import { OperandBinary } from "../operands/operand-binary";
 import { OperandCall } from "../operands/operand-call";
 import { OperandFunction } from "../operands/operand-function";
-import { IsArray, IsAssign, IsBinary, IsCall, IsContext, IsFunction, IsIf, IsNot, IsObject, IsReturn, IsSequence, IsValue, IsWith, Operands } from "../operands/operand-mapper";
+import { IsArray, IsAssign, IsBinary, IsCall, IsContext, IsFunction, IsIf, IsNot, IsObject, IsReturn, IsSequence, IsTypeOf, IsValue, IsWith, Operands } from "../operands/operand-mapper";
 import { OperandObject } from "../operands/operand-object";
 
 export type BinaryCommands = '+' | '-' | '/' | '*' | '<' | '<=' | '>' | '>=' | '==' | '===' | '||' | '&&';
@@ -150,6 +150,9 @@ export function executeSingleOperation(operand: Operands, context: jsContext = {
         return operand.values.map(x => execute(x, context, currentObj));
     } else if(IsNot(operand)) {
         return !execute(operand.value, context, currentObj);
+    } else if(IsTypeOf(operand)) {
+        let _res = execute(operand.value, context, currentObj);
+        return typeof _res;
     } else {
         return null;
     }
