@@ -6,6 +6,7 @@ import { OperandCall } from "../operands/operand-call";
 import { OperandFunction } from "../operands/operand-function";
 import { IsArray, IsAssign, IsBinary, IsCall, IsContext, IsFunction, IsIf, IsNot, IsObject, IsReturn, IsSequence, IsTypeOf, IsValue, IsWith, Operands } from "../operands/operand-mapper";
 import { OperandObject } from "../operands/operand-object";
+import { OperandSequence } from "../operands/operand-sequence";
 
 export type BinaryCommands = '+' | '-' | '/' | '*' | '<' | '<=' | '>' | '>=' | '==' | '===' | '||' | '&&';
 
@@ -91,20 +92,22 @@ export function getAssignFunc(this: any, context: jsContext, operands: OperandCo
     let result = context;
     let latestOperand = operands.pop() as OperandContext;
     for (let i = 0; i < operands.length; i++) {
-        if (operands[i].name === 'this') {
-            result = this;
-        } else result = result[operands[i].name];
+        if (operands[i].name === 'this') result = this;
+        else if (typeof operands[i].name === 'string') result = result[operands[i].name as string];
+        else result = result[execute.call(this, operands[i].name as OperandSequence, context) as string]
     }
     return (val: any) => {
-        result[latestOperand.name] = val;
+        if (typeof latestOperand.name === 'string') result[latestOperand.name] = val;
+        else result[execute.call(this, latestOperand.name as OperandSequence, context) as string]
     };
 }
 
 export function getContext(this: any, operand: OperandCall | OperandContext, context: any = {}, currentObj: any = {}) {
     let propertyName = IsContext(operand) ? operand.name : operand.func;
+    if (typeof propertyName !== "string") return currentObj;
     if (typeof currentObj === 'object' && propertyName in currentObj) {
         return currentObj;
-    } else if(!!currentObj[propertyName]) {
+    } else if (!!currentObj[propertyName]) {
         return currentObj;
     } else if (propertyName in currentObj) {
         return context;
@@ -122,16 +125,22 @@ export function executeSingleOperation(this: any, operand: Operands, context: js
     } else if (IsAssign(operand)) {
         return getAssignFunc.call(this, context, operand.assignTo)(execute.call(this, operand.value, context));
     } else if (IsContext(operand)) {
-        if (operand.name === 'this') {
-            return this;
+        if (operand.name === 'this') return this;
+        let name = operand.name;
+        if(typeof name !== 'string') {
+            name = execute.call(this, operand.name as OperandSequence, context);
         }
-        return getContext.call(this, operand, context, currentObj)[operand.name];
+        return getContext.call(this, operand, context, currentObj)[name as string];
     } else if (IsValue(operand)) {
         return operand.value;
     } else if (IsBinary(operand)) {
         return binaryCommands[operand.operation].call(this, operand, context);
     } else if (IsCall(operand)) {
-        return getContext.call(this, operand, context, currentObj)[operand.func](...operand.args.map(x => execute.call(this, x, context)));
+        let func = operand.func;
+        if (typeof func !== 'string' && IsSequence(func)) {
+            func = execute.call(this, func, context, currentObj);
+        }
+        return getContext.call(this, operand, context, currentObj)[func as string](...operand.args.map(x => execute.call(this, x, context)));
     } else if (IsObject(operand)) {
         return generateObject.call(this, operand, context);
     } else if (IsWith(operand)) {

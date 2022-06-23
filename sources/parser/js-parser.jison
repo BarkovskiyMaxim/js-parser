@@ -155,14 +155,14 @@ sequence
 sequence_tail
     : '.' NAME_SOFT                                          { $$ = [{ name: $2, type: 'context' }]; }
     | '.' call                                               { $$ = [$2] }
-    | '[' process_string ']'                                      { $$ = [{ name: $2, type: 'context' }] }
-    | '[' process_string ']' '()'                                 { $$ = [{ func: $2, args: [], type: 'call' }]; } 
-    | '[' process_string ']' '(' call_args ')'                    { $$ = [{ func: $2, args: $5, type: 'call' }]; } 
+    | '[' sequence ']'                                      { $$ = [{ name: $2, type: 'context' }] }
+    | '[' sequence ']' '()'                                 { $$ = [{ func: $2, args: [], type: 'call' }]; } 
+    | '[' sequence ']' '(' call_args ')'                    { $$ = [{ func: $2, args: $5, type: 'call' }]; } 
     | sequence_tail '.' NAME_SOFT                            { $$ = [].concat($1,[{ name: $3, type: 'context' }]); }
     | sequence_tail '.' call                                 { $$ = [].concat($1,[$3]); }
-    | sequence_tail '[' process_string ']'                    { $$ = [].concat($1,[{ name: $3, type: 'context' }]); }
-    | sequence_tail '[' process_string ']' '()'               { $$ = [].concat($1,[{ func: $3, args: [], type: 'call' }]); }
-    | sequence_tail '[' process_string ']' '(' call_args ')'  { $$ = [].concat($1,[{ func: $3, args: $6, type: 'call' }]); }
+    | sequence_tail '[' sequence ']'                    { $$ = [].concat($1, { name: $3, type: 'context' }); }
+    | sequence_tail '[' sequence ']' '()'               { $$ = [].concat($1,[{ func: $3, args: [], type: 'call' }]); }
+    | sequence_tail '[' sequence ']' '(' call_args ')'  { $$ = [].concat($1,[{ func: $3, args: $6, type: 'call' }]); }
     ;
 
 right_part_value

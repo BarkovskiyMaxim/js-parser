@@ -1,4 +1,6 @@
+import { OperandSequence } from "./operand-sequence";
+
 export type OperandContext = {
-    name: string;
+    name: string | OperandSequence;
     type: 'context';
 }
