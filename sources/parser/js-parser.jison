@@ -14,6 +14,7 @@
 "var"                       return 'VAR'
 "return"                    return 'RETURN'
 ";"                         return 'EOL'
+"()"                        return '()'
 "("                         return '('
 ")"                         return ')'
 "function"                  return 'FUNC'
@@ -72,7 +73,7 @@ expressions
 
 result
     : body       { $$ = $1; }
-    | right_part { $$ = $1; }
+    | func       { $$ = $1; }
     ;
 
 func
@@ -80,9 +81,9 @@ func
     ;
 
 function
-    : FUNC '(' arguments ')'         { $$ = { args: $3 }; }
-    | FUNC '(' ')'                   { $$ = { args: [] }; }
-    | '(' ')' '=>'                   { $$ = { args: [] }; }
+    : FUNC '(' arguments ')'   { $$ = { args: $3 }; }
+    | FUNC '()'                { $$ = { args: [] }; }
+    | '()' '=>'                   { $$ = { args: [] }; }
     ;
 
 arguments
@@ -98,10 +99,11 @@ body
     ;
 
 line
-    : assign       { $$ = $1; }
-    | if_condition { $$ = $1; }
-    | with         { $$ = $1; }
-    | return       { $$ = $1; }
+    : assign                { $$ = $1; }
+    | if_condition          { $$ = $1; }
+    | with                  { $$ = $1; }
+    | return                { $$ = $1; }
+    | simple_right_part     { $$ = $1; }
     ;
 
 return
@@ -162,7 +164,7 @@ right_part_value
     ;
 
 call
-    : NAME_SOFT '(' ')'           { $$ = { func: $1, args: [], type: 'call' }; }
+    : NAME_SOFT '()'           { $$ = { func: $1, args: [], type: 'call' }; }
     | NAME_SOFT '(' call_args ')' { $$ = { func: $1, args: $3, type: 'call' }; }
     ;
 
@@ -193,7 +195,8 @@ with
     ;
 
 if_condition
-    : if_part else_part { $$ = { type: 'if', condition: $1.condition, true: $1.true, false: $2.false } }
+    : if_part                { $$ = { type: 'if', condition: $1.condition, true: $1.true, false: [] } }  
+    | if_part else_part      { $$ = { type: 'if', condition: $1.condition, true: $1.true, false: $2.false } }
     ;
 
 if_part

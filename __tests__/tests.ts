@@ -7,27 +7,27 @@ import { OperandReturn } from '../sources/operands/operand-return';
 import jsParser from '../sources/parser/js-parser';
 
 test("binary operator number test", () => {
-    expect(execute(jsParser.parse("1 + 2"), {})).toEqual(3);
+    expect(execute(jsParser.parse("return 1 + 2"), {})).toEqual(3);
 
-    expect(execute(jsParser.parse("3 * 2"), {})).toEqual(6);
+    expect(execute(jsParser.parse("return 3 * 2"), {})).toEqual(6);
 
-    expect(execute(jsParser.parse("10 / 2"), {})).toEqual(5);
+    expect(execute(jsParser.parse("return 10 / 2"), {})).toEqual(5);
 
-    expect(execute(jsParser.parse("10 - 2"), {})).toEqual(8);
+    expect(execute(jsParser.parse("return 10 - 2"), {})).toEqual(8);
 })
 
 test("binary operator string test", () => {
-    expect(execute(jsParser.parse("'1' + '2'"), {})).toEqual('12');
+    expect(execute(jsParser.parse("return '1' + '2'"), {})).toEqual('12');
 })
 
 
 test("binary operator multiple operations test", () => {
-    expect(execute(jsParser.parse("5 * 10 + 'px'"), {})).toEqual('50px');
+    expect(execute(jsParser.parse("return 5 * 10 + 'px'"), {})).toEqual('50px');
 })
 
 
 test("binary operator context test", () => {
-    expect(execute(jsParser.parse("test + 2"), {
+    expect(execute(jsParser.parse("return test + 2"), {
         test: 1
     })).toEqual(3);
 })
@@ -69,27 +69,27 @@ test('function with assing test', () => {
 })
 
 test("binary condition operator context test", () => {
-    expect(execute(jsParser.parse("test > 2"), {
+    expect(execute(jsParser.parse("return test > 2"), {
         test: 1
     })).toEqual(false);
 
-    expect(execute(jsParser.parse("test > 2"), {
+    expect(execute(jsParser.parse("return test > 2"), {
         test: 3
     })).toEqual(true);
 })
 
 test("call function test", () => {
-    expect(execute(jsParser.parse("test(5) + 2"), {
+    expect(execute(jsParser.parse("return test(5) + 2"), {
         test: (num: number) => num
     })).toEqual(7);
 
-    expect(execute(jsParser.parse("test() > 2"), {
+    expect(execute(jsParser.parse("return test() > 2"), {
         test: () => 0
     })).toEqual(false);
 })
 
 test("object test", () => {
-    expect(execute(jsParser.parse("test({ a: 3, b: 4 })"), {
+    expect(execute(jsParser.parse("return test({ a: 3, b: 4 })"), {
         test: (obj: { a: number, b: number }) => obj.a + obj.b
     })).toEqual(7);
 })
@@ -429,4 +429,32 @@ test("function case3", () => {
         }`;
 
         expect(!!jsParser.parse(func)).toEqual(true);
+})
+
+test("this context test", () => {
+    const func = `function() {
+        return this.a(2);
+   }`;
+   const obj = {
+        a: (val: number) => val
+   }
+   expect(execute(jsParser.parse(func)).call(obj)).toEqual(2);
+})
+
+test("simple if operation", () => {
+    const func = `function(a) {
+        if(a > 0) 
+            return 2;
+   }`;
+   expect(execute(jsParser.parse(func))(2)).toEqual(2);
+})
+
+test("return from specific line", () => {
+    const func = `function(a) {
+        if(a > 0) 
+            return 2;
+        return 3;
+   }`;
+   expect(execute(jsParser.parse(func))(0)).toEqual(3);
+   expect(execute(jsParser.parse(func))(2)).toEqual(2);
 })
