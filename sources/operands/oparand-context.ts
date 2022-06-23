@@ -1,6 +1,6 @@
-import { OperandSequence } from "./operand-sequence";
+import { Operands } from "./operand-mapper";
 
 export type OperandContext = {
-    name: string | OperandSequence;
+    name: string | Operands;
     type: 'context';
 }

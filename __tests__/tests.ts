@@ -512,3 +512,12 @@ test('[] with args in tail test', () => {
         test: { b: { c: 2 } }
     }, 'b')).toEqual(2);
 })
+
+test('[] with binary opeartor in tail test', () => {
+    const func = `function(a, d) {
+        return a.test[d - 1].c;
+    }`
+    expect(execute(jsParser.parse(func))({
+        test: [{ c: 1 }, { c: 2 }, { c: 3 }]
+    }, 2)).toEqual(2);
+})

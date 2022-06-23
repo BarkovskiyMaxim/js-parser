@@ -94,11 +94,11 @@ export function getAssignFunc(this: any, context: jsContext, operands: OperandCo
     for (let i = 0; i < operands.length; i++) {
         if (operands[i].name === 'this') result = this;
         else if (typeof operands[i].name === 'string') result = result[operands[i].name as string];
-        else result = result[execute.call(this, operands[i].name as OperandSequence, context) as string]
+        else result = result[execute.call(this, operands[i].name as Operands, context) as string]
     }
     return (val: any) => {
         if (typeof latestOperand.name === 'string') result[latestOperand.name] = val;
-        else result[execute.call(this, latestOperand.name as OperandSequence, context) as string]
+        else result[execute.call(this, latestOperand.name as Operands, context) as string]
     };
 }
 
@@ -128,7 +128,7 @@ export function executeSingleOperation(this: any, operand: Operands, context: js
         if (operand.name === 'this') return this;
         let name = operand.name;
         if(typeof name !== 'string') {
-            name = execute.call(this, operand.name as OperandSequence, context);
+            name = execute.call(this, operand.name as Operands, context);
         }
         return getContext.call(this, operand, context, currentObj)[name as string];
     } else if (IsValue(operand)) {
@@ -137,7 +137,7 @@ export function executeSingleOperation(this: any, operand: Operands, context: js
         return binaryCommands[operand.operation].call(this, operand, context);
     } else if (IsCall(operand)) {
         let func = operand.func;
-        if (typeof func !== 'string' && IsSequence(func)) {
+        if (typeof func !== 'string') {
             func = execute.call(this, func, context, currentObj);
         }
         return getContext.call(this, operand, context, currentObj)[func as string](...operand.args.map(x => execute.call(this, x, context)));
