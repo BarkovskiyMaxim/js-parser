@@ -377,8 +377,8 @@ test("typeof test", () => {
     const func = `function(a) {
         return typeof a === 'function';
    }`;
-   expect(execute(jsParser.parse(func))(() => 1)).toEqual(true);
-   expect(execute(jsParser.parse(func))(2)).toEqual(false);
+    expect(execute(jsParser.parse(func))(() => 1)).toEqual(true);
+    expect(execute(jsParser.parse(func))(2)).toEqual(false);
 })
 
 test("object with keyword fields test", () => {
@@ -387,7 +387,7 @@ test("object with keyword fields test", () => {
             if: a
         }
    }`;
-   expect(execute(jsParser.parse(func))(2)).toEqual({ if: 2 });
+    expect(execute(jsParser.parse(func))(2)).toEqual({ if: 2 });
 })
 
 test("function case3", () => {
@@ -428,17 +428,17 @@ test("function case3", () => {
             } 
         }`;
 
-        expect(!!jsParser.parse(func)).toEqual(true);
+    expect(!!jsParser.parse(func)).toEqual(true);
 })
 
 test("this context test", () => {
     const func = `function() {
         return this.a(2);
    }`;
-   const obj = {
+    const obj = {
         a: (val: number) => val
-   }
-   expect(execute(jsParser.parse(func)).call(obj)).toEqual(2);
+    }
+    expect(execute(jsParser.parse(func)).call(obj)).toEqual(2);
 })
 
 test("simple if operation", () => {
@@ -446,7 +446,7 @@ test("simple if operation", () => {
         if(a > 0) 
             return 2;
    }`;
-   expect(execute(jsParser.parse(func))(2)).toEqual(2);
+    expect(execute(jsParser.parse(func))(2)).toEqual(2);
 })
 
 test("return from specific line", () => {
@@ -455,6 +455,51 @@ test("return from specific line", () => {
             return 2;
         return 3;
    }`;
-   expect(execute(jsParser.parse(func))(0)).toEqual(3);
-   expect(execute(jsParser.parse(func))(2)).toEqual(2);
+    expect(execute(jsParser.parse(func))(0)).toEqual(3);
+    expect(execute(jsParser.parse(func))(2)).toEqual(2);
+})
+
+test("function case4", () => {
+    const func = `function($context, $element) {
+         with($context){
+            with($data||{}){
+                return{
+                    'template':function(){
+                        return 'dxrd-svg-toolbar-delete' 
+                    },
+                    'dxclick':function(){
+                        return function(e){ toggleAppMenu()} 
+                    },
+                    'dxpointerenter':function(){
+                        return function(_,e){
+                              e.target.classList &&  e.target.classList.add('dxd-state-active')
+                            } 
+                    },
+                    'dxpointerleave':function(){
+                        return function(_,e){ 
+                             e.target.classList &&  e.target.classList.remove('dxd-state-active')
+                            } 
+                        }
+                    }
+                }
+            } 
+        }`;
+        expect(!!jsParser.parse(func)).toEqual(true);
+})
+
+test("right part in the line test", () => {
+    const func = `function(a) {
+        return a && a(2) || 3;
+    }`
+    expect(execute(jsParser.parse(func))(() => 2)).toEqual(2);
+    expect(execute(jsParser.parse(func))()).toEqual(3);
+})
+
+test('[] in tail test', () => {
+    const func = `function(a) {
+        return a.test['b'].c;
+    }`
+    expect(execute(jsParser.parse(func))({
+        test: { b: { c: 2 } }
+    })).toEqual(2);
 })

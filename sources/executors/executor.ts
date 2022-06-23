@@ -55,7 +55,7 @@ export var binaryCommands: BinaryExecutor = {
 export function generateFunction(operand: OperandFunction, context: jsContext = {}) {
     return function (this: any) {
         let innerContext: jsContext = {};
-        for (var i = 0; i < arguments.length; i++) {
+        for (var i = 0; i < operand.args.length; i++) {
             innerContext[operand.args[i]] = arguments[i];
         }
         const newContext = {
@@ -91,7 +91,7 @@ export function getAssignFunc(this: any, context: jsContext, operands: OperandCo
     let result = context;
     let latestOperand = operands.pop() as OperandContext;
     for (let i = 0; i < operands.length; i++) {
-        if(operands[i].name === 'this') {
+        if (operands[i].name === 'this') {
             result = this;
         } else result = result[operands[i].name];
     }
@@ -102,17 +102,21 @@ export function getAssignFunc(this: any, context: jsContext, operands: OperandCo
 
 export function getContext(this: any, operand: OperandCall | OperandContext, context: any = {}, currentObj: any = {}) {
     let propertyName = IsContext(operand) ? operand.name : operand.func;
-    if (currentObj[propertyName] !== undefined) {
+    if (typeof currentObj === 'object' && propertyName in currentObj) {
         return currentObj;
-    } else if (context[propertyName] !== undefined) {
+    } else if(!!currentObj[propertyName]) {
+        return currentObj;
+    } else if (propertyName in currentObj) {
         return context;
-    } else {
+    } else if (this && this[propertyName] != undefined) {
         return this;
+    } else {
+        return window;
     }
 }
 
 export function executeSingleOperation(this: any, operand: Operands, context: jsContext = {}, currentObj?: any): any {
-    if('___result' in context) return context["___result"];
+    if ('___result' in context) return context["___result"];
     if (IsFunction(operand)) {
         return generateFunction(operand, context);
     } else if (IsAssign(operand)) {
@@ -168,14 +172,14 @@ export function executeSingleOperation(this: any, operand: Operands, context: js
 }
 
 export function execute(this: any, operands: Operands[] | Operands, context: jsContext = {}, currentObj?: any) {
-    if('___result' in context) {
+    if ('___result' in context) {
         return context['___result'];
     }
     if (Array.isArray(operands)) {
         let __result = undefined;
-        for(var i = 0; i < operands.length; i++) {
+        for (var i = 0; i < operands.length; i++) {
             __result = executeSingleOperation.call(this, operands[i], context, currentObj);
-            if('__result' in context) {
+            if ('__result' in context) {
                 return context['___result'];
             }
         }

@@ -103,7 +103,7 @@ line
     | if_condition          { $$ = $1; }
     | with                  { $$ = $1; }
     | return                { $$ = $1; }
-    | simple_right_part     { $$ = $1; }
+    | right_part            { $$ = $1; }
     ;
 
 return
@@ -126,10 +126,14 @@ right_part
     ;
 
 value  
-    : NUMBER  { $$ = parseFloat($1); }
-    | STRING  { $$ = $1.substring(1, $1.length - 1); }
-    | BOOLEAN { $$ = $1 === 'true' }
-    | NULL    { $$ = null; }
+    : NUMBER          { $$ = parseFloat($1); }
+    | process_string  { $$ = $1 }
+    | BOOLEAN         { $$ = $1 === 'true' }
+    | NULL            { $$ = null; }
+    ;
+
+process_string
+    : STRING  { $$ = $1.substring(1, $1.length - 1); }
     ;
 
 array
@@ -149,10 +153,16 @@ sequence
     ;
 
 sequence_tail
-    : '.' NAME_SOFT                        { $$ = [{ name: $2, type: 'context' }]; }
-    | '.' call                             { $$ = [$2] }
-    | sequence_tail '.' NAME_SOFT          { $$ = [].concat($1,[{ name: $3, type: 'context' }]); }
-    | sequence_tail '.' call               { $$ = [].concat($1,$3); }
+    : '.' NAME_SOFT                                          { $$ = [{ name: $2, type: 'context' }]; }
+    | '.' call                                               { $$ = [$2] }
+    | '[' process_string ']'                                      { $$ = [{ name: $2, type: 'context' }] }
+    | '[' process_string ']' '()'                                 { $$ = [{ func: $2, args: [], type: 'call' }]; } 
+    | '[' process_string ']' '(' call_args ')'                    { $$ = [{ func: $2, args: $5, type: 'call' }]; } 
+    | sequence_tail '.' NAME_SOFT                            { $$ = [].concat($1,[{ name: $3, type: 'context' }]); }
+    | sequence_tail '.' call                                 { $$ = [].concat($1,[$3]); }
+    | sequence_tail '[' process_string ']'                    { $$ = [].concat($1,[{ name: $3, type: 'context' }]); }
+    | sequence_tail '[' process_string ']' '()'               { $$ = [].concat($1,[{ func: $3, args: [], type: 'call' }]); }
+    | sequence_tail '[' process_string ']' '(' call_args ')'  { $$ = [].concat($1,[{ func: $3, args: $6, type: 'call' }]); }
     ;
 
 right_part_value
@@ -185,7 +195,7 @@ objFields
 
 objField
     : NAME_SOFT ':' right_part       { $$ = { name: $1, value: $3 }; } 
-    | STRING ':' right_part          { $$ = { name: $1.substring(1, $1.length - 1), value: $3 }; } 
+    | process_string ':' right_part  { $$ = { name: $1, value: $3 }; } 
     | IF ':' right_part              { $$ = { name: 'if', value: $3 }; } 
     | WITH ':' right_part            { $$ = { name: 'with', value: $3 }; } 
     ;
