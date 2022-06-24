@@ -1,4 +1,4 @@
-import { execute } from '../sources/executors/executor';
+import { _execute } from '../sources/executors/executor';
 import { OperandContext } from '../sources/operands/oparand-context';
 import { OperandAssign } from '../sources/operands/operand-assign';
 import { OperandBinary } from '../sources/operands/operand-binary';
@@ -7,29 +7,29 @@ import { OperandReturn } from '../sources/operands/operand-return';
 import jsParser from '../sources/parser/js-parser';
 
 test("binary operator number test", () => {
-    expect(execute(jsParser.parse("return 1 + 2"), {})).toEqual(3);
+    expect(_execute(jsParser.parse("return 1 + 2"), [{}])).toEqual(3);
 
-    expect(execute(jsParser.parse("return 3 * 2"), {})).toEqual(6);
+    expect(_execute(jsParser.parse("return 3 * 2"), [{}])).toEqual(6);
 
-    expect(execute(jsParser.parse("return 10 / 2"), {})).toEqual(5);
+    expect(_execute(jsParser.parse("return 10 / 2"), [{}])).toEqual(5);
 
-    expect(execute(jsParser.parse("return 10 - 2"), {})).toEqual(8);
+    expect(_execute(jsParser.parse("return 10 - 2"), [{}])).toEqual(8);
 })
 
 test("binary operator string test", () => {
-    expect(execute(jsParser.parse("return '1' + '2'"), {})).toEqual('12');
+    expect(_execute(jsParser.parse("return '1' + '2'"), [{}])).toEqual('12');
 })
 
 
 test("binary operator multiple operations test", () => {
-    expect(execute(jsParser.parse("return 5 * 10 + 'px'"), {})).toEqual('50px');
+    expect(_execute(jsParser.parse("return 5 * 10 + 'px'"), [{}])).toEqual('50px');
 })
 
 
 test("binary operator context test", () => {
-    expect(execute(jsParser.parse("return test + 2"), {
+    expect(_execute(jsParser.parse("return test + 2"), [{
         test: 1
-    })).toEqual(3);
+    }])).toEqual(3);
 })
 
 test("binary operator assign test", () => {
@@ -40,7 +40,7 @@ test("binary operator assign test", () => {
     expect(operand[0].assignTo).toEqual([{ 'name': 'myValue', 'type': 'context' }]);
     expect(operand[0].value.type).toEqual('binary');
     const context = { test: 1 };
-    execute(operand, context);
+    _execute(operand, [context]);
     expect(context).toEqual({
         test: 1,
         myValue: 3
@@ -53,7 +53,7 @@ test('function test', () => {
            return testa + testb; 
         }
     `
-    const func = execute(jsParser.parse(str))
+    const func = _execute(jsParser.parse(str))
     expect(func.apply(this, [1, 2])).toEqual(3);
 })
 
@@ -64,51 +64,51 @@ test('function with assing test', () => {
             return c * 10; 
         }
     `
-    const func = execute(jsParser.parse(str))
+    const func = _execute(jsParser.parse(str))
     expect(func.apply(this, [1, 2])).toEqual(30);
 })
 
 test("binary condition operator context test", () => {
-    expect(execute(jsParser.parse("return test > 2"), {
+    expect(_execute(jsParser.parse("return test > 2"), [{
         test: 1
-    })).toEqual(false);
+    }])).toEqual(false);
 
-    expect(execute(jsParser.parse("return test > 2"), {
+    expect(_execute(jsParser.parse("return test > 2"), [{
         test: 3
-    })).toEqual(true);
+    }])).toEqual(true);
 })
 
 test("call function test", () => {
-    expect(execute(jsParser.parse("return test(5) + 2"), {
+    expect(_execute(jsParser.parse("return test(5) + 2"), [{
         test: (num: number) => num
-    })).toEqual(7);
+    }])).toEqual(7);
 
-    expect(execute(jsParser.parse("return test() > 2"), {
+    expect(_execute(jsParser.parse("return test() > 2"), [{
         test: () => 0
-    })).toEqual(false);
+    }])).toEqual(false);
 })
 
 test("object test", () => {
-    expect(execute(jsParser.parse("return test({ a: 3, b: 4 })"), {
+    expect(_execute(jsParser.parse("return test({ a: 3, b: 4 })"), [{
         test: (obj: { a: number, b: number }) => obj.a + obj.b
-    })).toEqual(7);
+    }])).toEqual(7);
 })
 
 test('$name test', () => {
-    expect(execute(jsParser.parse("function($data, $context){ return $data + $context; }")).apply(this, [1, 2])).toEqual(3);
+    expect(_execute(jsParser.parse("function($data, $context){ return $data + $context; }")).apply(this, [1, 2])).toEqual(3);
 })
 
 test('with operator test', () => {
-    expect(execute(jsParser.parse(`
+    expect(_execute(jsParser.parse(`
             var a = 0;
             with($context) { 
                 a = $data;
             }
             return a;
             `
-    ), { $context: { $data: 3 } })).toEqual(3);
+    ), [{ $context: { $data: 3 } }])).toEqual(3);
 
-    expect(execute(jsParser.parse(`
+    expect(_execute(jsParser.parse(`
             function($context) {
                 var a = 0;
                 with($context) {
@@ -129,8 +129,8 @@ test('if/else operator test', () => {
     }
     return result;
 `
-    expect(execute(jsParser.parse(funcBody), { a: 2 })).toEqual(1);
-    expect(execute(jsParser.parse(funcBody), { a: -2 })).toEqual(2);
+    expect(_execute(jsParser.parse(funcBody), [{ a: 2 }])).toEqual(1);
+    expect(_execute(jsParser.parse(funcBody), [{ a: -2 }])).toEqual(2);
 })
 
 test('if/else/if operator test', () => {
@@ -145,9 +145,9 @@ test('if/else/if operator test', () => {
     }
     return result;
 `
-    expect(execute(jsParser.parse(funcBody), { a: 2 })).toEqual(1);
-    expect(execute(jsParser.parse(funcBody), { a: 0 })).toEqual(2);
-    expect(execute(jsParser.parse(funcBody), { a: -2 })).toEqual(3);
+    expect(_execute(jsParser.parse(funcBody), [{ a: 2 }])).toEqual(1);
+    expect(_execute(jsParser.parse(funcBody), [{ a: 0 }])).toEqual(2);
+    expect(_execute(jsParser.parse(funcBody), [{ a: -2 }])).toEqual(3);
 })
 
 test('ternary operator test', () => {
@@ -156,9 +156,9 @@ test('ternary operator test', () => {
     return result;
     `;
 
-    expect(execute(jsParser.parse(funcBody), { a: 2 })).toEqual(1);
-    expect(execute(jsParser.parse(funcBody), { a: 0 })).toEqual(2);
-    expect(execute(jsParser.parse(funcBody), { a: -2 })).toEqual(3);
+    expect(_execute(jsParser.parse(funcBody), [{ a: 2 }])).toEqual(1);
+    expect(_execute(jsParser.parse(funcBody), [{ a: 0 }])).toEqual(2);
+    expect(_execute(jsParser.parse(funcBody), [{ a: -2 }])).toEqual(3);
 })
 
 test('|| operator test', () => {
@@ -167,8 +167,8 @@ test('|| operator test', () => {
     return a;
     `;
 
-    expect(execute(jsParser.parse(funcBody), { b: 0 })).toEqual(1);
-    expect(execute(jsParser.parse(funcBody), { b: 2 })).toEqual(2);
+    expect(_execute(jsParser.parse(funcBody), [{ b: 0 }])).toEqual(1);
+    expect(_execute(jsParser.parse(funcBody), [{ b: 2 }])).toEqual(2);
 })
 
 test('empty object test', () => {
@@ -177,7 +177,7 @@ test('empty object test', () => {
     return a;
     `;
 
-    expect(execute(jsParser.parse(funcBody), {})).toEqual({});
+    expect(_execute(jsParser.parse(funcBody), [{}])).toEqual({});
 })
 
 test('object with single quote', () => {
@@ -186,7 +186,7 @@ test('object with single quote', () => {
     return a;
     `;
 
-    expect(execute(jsParser.parse(funcBody), {})).toEqual({ 'test': 'test' });
+    expect(_execute(jsParser.parse(funcBody), [{}])).toEqual({ 'test': 'test' });
 })
 
 test('object with function test', () => {
@@ -199,7 +199,7 @@ test('object with function test', () => {
     };
     return a;
     `
-    const testRes = execute(jsParser.parse(funcBody), {}) as any;
+    const testRes = _execute(jsParser.parse(funcBody), [{}]) as any;
     expect(testRes['func']()).toEqual('a');
     expect(testRes['test']).toEqual('test');
 })
@@ -213,7 +213,7 @@ test('return object test', () => {
         }
     };
     `
-    const testRes = execute(jsParser.parse(funcBody), {}) as any;
+    const testRes = _execute(jsParser.parse(funcBody), [{}]) as any;
     expect(testRes['func']()).toEqual('a');
     expect(testRes['test']).toEqual('test');
 })
@@ -222,7 +222,7 @@ test('use variable with point test', () => {
     const funcBody = `
         return 1 + a.b;
     `;
-    expect(execute(jsParser.parse(funcBody), { a: { b: 3 } })).toEqual(4);
+    expect(_execute(jsParser.parse(funcBody), [{ a: { b: 3 } }])).toEqual(4);
 })
 
 test('assign to object property test', () => {
@@ -231,14 +231,14 @@ test('assign to object property test', () => {
         a.b = 3;
         return a;
     `;
-    expect(execute(jsParser.parse(funcBody))).toEqual({ b: 3 });
+    expect(_execute(jsParser.parse(funcBody))).toEqual({ b: 3 });
 })
 
 test('return without EOL', () => {
     const funcBody = `
         return { a: 3 }
     `;
-    expect(execute(jsParser.parse(funcBody))).toEqual({ a: 3 });
+    expect(_execute(jsParser.parse(funcBody))).toEqual({ a: 3 });
 })
 
 test('call functions with point', () => {
@@ -246,7 +246,7 @@ test('call functions with point', () => {
         return 'a.b.c'.split('.').join(',');
     `
     const operands = jsParser.parse(funcBody);
-    expect(execute(operands)).toEqual('a,b,c');
+    expect(_execute(operands)).toEqual('a,b,c');
 })
 
 
@@ -255,7 +255,7 @@ test('call functions with point and context parameter', () => {
         return 'a.b.c'.split(a).join(b);
     `
     const operands = jsParser.parse(funcBody);
-    expect(execute(operands, { a: '.', b: ',' })).toEqual('a,b,c');
+    expect(_execute(operands, [{ a: '.', b: ',' }])).toEqual('a,b,c');
 })
 
 test('parse big function', () => {
@@ -296,7 +296,7 @@ test('return from inner context', () => {
         }
     `
     const operands = jsParser.parse(funcBody);
-    expect(execute(operands, { a: 1 })).toEqual('1');
+    expect(_execute(operands, [{ a: 1 }])).toEqual('1');
 })
 
 test('closure functional test', () => {
@@ -306,14 +306,14 @@ test('closure functional test', () => {
         }
     `
     const operands = jsParser.parse(funcBody);
-    expect(execute(operands, { a: 1 })()).toEqual(1);
+    expect(_execute(operands, [{ a: 1 }])()).toEqual(1);
 })
 
 test('array operand test', () => {
     const funcBody = `
         return [a,b,3,4,'w']
     `
-    expect(execute(jsParser.parse(funcBody), { a: 1, b: 2 })).toEqual(
+    expect(_execute(jsParser.parse(funcBody), [{ a: 1, b: 2 }])).toEqual(
         [1, 2, 3, 4, 'w']
     )
 })
@@ -322,12 +322,12 @@ test('! operand test', () => {
     let funcBody = `
         return !a
     `
-    expect(execute(jsParser.parse(funcBody), { a: true })).toEqual(false)
+    expect(_execute(jsParser.parse(funcBody), [{ a: true }])).toEqual(false)
 
     funcBody = `
     return !a || b;
 `
-    expect(execute(jsParser.parse(funcBody), { a: true, b: 3 })).toEqual(3)
+    expect(_execute(jsParser.parse(funcBody), [{ a: true, b: 3 }])).toEqual(3)
 })
 
 test('function case', () => {
@@ -377,8 +377,8 @@ test("typeof test", () => {
     const func = `function(a) {
         return typeof a === 'function';
    }`;
-    expect(execute(jsParser.parse(func))(() => 1)).toEqual(true);
-    expect(execute(jsParser.parse(func))(2)).toEqual(false);
+    expect(_execute(jsParser.parse(func))(() => 1)).toEqual(true);
+    expect(_execute(jsParser.parse(func))(2)).toEqual(false);
 })
 
 test("object with keyword fields test", () => {
@@ -387,7 +387,7 @@ test("object with keyword fields test", () => {
             if: a
         }
    }`;
-    expect(execute(jsParser.parse(func))(2)).toEqual({ if: 2 });
+    expect(_execute(jsParser.parse(func))(2)).toEqual({ if: 2 });
 })
 
 test("function case3", () => {
@@ -438,7 +438,7 @@ test("this context test", () => {
     const obj = {
         a: (val: number) => val
     }
-    expect(execute(jsParser.parse(func)).call(obj)).toEqual(2);
+    expect(_execute(jsParser.parse(func)).call(obj)).toEqual(2);
 })
 
 test("simple if operation", () => {
@@ -446,7 +446,7 @@ test("simple if operation", () => {
         if(a > 0) 
             return 2;
    }`;
-    expect(execute(jsParser.parse(func))(2)).toEqual(2);
+    expect(_execute(jsParser.parse(func))(2)).toEqual(2);
 })
 
 test("return from specific line", () => {
@@ -455,8 +455,8 @@ test("return from specific line", () => {
             return 2;
         return 3;
    }`;
-    expect(execute(jsParser.parse(func))(0)).toEqual(3);
-    expect(execute(jsParser.parse(func))(2)).toEqual(2);
+    expect(_execute(jsParser.parse(func))(0)).toEqual(3);
+    expect(_execute(jsParser.parse(func))(2)).toEqual(2);
 })
 
 test("function case4", () => {
@@ -484,22 +484,22 @@ test("function case4", () => {
                 }
             } 
         }`;
-        expect(!!jsParser.parse(func)).toEqual(true);
+    expect(!!jsParser.parse(func)).toEqual(true);
 })
 
 test("right part in the line test", () => {
     const func = `function(a) {
         return a && a(2) || 3;
     }`
-    expect(execute(jsParser.parse(func))(() => 2)).toEqual(2);
-    expect(execute(jsParser.parse(func))()).toEqual(3);
+    expect(_execute(jsParser.parse(func))(() => 2)).toEqual(2);
+    expect(_execute(jsParser.parse(func))()).toEqual(3);
 })
 
 test('[] in tail test', () => {
     const func = `function(a) {
         return a.test['b'].c;
     }`
-    expect(execute(jsParser.parse(func))({
+    expect(_execute(jsParser.parse(func))({
         test: { b: { c: 2 } }
     })).toEqual(2);
 })
@@ -508,7 +508,7 @@ test('[] with args in tail test', () => {
     const func = `function(a, d) {
         return a.test[d].c;
     }`
-    expect(execute(jsParser.parse(func))({
+    expect(_execute(jsParser.parse(func))({
         test: { b: { c: 2 } }
     }, 'b')).toEqual(2);
 })
@@ -517,7 +517,27 @@ test('[] with binary opeartor in tail test', () => {
     const func = `function(a, d) {
         return a.test[d - 1].c;
     }`
-    expect(execute(jsParser.parse(func))({
+    expect(_execute(jsParser.parse(func))({
         test: [{ c: 1 }, { c: 2 }, { c: 3 }]
     }, 2)).toEqual(2);
+})
+
+class Test {
+    c() {
+        return 2;
+    }
+}
+
+test('call method from class in with operator test', () => {
+    const func = `function(a) {
+        with(a) {
+            with(b) {
+                return c();
+            }
+        }
+    }`
+    expect(_execute(jsParser.parse(func))( {
+            b: new Test()
+        }
+    )).toEqual(2);
 })

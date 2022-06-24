@@ -11,126 +11,109 @@ import { OperandSequence } from "../operands/operand-sequence";
 export type BinaryCommands = '+' | '-' | '/' | '*' | '<' | '<=' | '>' | '>=' | '==' | '===' | '||' | '&&';
 
 export type BinaryExecutor = {
-    [K in BinaryCommands]: (this: any, operand: OperandBinary, context: jsContext) => any;
+    [K in BinaryCommands]: (this: any, operand: OperandBinary, context: jsContext[]) => any;
 }
 
 export var binaryCommands: BinaryExecutor = {
-    '+': function (this: any, operand: OperandBinary, context: jsContext) {
+    '+': function (this: any, operand: OperandBinary, context: jsContext[]) {
         return executeSingleOperation.call(this, operand.left, context) + executeSingleOperation.call(this, operand.right, context);
     },
-    '-': function (this: any, operand: OperandBinary, context: jsContext) {
+    '-': function (this: any, operand: OperandBinary, context: jsContext[]) {
         return executeSingleOperation.call(this, operand.left, context) - executeSingleOperation.call(this, operand.right, context);
     },
-    '/': function (this: any, operand: OperandBinary, context: jsContext) {
+    '/': function (this: any, operand: OperandBinary, context: jsContext[]) {
         return executeSingleOperation.call(this, operand.left, context) / executeSingleOperation.call(this, operand.right, context);
     },
-    '*': function (this: any, operand: OperandBinary, context: jsContext) {
+    '*': function (this: any, operand: OperandBinary, context: jsContext[]) {
         return executeSingleOperation.call(this, operand.left, context) * executeSingleOperation.call(this, operand.right, context);
     },
-    '<': function (this: any, operand: OperandBinary, context: jsContext) {
+    '<': function (this: any, operand: OperandBinary, context: jsContext[]) {
         return executeSingleOperation.call(this, operand.left, context) < executeSingleOperation.call(this, operand.right, context);
     },
-    '<=': function (this: any, operand: OperandBinary, context: jsContext) {
+    '<=': function (this: any, operand: OperandBinary, context: jsContext[]) {
         return executeSingleOperation.call(this, operand.left, context) <= executeSingleOperation.call(this, operand.right, context);
     },
-    '>': function (this: any, operand: OperandBinary, context: jsContext) {
+    '>': function (this: any, operand: OperandBinary, context: jsContext[]) {
         return executeSingleOperation.call(this, operand.left, context) > executeSingleOperation.call(this, operand.right, context);
     },
-    '>=': function (this: any, operand: OperandBinary, context: jsContext) {
+    '>=': function (this: any, operand: OperandBinary, context: jsContext[]) {
         return executeSingleOperation.call(this, operand.left, context) >= executeSingleOperation.call(this, operand.right, context);
     },
-    '==': function (this: any, operand: OperandBinary, context: jsContext) {
+    '==': function (this: any, operand: OperandBinary, context: jsContext[]) {
         return executeSingleOperation.call(this, operand.left, context) == executeSingleOperation.call(this, operand.right, context);
     },
-    '===': function (this: any, operand: OperandBinary, context: jsContext) {
+    '===': function (this: any, operand: OperandBinary, context: jsContext[]) {
         return executeSingleOperation.call(this, operand.left, context) === executeSingleOperation.call(this, operand.right, context);
     },
-    '||': function (this: any, operand: OperandBinary, context: jsContext) {
+    '||': function (this: any, operand: OperandBinary, context: jsContext[]) {
         return executeSingleOperation.call(this, operand.left, context) || executeSingleOperation.call(this, operand.right, context);
     },
-    '&&': function (this: any, operand: OperandBinary, context: jsContext) {
+    '&&': function (this: any, operand: OperandBinary, context: jsContext[]) {
         return executeSingleOperation.call(this, operand.left, context) && executeSingleOperation.call(this, operand.right, context);
     }
 }
 
-export function generateFunction(operand: OperandFunction, context: jsContext = {}) {
+export function generateFunction(operand: OperandFunction, context: jsContext[] = [{}]) {
     return function (this: any) {
         let innerContext: jsContext = {};
         for (var i = 0; i < operand.args.length; i++) {
             innerContext[operand.args[i]] = arguments[i];
         }
-        const newContext = {
-            ...context,
-            ...innerContext
-        };
-        delete newContext['___result'];
-        let result = execute.call(this, operand.body, newContext);
+        let result = _execute.call(this, operand.body, [...context, innerContext]);
         if (result != undefined) {
             return result;
         }
     }
 }
 
-export function generateObject(this: any, operand: OperandObject, context: jsContext) {
+export function generateObject(this: any, operand: OperandObject, context: jsContext[]) {
     let result: { [key: string]: any } = {};
     operand.fields.forEach((x) => {
-        result[x.name] = execute.call(this, x.value, context);
+        result[x.name] = _execute.call(this, x.value, context);
     })
     return result;
 }
 
-export function getPropertyByName(context: jsContext, name: string) {
-    let propertyPath = name.split('.');
-    let result = context;
-    for (let i = 0; i < propertyPath.length; i++) {
-        result = result[propertyPath[i]];
-    }
-    return result;
-}
-
-export function getAssignFunc(this: any, context: jsContext, operands: OperandContext[]) {
-    let result = context;
+export function getAssignFunc(this: any, context: jsContext[], operands: OperandContext[]) {
+    let result = getContext(operands[0], context) || context[context.length - 1];
     let latestOperand = operands.pop() as OperandContext;
     for (let i = 0; i < operands.length; i++) {
         if (operands[i].name === 'this') result = this;
         else if (typeof operands[i].name === 'string') result = result[operands[i].name as string];
-        else result = result[execute.call(this, operands[i].name as Operands, context) as string]
+        else result = result[_execute.call(this, operands[i].name as Operands, context) as string]
     }
     return (val: any) => {
         if (typeof latestOperand.name === 'string') result[latestOperand.name] = val;
-        else result[execute.call(this, latestOperand.name as Operands, context) as string]
+        else result[_execute.call(this, latestOperand.name as Operands, context) as string]
     };
 }
 
-export function getContext(this: any, operand: OperandCall | OperandContext, context: any = {}, currentObj: any = {}) {
+export function getContext(this: any, operand: OperandCall | OperandContext, context: any[]) {
     let propertyName = IsContext(operand) ? operand.name : operand.func;
-    if (typeof propertyName !== "string") return currentObj;
-    if (typeof currentObj === 'object' && propertyName in currentObj) {
-        return currentObj;
-    } else if (!!currentObj[propertyName]) {
-        return currentObj;
-    } else if (propertyName in currentObj) {
-        return context;
-    } else if (this && this[propertyName] != undefined) {
-        return this;
-    } else {
-        return window;
+    if (typeof propertyName !== "string") return context[context.length - 1];
+    for (var i = context.length - 1; i >= 0; i--) {
+        if (typeof context[i] === 'object' && propertyName in context[i]) {
+            return context[i]
+        } else if (!!context[i][propertyName]) {
+            return context[i];
+        }
     }
 }
 
-export function executeSingleOperation(this: any, operand: Operands, context: jsContext = {}, currentObj?: any): any {
-    if ('___result' in context) return context["___result"];
+export function executeSingleOperation(this: any, operand: Operands, context: jsContext[]): any {
+    if (typeof context[context.length - 1] === 'object' && '___result' in context[context.length - 1])
+        return context[context.length - 1]["___result"];
     if (IsFunction(operand)) {
         return generateFunction(operand, context);
     } else if (IsAssign(operand)) {
-        return getAssignFunc.call(this, context, operand.assignTo)(execute.call(this, operand.value, context));
+        return getAssignFunc.call(this, context, operand.assignTo)(_execute.call(this, operand.value, context));
     } else if (IsContext(operand)) {
         if (operand.name === 'this') return this;
         let name = operand.name;
-        if(typeof name !== 'string') {
-            name = execute.call(this, operand.name as Operands, context);
+        if (typeof name !== 'string') {
+            name = _execute.call(this, operand.name as Operands, context);
         }
-        return getContext.call(this, operand, context, currentObj)[name as string];
+        return getContext.call(this, operand, context)[name as string];
     } else if (IsValue(operand)) {
         return operand.value;
     } else if (IsBinary(operand)) {
@@ -138,62 +121,62 @@ export function executeSingleOperation(this: any, operand: Operands, context: js
     } else if (IsCall(operand)) {
         let func = operand.func;
         if (typeof func !== 'string') {
-            func = execute.call(this, func, context, currentObj);
+            func = _execute.call(this, func, context);
         }
-        return getContext.call(this, operand, context, currentObj)[func as string](...operand.args.map(x => execute.call(this, x, context)));
+        return getContext.call(this, operand, context)[func as string](...operand.args.map(x => _execute.call(this, x, context)));
     } else if (IsObject(operand)) {
         return generateObject.call(this, operand, context);
     } else if (IsWith(operand)) {
-        let innerContext = {
+        let result = _execute.call(this, operand.body, [
             ...context,
-            ...(execute.call(this, operand.context, context))
-        }
-        let result = execute.call(this, operand.body, innerContext);
-        for (let name in context) {
-            context[name] = innerContext[name];
-        }
+            _execute.call(this, operand.context, context)
+        ]);
         return result;
     } else if (IsIf(operand)) {
-        if (execute.call(this, operand.condition, context)) {
-            return execute.call(this, operand.true, context);
+        if (_execute.call(this, operand.condition, context)) {
+            return _execute.call(this, operand.true, context);
         } else {
-            return execute.call(this, operand.false, context);
+            return _execute.call(this, operand.false, context);
         }
     } else if (IsSequence(operand)) {
-        let result = context;
+        let newContext = [...context];
         for (let i = 0; i < operand.operands.length; i++) {
-            result = execute.call(this, operand.operands[i], context, result);
+            newContext.push(_execute.call(this, operand.operands[i], newContext));
         }
-        return result;
+        return newContext[newContext.length - 1];
     } else if (IsReturn(operand)) {
-        context['___result'] = execute.call(this, operand.value, context, currentObj);
-        return context['___result'];
+        context[context.length - 1]['___result'] = _execute.call(this, operand.value, context);
+        return context[context.length - 1]['___result'];
     } else if (IsArray(operand)) {
-        return operand.values.map(x => execute.call(this, x, context, currentObj));
+        return operand.values.map(x => _execute.call(this, x, context));
     } else if (IsNot(operand)) {
-        return !execute.call(this, operand.value, context, currentObj);
+        return !_execute.call(this, operand.value, context);
     } else if (IsTypeOf(operand)) {
-        let _res = execute.call(this, operand.value, context, currentObj);
+        let _res = _execute.call(this, operand.value, context);
         return typeof _res;
     } else {
         return null;
     }
 }
 
-export function execute(this: any, operands: Operands[] | Operands, context: jsContext = {}, currentObj?: any) {
-    if ('___result' in context) {
-        return context['___result'];
+export function execute(this: any, operands: Operands[] | Operands, context: jsContext = {}) {
+    return _execute.call(this, operands, [window, context]);
+}
+
+export function _execute(this: any, operands: Operands[] | Operands, context: any[] = [{}]) {
+    if (typeof context[context.length - 1] === 'object' && '___result' in context[context.length - 1]) {
+        return context[context.length - 1]['___result'];
     }
     if (Array.isArray(operands)) {
         let __result = undefined;
         for (var i = 0; i < operands.length; i++) {
-            __result = executeSingleOperation.call(this, operands[i], context, currentObj);
-            if ('__result' in context) {
-                return context['___result'];
+            __result = executeSingleOperation.call(this, operands[i], context);
+            if ('__result' in context[context.length - 1]) {
+                return context[context.length - 1]['___result'];
             }
         }
         return __result;
     } else {
-        return executeSingleOperation.call(this, operands, context, currentObj);
+        return executeSingleOperation.call(this, operands, context);
     }
 }
