@@ -6,7 +6,7 @@ import { OperandFunction } from "../operands/operand-function";
 import { IsArray, IsAssign, IsBinary, IsCall, IsContext, IsFunction, IsIf, IsNot, IsObject, IsReturn, IsSequence, IsTypeOf, IsValue, IsWith, Operands } from "../operands/operand-mapper";
 import { OperandObject } from "../operands/operand-object";
 
-export type BinaryCommands = '+' | '-' | '/' | '*' | '<' | '<=' | '>' | '>=' | '==' | '===' | '||' | '&&';
+export type BinaryCommands = '+' | '-' | '/' | '*' | '<' | '<=' | '>' | '>=' | '==' | '===' | '||' | '&&' | '!=' | '!==';
 
 export type BinaryExecutor = {
     [K in BinaryCommands]: (operand: OperandBinary, context: jsContext[]) => any;
@@ -55,16 +55,23 @@ export class Evaluator {
         },
         '&&': (operand: OperandBinary, context: jsContext[]) => {
             return this.executeSingleOperation(operand.left, context) && this.executeSingleOperation(operand.right, context);
+        },
+        '!=': (operand: OperandBinary, context: jsContext[]) => {
+            return this.executeSingleOperation(operand.left, context) != this.executeSingleOperation(operand.right, context);
+        },
+        '!==': (operand: OperandBinary, context: jsContext[]) => {
+            return this.executeSingleOperation(operand.left, context) !== this.executeSingleOperation(operand.right, context);
         }
     }
 
     generateFunction(operand: OperandFunction, context: jsContext[] = [{}]) {
+        let cloneContext = [...context];
         return function (this: any) {
             let innerContext: jsContext = {};
             for (var i = 0; i < operand.args.length; i++) {
                 innerContext[operand.args[i]] = arguments[i];
             }
-            return new Evaluator(this)._execute(operand.body, [...context, innerContext]);
+            return new Evaluator(this)._execute(operand.body, [...cloneContext, innerContext]);
         }
     }
 

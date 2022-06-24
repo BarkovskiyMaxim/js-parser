@@ -554,7 +554,7 @@ test('object with call this function test', () => {
     const func = `function() {
         return { a: this.test() }
     }`
-    expect(_execute(jsParser.parse(func)).call({ test: () => 2})).toEqual({ a: 2 });
+    expect(_execute(jsParser.parse(func)).call({ test: () => 2 })).toEqual({ a: 2 });
 })
 
 test('function with context and closure', () => {
@@ -583,4 +583,35 @@ test('variable is not in context test', () => {
     }`
     let result = _execute(jsParser.parse(func))({ $data: { test: 'b' } });
     expect(result).toEqual(undefined);
+})
+
+test('Stackoverflow fix test', () => {
+    const func = `function($context) {
+        with($context) {
+            with($data) {
+                return {
+                    'visible':function(){return active() && visible() }
+                };
+            }
+        }
+    }`
+    let result = _execute(jsParser.parse(func))({
+        $data: {
+            active: () => true,
+            visible: () => true
+        }
+    });
+    expect(result.visible()).toEqual(true);
+})
+
+test('!== test', () => {
+    let func = `function() {
+        return 2 != 3
+    }`
+    expect(_execute(jsParser.parse(func))()).toEqual(true);
+
+    func = `function() {
+        return 2 !== 2
+    }`
+    expect(_execute(jsParser.parse(func))()).toEqual(false);
 })
