@@ -184,8 +184,9 @@ call_args
     ;
 
 obj
-    : '{' objFields '}' { $$ = { fields: $2, type: 'obj' }; }
-    | '{' '}'           { $$ = { fields: [], type: 'obj' }; }
+    : '{' objFields '}'     { $$ = { fields: $2, type: 'obj' }; }
+    | '{' objFields ',' '}' { $$ = { fields: $2, type: 'obj' }; }
+    | '{' '}'               { $$ = { fields: [], type: 'obj' }; }
     ;
 
 objFields

@@ -536,8 +536,39 @@ test('call method from class in with operator test', () => {
             }
         }
     }`
-    expect(_execute(jsParser.parse(func))( {
-            b: new Test()
-        }
+    expect(_execute(jsParser.parse(func))({
+        b: new Test()
+    }
     )).toEqual(2);
+})
+
+test('object with useless , symbol test', () => {
+    const func = `function() {
+        return { a: { b: 1, }, c: 2 }
+    }`
+    expect(_execute(jsParser.parse(func))(
+    )).toEqual({ a: { b: 1 }, c: 2 });
+})
+
+test('object with call this function test', () => {
+    const func = `function() {
+        return { a: this.test() }
+    }`
+    expect(_execute(jsParser.parse(func)).call({ test: () => 2})).toEqual({ a: 2 });
+})
+
+test('function with context and closure', () => {
+    const func = `function($context) {
+        with($context) {
+            with($data) {
+                return {
+                    attr: function() {
+                        return 'a' + $data.test + 'c'
+                    }
+                }
+            }
+        }
+    }`
+    let result = _execute(jsParser.parse(func))({ $data: { test: 'b' } });
+    expect(result.attr()).toEqual('abc');
 })
