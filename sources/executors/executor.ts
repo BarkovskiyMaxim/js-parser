@@ -115,7 +115,8 @@ export class Evaluator {
             if (typeof name !== 'string') {
                 name = this._execute(operand.name as Operands, context);
             }
-            return this.getContext(operand, context)[name as string];
+            let currentContext = this.getContext(operand, context); 
+            return currentContext && currentContext[name as string];
         } else if (IsValue(operand)) {
             return operand.value;
         } else if (IsBinary(operand)) {

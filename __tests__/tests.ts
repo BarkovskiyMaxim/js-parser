@@ -572,3 +572,15 @@ test('function with context and closure', () => {
     let result = _execute(jsParser.parse(func))({ $data: { test: 'b' } });
     expect(result.attr()).toEqual('abc');
 })
+
+test('variable is not in context test', () => {
+    const func = `function($context) {
+        with($context) {
+            with($data) {
+                return prop1;
+            }
+        }
+    }`
+    let result = _execute(jsParser.parse(func))({ $data: { test: 'b' } });
+    expect(result).toEqual(undefined);
+})
