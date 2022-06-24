@@ -80,12 +80,14 @@ result
 
 func
     : function '{' body '}' { $$ = { body: $3, args: $1.args, type: 'func' }; }
+    | NAME_SOFT '=>' right_part { $$ = { body: [$3], args: [$1], type: 'func' }; }
+    | NAME_SOFT '=>' '{' body '}'  { $$ = { body: $4, args: [$1], type: 'func' }; }
     ;
 
 function
     : FUNC '(' arguments ')'   { $$ = { args: $3 }; }
     | FUNC '()'                { $$ = { args: [] }; }
-    | '()' '=>'                   { $$ = { args: [] }; }
+    | '()' '=>'                { $$ = { args: [] }; }
     ;
 
 arguments

@@ -615,3 +615,10 @@ test('!== test', () => {
     }`
     expect(_execute(jsParser.parse(func))()).toEqual(false);
 })
+
+test('x => test', () => {
+    const func = `function(a) {
+        return a.some(x => x === 2);
+    }`
+    expect(_execute(jsParser.parse(func))([1,2,3])).toEqual(true)
+})
