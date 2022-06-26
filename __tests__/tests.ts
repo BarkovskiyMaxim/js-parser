@@ -669,3 +669,10 @@ test(`function case7`, () => {
         visibleItems: [1, 2, 3]
     })).toEqual('dx-treelist-paginate');
 })
+
+test(`parse string with " symbol`, () => {
+    const func = `function() { 
+        return "a";
+    }`;
+    expect(_execute(jsParser.parse(func))()).toEqual('a');
+})
