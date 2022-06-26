@@ -85,8 +85,8 @@ export class Evaluator {
 
     getAssignFunc(context: jsContext[], operands: OperandContext[]) {
         let result = this.getContext(operands[0], context) || context[context.length - 1];
-        let latestOperand = operands.pop() as OperandContext;
-        for (let i = 0; i < operands.length; i++) {
+        let latestOperand = operands[operands.length - 1] as OperandContext;
+        for (let i = 0; i < operands.length - 1; i++) {
             if (operands[i].name === 'this') result = this.thisContext;
             else if (typeof operands[i].name === 'string') result = result[operands[i].name as string];
             else result = result[this._execute(operands[i].name as Operands, context) as string]

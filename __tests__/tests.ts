@@ -620,5 +620,52 @@ test('x => test', () => {
     const func = `function(a) {
         return a.some(x => x === 2);
     }`
-    expect(_execute(jsParser.parse(func))([1,2,3])).toEqual(true)
+    expect(_execute(jsParser.parse(func))([1, 2, 3])).toEqual(true)
+})
+
+test('function case6', () => {
+    const func = `function($context, $element) { 
+        with($context){
+            with($data||{}){
+                return{
+                    'dxSelectBox':function(){
+                        return {
+                            dataSource:$root.controlsStore.dataSource,
+                            value:$root.editableObject,
+                            displayExpr:function(value){
+                                var showValue = value || $root.editableObject();
+                                return $root.dx._static.getControlFullName(showValue)
+                            },
+                            dropDownOptions:{ 
+                                container:$root.getPopupContainer($element)
+                            },
+                            useItemTextAsTitle:true
+                        } 
+                    }
+                }
+            }
+        }
+    }`
+    let result = _execute(jsParser.parse(func))({
+        $root: {
+            editableObject: () => 'eo',
+            controlsStore: { dataSource: 'ds' },
+            getPopupContainer: () => 'el',
+            dx: { _static: { getControlFullName: () => 'fn' } }
+        }
+    }, 'el');
+    let selectBoxOptions = result.dxSelectBox();
+    expect(selectBoxOptions.displayExpr(1)).toEqual('fn');
+    expect(selectBoxOptions.displayExpr(0)).toEqual('fn');
+})
+
+test(`function case7`, () => {
+    const func = `function($data) { 
+        return $data.visibleItems !== undefined ?'dx-treelist-paginate':'dx-treelist-common' 
+    }`;
+    expect(_execute(jsParser.parse(func))({})).toEqual('dx-treelist-common');
+
+    expect(_execute(jsParser.parse(func))({
+        visibleItems: [1, 2, 3]
+    })).toEqual('dx-treelist-paginate');
 })

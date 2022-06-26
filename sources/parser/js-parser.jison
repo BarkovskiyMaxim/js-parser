@@ -9,7 +9,7 @@
 "true"                      return 'BOOLEAN'
 "false"                     return 'BOOLEAN'
 "null"                      return 'NULL'
-"undefined"                 return 'NULL'
+"undefined"                 return 'undefined'
 
 "var"                       return 'VAR'
 "return"                    return 'RETURN'
@@ -134,6 +134,7 @@ value
     | process_string  { $$ = $1 }
     | BOOLEAN         { $$ = $1 === 'true' }
     | NULL            { $$ = null; }
+    | undefined       { $$ = undefined; }
     ;
 
 process_string
