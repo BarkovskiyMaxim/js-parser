@@ -687,3 +687,10 @@ test("class test", () => {
         inst: Test
     })).toEqual('1');
 })
+
+test("return empty function test", () => {
+    const func = `function() {
+        return function() {}
+    }`
+    expect(_execute(jsParser.parse(func))()()).toEqual(undefined);
+})
