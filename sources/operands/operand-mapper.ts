@@ -3,6 +3,7 @@ import { OperandArray } from "./operand-array";
 import { OperandAssign } from "./operand-assign";
 import { OperandBinary } from "./operand-binary";
 import { OperandCall } from "./operand-call";
+import { OperandClass } from "./operand-class";
 import { OperandFunction } from "./operand-function";
 import { OperandIf } from "./operand-if";
 import { OperandNot } from "./operand-not";
@@ -26,6 +27,7 @@ export type Operands = OperandBinary |
                        OperandNot |
                        OperandArray |
                        OperandTypeOf |
+                       OperandClass |
                        OperandCall;
 
 export function IsBinary(operand: Operands): operand is OperandBinary {
@@ -82,4 +84,8 @@ export function IsNot(operand: Operands): operand is OperandNot {
 
 export function IsTypeOf(operand: Operands): operand is OperandTypeOf {
     return operand.type === 'typeof';
+}
+
+export function IsClass(operand: Operands): operand is OperandClass {
+    return operand.type === 'class';
 }

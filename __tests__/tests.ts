@@ -523,8 +523,9 @@ test('[] with binary opeartor in tail test', () => {
 })
 
 class Test {
+    constructor(public b = 2) {}
     c() {
-        return 2;
+        return this.b;
     }
 }
 
@@ -675,4 +676,14 @@ test(`parse string with " symbol`, () => {
         return "a";
     }`;
     expect(_execute(jsParser.parse(func))()).toEqual('a');
+})
+
+test("class test", () => {
+    const func = `function($data) { 
+        var inst = new $data.inst('1');
+        return inst.c();
+    }`;
+    expect(_execute(jsParser.parse(func))({
+        inst: Test
+    })).toEqual('1');
 })

@@ -2,9 +2,11 @@ import { jsContext } from "../operands/js-context";
 import { OperandContext } from "../operands/oparand-context";
 import { OperandBinary } from "../operands/operand-binary";
 import { OperandCall } from "../operands/operand-call";
+import { OperandClass } from "../operands/operand-class";
 import { OperandFunction } from "../operands/operand-function";
-import { IsArray, IsAssign, IsBinary, IsCall, IsContext, IsFunction, IsIf, IsNot, IsObject, IsReturn, IsSequence, IsTypeOf, IsValue, IsWith, Operands } from "../operands/operand-mapper";
+import { IsArray, IsAssign, IsBinary, IsCall, IsClass, IsContext, IsFunction, IsIf, IsNot, IsObject, IsReturn, IsSequence, IsTypeOf, IsValue, IsWith, Operands } from "../operands/operand-mapper";
 import { OperandObject } from "../operands/operand-object";
+import { OperandSequence } from "../operands/operand-sequence";
 
 export type BinaryCommands = '+' | '-' | '/' | '*' | '<' | '<=' | '>' | '>=' | '==' | '===' | '||' | '&&' | '!=' | '!==';
 
@@ -97,8 +99,14 @@ export class Evaluator {
         };
     }
 
-    getContext(operand: OperandCall | OperandContext, context: any[]) {
-        let propertyName = IsContext(operand) ? operand.name : operand.func;
+    private _getPropertyName(operand: OperandCall | OperandContext | OperandClass) {
+        if(IsCall(operand)) return operand.func;
+        if(IsContext(operand)) return operand.name;
+        if(IsClass(operand)) return operand.ctor;
+    }
+
+    getContext(operand: OperandCall | OperandContext | OperandClass, context: any[]) {
+        let propertyName = this._getPropertyName(operand);
         if (typeof propertyName !== "string") return context[context.length - 1];
         for (var i = context.length - 1; i >= 0; i--) {
             if (typeof context[i] === 'object' && propertyName in context[i]) {
@@ -165,8 +173,19 @@ export class Evaluator {
         } else if (IsTypeOf(operand)) {
             let _res = this._execute(operand.value, context);
             return typeof _res;
-        } else {
-            return null;
+        } else  if(IsClass(operand)) {
+            let ctorClone = <OperandSequence>{
+                operands: [...operand.ctor.operands],
+                type: 'sequence'
+            };
+            let callOperand = ctorClone.operands.pop() as OperandCall;
+            let result = this._execute(ctorClone, context);
+            let func = callOperand.func;
+            if (typeof func !== 'string') {
+                func = this._execute(func, context);
+            }
+            let signature = result[func as string];
+            return new signature(...callOperand.args.map(x => this._execute(x, context)));   
         }
     }
 

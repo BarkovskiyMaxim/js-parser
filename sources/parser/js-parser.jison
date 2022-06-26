@@ -13,6 +13,7 @@
 "undefined"                 return 'undefined'
 
 "var"                       return 'VAR'
+"new"                       return 'CLASS'
 "return"                    return 'RETURN'
 ";"                         return 'EOL'
 "()"                        return '()'
@@ -128,6 +129,7 @@ right_part
     | '(' right_part ')'                       { $$ = $2; }
     | TYPEOF '(' right_part ')'                { $$ = { type: 'typeof', value: $3 } }
     | func                                     { $$ = $1; }
+    | CLASS sequence                           { $$ = { type: 'class', ctor: $2 } }
     ;
 
 value  
