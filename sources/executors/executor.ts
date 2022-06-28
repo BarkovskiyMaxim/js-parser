@@ -100,9 +100,9 @@ export class Evaluator {
     }
 
     private _getPropertyName(operand: OperandCall | OperandContext | OperandClass) {
-        if(IsCall(operand)) return operand.func;
-        if(IsContext(operand)) return operand.name;
-        if(IsClass(operand)) return operand.ctor;
+        if (IsCall(operand)) return operand.func;
+        if (IsContext(operand)) return operand.name;
+        if (IsClass(operand)) return operand.ctor;
     }
 
     getContext(operand: OperandCall | OperandContext | OperandClass, context: any[]) {
@@ -130,7 +130,7 @@ export class Evaluator {
             if (typeof name !== 'string') {
                 name = this._execute(operand.name as Operands, context);
             }
-            let currentContext = this.getContext(operand, context); 
+            let currentContext = this.getContext(operand, context);
             return currentContext && currentContext[name as string];
         } else if (IsValue(operand)) {
             return operand.value;
@@ -141,6 +141,8 @@ export class Evaluator {
             if (typeof func !== 'string') {
                 func = this._execute(func, context);
             }
+            if (typeof func === 'function')
+                return (func as Function)(...operand.args.map(x => this._execute(x, context)));
             return this.getContext(operand, context)[func as string](...operand.args.map(x => this._execute(x, context)));
         } else if (IsObject(operand)) {
             return this.generateObject(operand, context);
@@ -173,7 +175,7 @@ export class Evaluator {
         } else if (IsTypeOf(operand)) {
             let _res = this._execute(operand.value, context);
             return typeof _res;
-        } else  if(IsClass(operand)) {
+        } else if (IsClass(operand)) {
             let ctorClone = <OperandSequence>{
                 operands: [...operand.ctor.operands],
                 type: 'sequence'
@@ -185,7 +187,7 @@ export class Evaluator {
                 func = this._execute(func, context);
             }
             let signature = result[func as string];
-            return new signature(...callOperand.args.map(x => this._execute(x, context)));   
+            return new signature(...callOperand.args.map(x => this._execute(x, context)));
         }
     }
 

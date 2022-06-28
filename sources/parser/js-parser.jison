@@ -132,6 +132,8 @@ right_part
     | TYPEOF '(' right_part ')'                { $$ = { type: 'typeof', value: $3 } }
     | func                                     { $$ = $1; }
     | CLASS sequence                           { $$ = { type: 'class', ctor: $2 } }
+    | '(' right_part ')' sequence_tail         { $$ = { operands: [].concat([$2], $4), type: 'sequence' } }
+    | '(' right_part ')' call_right            { $$ = { type: 'call', func: $2, args: $4 } }
     ;
 
 value  
@@ -184,8 +186,12 @@ right_part_value
     ;
 
 call
-    : NAME_SOFT '()'           { $$ = { func: $1, args: [], type: 'call' }; }
-    | NAME_SOFT '(' call_args ')' { $$ = { func: $1, args: $3, type: 'call' }; }
+    : NAME_SOFT call_right           { $$ = { func: $1, args: $2, type: 'call' }; }
+    ;
+
+call_right
+    : '()'              { $$ = []; }
+    | '(' call_args ')' { $$ = $2; }
     ;
 
 call_args

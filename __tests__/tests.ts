@@ -523,7 +523,7 @@ test('[] with binary opeartor in tail test', () => {
 })
 
 class Test {
-    constructor(public b = 2) {}
+    constructor(public b = 2) { }
     c() {
         return this.b;
     }
@@ -693,4 +693,24 @@ test("return empty function test", () => {
         return function() {}
     }`
     expect(_execute(jsParser.parse(func))()()).toEqual(undefined);
+})
+
+
+test("binary opration in '(' ')' test", () => {
+    const func = `function(b) {
+        return ('a' || b).toUpperCase();
+    }`
+    expect(_execute(jsParser.parse(func))('c')).toEqual('A');
+})
+
+test('return call function test', () => {
+    let func = `function(getContainer) {
+        return (getContainer || function(a) { return a; })('test')
+    }`
+    expect(_execute(jsParser.parse(func))()).toEqual('test');
+
+    func = `function(getContainer) {
+        return (getContainer || function(a) { return a; })('test')
+    }`
+    expect(_execute(jsParser.parse(func))(() => 'myTest')).toEqual('myTest');
 })
