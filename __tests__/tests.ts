@@ -1,4 +1,4 @@
-import { _execute } from '../sources/executors/executor';
+import { execute, _execute } from '../sources/executors/executor';
 import { OperandContext } from '../sources/operands/oparand-context';
 import { OperandAssign } from '../sources/operands/operand-assign';
 import { OperandBinary } from '../sources/operands/operand-binary';
@@ -713,4 +713,42 @@ test('return call function test', () => {
         return (getContainer || function(a) { return a; })('test')
     }`
     expect(_execute(jsParser.parse(func))(() => 'myTest')).toEqual('myTest');
+})
+
+test('window operation is disabled test', () => {
+    let func = `function() {
+        return Math.max(1,2);
+    }`
+    expect(_execute(jsParser.parse(func), undefined, {
+        enabledWindowOperations: { 'Math': true },
+        disabledOperations: {}
+    })()).toEqual(2);
+
+    `function() {
+        return Math.max(1,2);
+    }`
+    try {
+        _execute(jsParser.parse(func), undefined, {
+            enabledWindowOperations: {},
+            disabledOperations: {}
+        })();
+    } catch (e: any) {
+        expect(e.message).toEqual("Math is not available from window");
+    }
+})
+
+test('speific operand is not avaialbe test', () => {
+    let func = `function() {
+        return 1 > 2;
+    }`
+    try {
+        _execute(jsParser.parse(func), undefined, {
+            enabledWindowOperations: {},
+            disabledOperations: {
+                binary: true
+            }
+        })()
+    } catch (e: any) {
+        expect(e.message).toEqual("Operator binary is unavailable");
+    }
 })
