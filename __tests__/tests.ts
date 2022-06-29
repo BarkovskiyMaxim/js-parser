@@ -752,3 +752,21 @@ test('speific operand is not avaialbe test', () => {
         expect(e.message).toEqual("Operator binary is unavailable");
     }
 })
+
+
+test('property name with _ and $ symbol test', () => {
+    let func = `function(a) {
+        return a._$test;
+    }`;
+    expect(_execute(jsParser.parse(func))({ ['_$test']: 2 })).toEqual(2);
+
+    func = `function(a) {
+        return a._test;
+    }`;
+    expect(_execute(jsParser.parse(func))({ _test: 2 })).toEqual(2);
+
+    func = `function(a) {
+        return a.$test;
+    }`;
+    expect(_execute(jsParser.parse(func))({ $test: 2 })).toEqual(2);
+})
