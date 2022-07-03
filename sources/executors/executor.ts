@@ -46,7 +46,7 @@ export class Evaluator {
     }
 
     private _checkWindowOperation(context: any, name: string) {
-        if (context === window && (!this._settings.enabledWindowOperations[name as any])) {
+        if (context === window && (!this._settings.enabledWindowOperations[name as any]) && !!window[name as any]) {
             throw new Error(`${name} is not available from window`)
         }
     }
@@ -115,13 +115,13 @@ export class Evaluator {
         return this.getAssignFunc(context, operand.assignTo)(this._eval(operand.value, context));
     }
 
-    evalContext(operand: OperandContext, context: jsContext[]) {
+    evalContext(operand: OperandContext, context: jsContext[], _currentContext: any) {
         if (operand.name === 'this') return this._thisContext;
         let name = operand.name;
         if (typeof name !== 'string') {
             name = this._eval(operand.name as Operands, context);
         }
-        let currentContext = this.getContext(operand, context);
+        let currentContext = _currentContext || this.getContext(operand, context);
         this._checkWindowOperation(currentContext, name as string);
         return currentContext && currentContext[name as string];
     }
@@ -134,14 +134,14 @@ export class Evaluator {
         return this.binaryCommands[operand.operation](operand, context);
     }
 
-    evalCall(operand: OperandCall, context: jsContext[]) {
+    evalCall(operand: OperandCall, context: jsContext[], _currentContext: jsContext) {
         let func = operand.func;
         if (typeof func !== 'string') {
             func = this._eval(func, context);
         }
         if (typeof func === 'function')
             return (func as Function)(...operand.args.map(x => this._eval(x, context)));
-        let currentContext = this.getContext(operand, context);
+        let currentContext = _currentContext || this.getContext(operand, context);
         this._checkWindowOperation(currentContext, func as string);
         return currentContext[func as string](...operand.args.map(x => this._eval(x, context)));
     }
@@ -171,11 +171,11 @@ export class Evaluator {
     }
 
     evalSequence(operand: OperandSequence, context: jsContext[]) {
-        let newContext = [...context];
+        let result = undefined;
         for (let i = 0; i < operand.operands.length; i++) {
-            newContext.push(this._eval(operand.operands[i], newContext));
+            result = this._eval(operand.operands[i], context, result);
         }
-        return newContext[newContext.length - 1];
+        return result;
     }
 
     evalReturn(operand: OperandReturn, context: jsContext[]) {
@@ -240,15 +240,15 @@ export class Evaluator {
         }
     }
 
-    evalSingleOperation(operand: Operands, context: jsContext[]): any {
+    evalSingleOperation(operand: Operands, context: jsContext[], _currentContext?: any): any {
         if (this.isReturnCalled) return this.___result;
         if (this._settings.disabledOperations[operand.type]) this._throwOperationUnavailableError(operand.type);
         if (IsFunction(operand)) return this.evalFunction(operand, context);
         if (IsAssign(operand)) return this.evalAssign(operand, context);
-        if (IsContext(operand)) return this.evalContext(operand, context);
+        if (IsContext(operand)) return this.evalContext(operand, context, _currentContext);
         if (IsValue(operand)) return this.evalValue(operand, context);
         if (IsBinary(operand)) return this.evalBinary(operand, context);
-        if (IsCall(operand)) return this.evalCall(operand, context);
+        if (IsCall(operand)) return this.evalCall(operand, context, _currentContext);
         if (IsObject(operand)) return this.evalObject(operand, context);
         if (IsWith(operand)) return this.evalWith(operand, context);
         if (IsIf(operand)) return this.evalIf(operand, context);
@@ -260,21 +260,21 @@ export class Evaluator {
         if (IsClass(operand)) return this.evalClass(operand, context);
     }
 
-    _eval(operands: Operands[] | Operands, context: any[] = [{}]) {
+    _eval(operands: Operands[] | Operands, context: any[] = [{}], _currentContext?: any) {
         if (this.isReturnCalled) {
             return this.___result;
         }
         if (Array.isArray(operands)) {
             let __result = undefined;
             for (var i = 0; i < operands.length; i++) {
-                __result = this.evalSingleOperation(operands[i], context);
+                __result = this.evalSingleOperation(operands[i], context, _currentContext);
                 if (this.isReturnCalled) {
                     return this.___result;
                 }
             }
             return __result;
         } else {
-            return this.evalSingleOperation(operands, context);
+            return this.evalSingleOperation(operands, context, _currentContext);
         }
     }
 }
@@ -283,7 +283,7 @@ export function execute(this: any, operands: Operands[] | Operands, context: jsC
     disabledOperations: {},
     enabledWindowOperations: {},
 }) {
-    return new Evaluator(this)._eval(operands, [window, context]);
+    return new Evaluator(this, settings)._eval(operands, [window, context]);
 }
 
 export function _execute(this: any, operands: Operands[] | Operands, context: any[] = [window, {}], settings: Settings = {

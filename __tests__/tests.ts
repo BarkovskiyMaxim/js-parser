@@ -770,3 +770,11 @@ test('property name with _ and $ symbol test', () => {
     }`;
     expect(_execute(jsParser.parse(func))({ $test: 2 })).toEqual(2);
 })
+
+test('get property from sequence test', () => {
+    let func = `function(a) {
+        var b = {};
+        return b.a;
+    }`;
+    expect(_execute(jsParser.parse(func))({ test: '1' })).toEqual(undefined);
+})
