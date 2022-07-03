@@ -778,3 +778,16 @@ test('get property from sequence test', () => {
     }`;
     expect(_execute(jsParser.parse(func))({ test: '1' })).toEqual(undefined);
 })
+
+test('throw if property not found in sequence test', () => {
+    let func = `function(a) {
+        var b = {};
+        return b.c.a;
+    }`;
+    try {
+        _execute(jsParser.parse(func))({ test: '1' });
+        expect(true).toEqual(false);
+    } catch(e: any) {
+        expect(e.message).toEqual("Property {\"name\":\"a\",\"type\":\"context\"} doesn't exists in context after evaluate [{\"name\":\"b\",\"type\":\"context\"},{\"name\":\"c\",\"type\":\"context\"},{\"name\":\"a\",\"type\":\"context\"}]")
+    }
+})

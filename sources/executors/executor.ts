@@ -174,6 +174,9 @@ export class Evaluator {
         let result = undefined;
         for (let i = 0; i < operand.operands.length; i++) {
             result = this._eval(operand.operands[i], context, result);
+            if(result === undefined && i < operand.operands.length - 1) {
+                throw new Error(`Property ${JSON.stringify(operand.operands[i+1])} doesn't exists in context after evaluate ${JSON.stringify(operand.operands)}`)
+            }
         }
         return result;
     }
