@@ -124,6 +124,7 @@ export class Evaluator {
         let currentContext = _currentContext !== undefined ? _currentContext : this.getContext(operand, context);
         this._checkWindowOperation(currentContext, name as string);
         if(currentContext === undefined) return undefined;
+        if(currentContext === null) return null;
         return currentContext[name as string];
     }
 
