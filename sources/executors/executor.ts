@@ -121,9 +121,10 @@ export class Evaluator {
         if (typeof name !== 'string') {
             name = this._eval(operand.name as Operands, context);
         }
-        let currentContext = _currentContext || this.getContext(operand, context);
+        let currentContext = _currentContext !== undefined ? _currentContext : this.getContext(operand, context);
         this._checkWindowOperation(currentContext, name as string);
-        return currentContext && currentContext[name as string];
+        if(currentContext === undefined) return undefined;
+        return currentContext[name as string];
     }
 
     evalValue(operand: OperandValue, context: jsContext[]) {
@@ -141,7 +142,7 @@ export class Evaluator {
         }
         if (typeof func === 'function')
             return (func as Function)(...operand.args.map(x => this._eval(x, context)));
-        let currentContext = _currentContext || this.getContext(operand, context);
+        let currentContext = _currentContext !== undefined ? _currentContext : this.getContext(operand, context);
         this._checkWindowOperation(currentContext, func as string);
         return currentContext[func as string](...operand.args.map(x => this._eval(x, context)));
     }

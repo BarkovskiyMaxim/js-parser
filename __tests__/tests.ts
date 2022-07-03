@@ -791,3 +791,11 @@ test('throw if property not found in sequence test', () => {
         expect(e.message).toEqual("Property {\"name\":\"a\",\"type\":\"context\"} doesn't exists in context after evaluate [{\"name\":\"b\",\"type\":\"context\"},{\"name\":\"c\",\"type\":\"context\"},{\"name\":\"a\",\"type\":\"context\"}]")
     }
 })
+
+test('fix context for empty string', () => {
+    let func = `function(a) {
+        var b = { a: '' };
+        return b.a.length;
+    }`;
+    expect(_execute(jsParser.parse(func))([[1,2]])).toEqual(0);
+})
