@@ -63,7 +63,7 @@
 %right        '?' ':'
 %right        '!'
 %left         BINARY
-%left        TYPEOF
+%left         TYPEOF
 %left         '.'
 %right        ASSIGN
 
@@ -119,7 +119,7 @@ return
     ;
 
 assign
-    : VAR NAME_SOFT ASSIGN right_part { $$ = { assignTo: [{ name: $2, type: 'context'}], value: $4, type: 'assign' }; }
+    : VAR NAME_SOFT ASSIGN right_part { $$ = { assignTo: [{ name: $2, type: 'context'}], value: $4, new: true, type: 'assign' }; }
     | sequence ASSIGN right_part      { $$ = { assignTo: $1.operands, value: $3, type: 'assign' }; }
     ;
 

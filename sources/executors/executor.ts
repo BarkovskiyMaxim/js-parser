@@ -47,12 +47,12 @@ export class Evaluator {
 
     private _checkWindowOperation(context: any, name: string) {
         if (context === window && (!this._settings.enabledWindowOperations[name as any]) && !!window[name as any]) {
-            throw new Error(`${name} is not available from window`)
+            throw new EvalError(`${name} is not available from window`)
         }
     }
 
     private _throwOperationUnavailableError(type: Operands['type']) {
-        throw Error(`Operator ${type} is unavailable`);
+        throw new EvalError(`Operator ${type} is unavailable`);
     }
     binaryCommands: BinaryExecutor = {
         '+': (operand: OperandBinary, context: jsContext[]) => {

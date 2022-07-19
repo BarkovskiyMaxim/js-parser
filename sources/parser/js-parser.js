@@ -129,7 +129,7 @@ case 23:
  this.$ = { value: $$[$0], type: 'return' }; 
 break;
 case 24:
- this.$ = { assignTo: [{ name: $$[$0-2], type: 'context'}], value: $$[$0], type: 'assign' }; 
+ this.$ = { assignTo: [{ name: $$[$0-2], type: 'context'}], value: $$[$0], new: true, type: 'assign' }; 
 break;
 case 25:
  this.$ = { assignTo: $$[$0-2].operands, value: $$[$0], type: 'assign' }; 

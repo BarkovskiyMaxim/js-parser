@@ -1,4 +1,5 @@
 import { execute, _execute } from '../sources/executors/executor';
+import { ReplaceVariableProcessor } from '../sources/executors/processor';
 import { OperandContext } from '../sources/operands/oparand-context';
 import { OperandAssign } from '../sources/operands/operand-assign';
 import { OperandBinary } from '../sources/operands/operand-binary';
@@ -797,5 +798,38 @@ test('fix context for empty string', () => {
         var b = { a: '' };
         return b.a.length;
     }`;
-    expect(_execute(jsParser.parse(func))([[1,2]])).toEqual(0);
+    expect(_execute(jsParser.parse(func))([[1, 2]])).toEqual(0);
+})
+
+test('replace processor test', () => {
+    let func = `function($context, $element) { 
+        return {
+            'dxSelectBox':function(){
+                return {
+                    dataSource:$root.controlsStore.dataSource,
+                    value:editableObject,
+                    displayExpr: function(value){
+                        var showValue = value || $root.editableObject();
+                        return $root.dx._static.getControlFullName(showValue)
+                    },
+                    dropDownOptions:{ 
+                        container:$root.getPopupContainer($element, testVar)
+                    },
+                    useItemTextAsTitle:true
+                } 
+            }
+        }
+    }`;
+    const parserResult = jsParser.parse(func);
+    const names: string[] = [];
+    const existsNames: string[] = [];
+    new ReplaceVariableProcessor([], (name, exists) => {
+        if (!exists) {
+            names.push(name);
+        } else {
+            existsNames.push(name);
+        }
+    }).process(parserResult);
+    expect(names).toEqual(['$root', 'editableObject', '$root', '$root', '$root', 'testVar'])
+    expect(existsNames).toEqual(['value', 'showValue', '$element'])
 })
