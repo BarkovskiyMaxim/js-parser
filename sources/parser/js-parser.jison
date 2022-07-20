@@ -6,7 +6,7 @@
 \s+                         /* skip whitespace */
 \'(?:[^\'])*\'   return 'STRING'
 \"(?:[^\"])*\"   return 'STRING'
-[0-9]+(\.[0-9]+([mfMF]{1})?|[bsiluBSILU]{1})?               return 'NUMBER'
+^[-]?[0-9]+(\.[0-9]+([mfMF]{1})?|[bsiluBSILU]{1})?               return 'NUMBER'
 "true"                      return 'BOOLEAN'
 "false"                     return 'BOOLEAN'
 "null"                      return 'NULL'

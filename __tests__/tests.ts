@@ -788,7 +788,7 @@ test('throw if property not found in sequence test', () => {
     try {
         _execute(jsParser.parse(func))({ test: '1' });
         expect(true).toEqual(false);
-    } catch(e: any) {
+    } catch (e: any) {
         expect(e.message).toEqual("Property {\"name\":\"a\",\"type\":\"context\"} doesn't exists in context after evaluate [{\"name\":\"b\",\"type\":\"context\"},{\"name\":\"c\",\"type\":\"context\"},{\"name\":\"a\",\"type\":\"context\"}]")
     }
 })
@@ -914,4 +914,11 @@ test('serialize undefined and null value test', () => {
     expect(processor.process(`function(a) {
         return undefined;
     }`)).toEqual(`function(a){ return undefined }`);
+})
+
+test('minus parse test', () => {
+    let func = `function(a) {
+        return -3 * a;
+    }`;
+    expect(_execute(jsParser.parse(func))(2)).toEqual(-6);
 })
