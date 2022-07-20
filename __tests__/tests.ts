@@ -904,6 +904,17 @@ test('replace processor replace names in [] test', () => {
         return a.test[d].c;
     }`);
     expect(result).toEqual(`function(a,d){ return ex.a.test[ex.d].c }`)
+
+    result = new ReplaceVariableProcessor([], (name, exists) => {
+        if (!exists) {
+            return 'notex.' + name;
+        } else {
+            return 'ex.' + name;
+        }
+    }).process(`function(a, d) {
+        return a.c[\'t\']()[\'e\'];
+    }`);
+    expect(result).toEqual(`function(a,d){ return ex.a.c[\'t\']()[\'e\'] }`)
 })
 
 test('serialize undefined and null value test', () => {
@@ -921,4 +932,25 @@ test('minus parse test', () => {
         return -3 * a;
     }`;
     expect(_execute(jsParser.parse(func))(2)).toEqual(-6);
+})
+
+test('serialize assing to test', () => {
+    const processor = new ReplaceVariableProcessor([], (name, ex) => {
+        if (ex) return 'ex.' + name;
+        return 'notex.'+ name;
+    });
+    expect(processor.process(`function(b) {
+        var a = b;
+    }`)).toEqual(`function(b){ var a = ex.b }`);
+    expect(processor.process(`function(a, b) {
+        a.c(d) = b;
+    }`)).toEqual(`function(a,b){ ex.a.c(notex.d) = ex.b }`);
+    expect(processor.process(`function(a, b) {
+        a(d).b.c(d) = b;
+    }`)).toEqual(`function(a,b){ ex.a(notex.d).b.c(notex.d) = ex.b }`);
+})
+
+test('parse string value test', () => {
+    var res = jsParser.parse("function($context, $data) { return{ 'text':function(){return $root.getLocalization('Specify the report\\'s title','ASPxReportsStringId.ReportDesigner_Wizard_SpecifyReportTitle') }}}");
+    expect(!!res).toEqual(true);
 })

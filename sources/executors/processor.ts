@@ -31,14 +31,10 @@ export class ReplaceVariableProcessor {
     }
 
     processAssign(operand: OperandAssign) {
-        if (typeof operand.assignTo[0].name === 'string') {
-            if (operand.new) {
-                this._functionArgs.push(operand.assignTo[0].name);
-            } else
-                operand.assignTo[0].name = this.replaceName(operand.assignTo[0].name);
-
+        if (operand.new && IsContext(operand.assignTo[0]) && typeof operand.assignTo[0].name === 'string') {
+            this._functionArgs.push(operand.assignTo[0].name);
         } else {
-            this._process(operand.assignTo[0].name);
+            this._processSequenceOperands(operand.assignTo);
         }
         this._process(operand.value);
     }
@@ -79,10 +75,14 @@ export class ReplaceVariableProcessor {
     }
 
     processSequence(operand: OperandSequence) {
-        this._process(operand.operands[0]);
-        for(var i = 1; i < operand.operands.length; i++) {
-            if (IsCall(operand.operands[i])) this._process((operand.operands[i] as OperandCall).args)
-            else if (operand.operands[i].enumerable) this._process(operand.operands[i]);
+        this._processSequenceOperands(operand.operands);
+    }
+
+    private _processSequenceOperands(operands: Operands[]) {
+        this._process(operands[0]);
+        for (var i = 1; i < operands.length; i++) {
+            if (IsCall(operands[i])) this._process((operands[i] as OperandCall).args)
+            else if (operands[i].enumerable) this._process(operands[i]);
         };
     }
 

@@ -4,8 +4,7 @@
 %%
 
 \s+                         /* skip whitespace */
-\'(?:[^\'])*\'   return 'STRING'
-\"(?:[^\"])*\"   return 'STRING'
+(["'])(?:(?=(\\?))\2.)*?\1  return 'STRING'
 ^[-]?[0-9]+(\.[0-9]+([mfMF]{1})?|[bsiluBSILU]{1})?               return 'NUMBER'
 "true"                      return 'BOOLEAN'
 "false"                     return 'BOOLEAN'
@@ -168,13 +167,13 @@ sequence_tail
     : '.' NAME_SOFT                                       { $$ = [{ name: $2, type: 'context' }]; }
     | '.' call                                            { $$ = [$2] }
     | '[' right_part ']'                                  { $$ = [{ name: $2, enumerable: true, type: 'context' }] }
-    | '[' right_part ']' '()'                             { $$ = [{ func: $2, enumerable: true, args: [], type: 'call' }]; } 
-    | '[' right_part ']' '(' call_args ')'                { $$ = [{ func: $2, enumerable: true, args: $5, type: 'call' }]; } 
+    | '[' right_part ']' '()'                             { $2.enumerable = true; $$ = [{ func: $2, args: [], type: 'call' }]; } 
+    | '[' right_part ']' '(' call_args ')'                { $2.enumerable = true; $$ = [{ func: $2, args: $5, type: 'call' }]; } 
     | sequence_tail '.' NAME_SOFT                         { $$ = [].concat($1,[{ name: $3, type: 'context' }]); }
     | sequence_tail '.' call                              { $$ = [].concat($1,[$3]); }
     | sequence_tail '[' right_part ']'                    { $$ = [].concat($1, { name: $3, enumerable: true, type: 'context' }); }
-    | sequence_tail '[' right_part ']' '()'               { $$ = [].concat($1,[{ func: $3, enumerable: true, args: [], type: 'call' }]); }
-    | sequence_tail '[' right_part ']' '(' call_args ')'  { $$ = [].concat($1,[{ func: $3, enumerable: true, args: $6, type: 'call' }]); }
+    | sequence_tail '[' right_part ']' '()'               { $3.enumerable = true; $$ = [].concat($1,[{ func: $3, args: [], type: 'call' }]); }
+    | sequence_tail '[' right_part ']' '(' call_args ')'  { $3.enumerable = true; $$ = [].concat($1,[{ func: $3, args: $6, type: 'call' }]); }
     ;
 
 right_part_value

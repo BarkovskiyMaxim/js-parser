@@ -23,7 +23,7 @@ export class Serializer {
 
     serializeAssign(operand: OperandAssign) {
         var prefix = operand.new ? 'var ' : '';
-        return prefix + this.serialize(operand.assignTo) + ' = ' + this.serialize(operand.value);
+        return prefix + operand.assignTo.map(x => this.serialize(x)).join('.') + ' = ' + this.serialize(operand.value);
     }
 
     serializeContext(operand: OperandContext) {
@@ -78,7 +78,7 @@ export class Serializer {
         let result = this.serialize(operand.operands[0]);
         for(var i = 1; i < operand.operands.length; i++) {
             let currentOperand = this.serialize(operand.operands[i]);
-            if(!operand.operands[i].enumerable) {
+            if(currentOperand[0] !== '[') {
                 result += '.' + currentOperand;
             } else {
                 result += currentOperand;
