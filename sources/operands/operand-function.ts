@@ -1,6 +1,7 @@
+import { BaseOperand } from "./baseOperand";
 import { Operands } from "./operand-mapper";
 
-export type OperandFunction = {
+export type OperandFunction = BaseOperand & {
     body: Operands[],
     args: string[],
     type: 'func'

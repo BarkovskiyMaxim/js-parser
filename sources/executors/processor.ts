@@ -12,20 +12,22 @@ import { OperandObject } from "../operands/operand-object";
 import { OperandReturn } from "../operands/operand-return";
 import { OperandSequence } from "../operands/operand-sequence";
 import { OperandTypeOf } from "../operands/operand-typeof";
+import { parse } from "../parser/js-parser";
+import { Serializer } from "./serializer";
 
 export class ReplaceVariableProcessor {
-    constructor(private _functionArgs: string[] = [], private _replaceName: (variableName: string, existsInFunctionArgs: boolean) => void = (_) => void 0) {
+    constructor(private _functionArgs: string[] = [], private _replaceName: (variableName: string, existsInFunctionArgs: boolean) => string = (_) => _) {
     }
 
     processFunction(operand: OperandFunction) {
         new ReplaceVariableProcessor([
             ...this._functionArgs,
             ...operand.args,
-        ], this._replaceName).process(operand.body);
+        ], this._replaceName)._process(operand.body);
     }
 
     replaceName(name: string) {
-        this._replaceName(name, this._functionArgs.indexOf(name) !== -1);
+        return this._replaceName(name, this._functionArgs.indexOf(name) !== -1);
     }
 
     processAssign(operand: OperandAssign) {
@@ -33,70 +35,71 @@ export class ReplaceVariableProcessor {
             if (operand.new) {
                 this._functionArgs.push(operand.assignTo[0].name);
             } else
-                this.replaceName(operand.assignTo[0].name);
+                operand.assignTo[0].name = this.replaceName(operand.assignTo[0].name);
 
         } else {
-            this.process(operand.assignTo[0].name);
+            this._process(operand.assignTo[0].name);
         }
-        this.process(operand.value);
+        this._process(operand.value);
     }
 
     processContext(operand: OperandContext) {
         if (typeof operand.name !== 'string') {
-            this.process(operand.name as Operands);
+            this._process(operand.name as Operands);
         } else {
-            this.replaceName(operand.name);
+            operand.name = this.replaceName(operand.name);
         }
     }
 
     processBinary(operand: OperandBinary) {
-        this.process(operand.left);
-        this.process(operand.right);
+        this._process(operand.left);
+        this._process(operand.right);
     }
 
     processCall(operand: OperandCall) {
         let func = operand.func;
         if (typeof func !== 'string') {
-            this.process(func);
+            this._process(func);
         } else {
-            this.replaceName(func);
+            operand.func = this.replaceName(func);
         }
-        operand.args.map(x => this.process(x));
+        operand.args.map(x => this._process(x));
     }
 
     processObject(operand: OperandObject) {
         operand.fields.forEach((x) => {
-            this.process(x.value);
+            this._process(x.value);
         })
     }
 
     processIf(operand: OperandIf) {
-        this.process(operand.condition);
-        this.process(operand.true);
-        this.process(operand.false);
+        this._process(operand.condition);
+        this._process(operand.true);
+        this._process(operand.false);
     }
 
     processSequence(operand: OperandSequence) {
-        this.process(operand.operands.splice(0, 1))
-        operand.operands.forEach((x => {
-            if (IsCall(x)) this.process(x.args)
-        }))
+        this._process(operand.operands[0]);
+        for(var i = 1; i < operand.operands.length; i++) {
+            if (IsCall(operand.operands[i])) this._process((operand.operands[i] as OperandCall).args)
+            else if (operand.operands[i].enumerable) this._process(operand.operands[i]);
+        };
     }
 
     processReturn(operand: OperandReturn) {
-        this.process(operand.value);
+        this._process(operand.value);
     }
 
     processArray(operand: OperandArray) {
-        operand.values.forEach(x => this.process(x));
+        operand.values.forEach(x => this._process(x));
     }
 
     processNot(operand: OperandNot) {
-        this.process(operand.value);
+        this._process(operand.value);
     }
 
     processTypeOf(operand: OperandTypeOf) {
-        this.process(operand.value);
+        this._process(operand.value);
     }
 
     processClass(operand: OperandClass) {
@@ -105,8 +108,8 @@ export class ReplaceVariableProcessor {
             type: 'sequence'
         };
         let callOperand = ctorClone.operands.pop() as OperandCall;
-        this.process(ctorClone);
-        callOperand.args.forEach(x => this.process(x));
+        this._process(ctorClone);
+        callOperand.args.forEach(x => this._process(x));
     }
 
     processSignleOperation(operand: Operands): void {
@@ -125,7 +128,7 @@ export class ReplaceVariableProcessor {
         if (IsClass(operand)) this.processClass(operand);
     }
 
-    process(operands: Operands[] | Operands) {
+    _process(operands: Operands[] | Operands) {
         if (Array.isArray(operands)) {
             for (var i = 0; i < operands.length; i++) {
                 this.processSignleOperation(operands[i]);
@@ -133,5 +136,11 @@ export class ReplaceVariableProcessor {
         } else {
             return this.processSignleOperation(operands);
         }
+    }
+
+    process(jscode: string): string {
+        var operands = parse(jscode);
+        this._process(operands);
+        return new Serializer().serialize(operands)
     }
 }

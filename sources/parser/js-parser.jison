@@ -81,11 +81,11 @@ result
     ;
 
 func
-    : function '{' body '}' { $$ = { body: $3, args: $1.args, type: 'func' }; }
-    | NAME_SOFT '=>' right_part { $$ = { body: [$3], args: [$1], type: 'func' }; }
+    : function '{' body '}'        { $$ = { body: $3, args: $1.args, type: 'func' }; }
+    | NAME_SOFT '=>' right_part    { $$ = { body: [$3], args: [$1], type: 'func' }; }
     | NAME_SOFT '=>' '{' body '}'  { $$ = { body: $4, args: [$1], type: 'func' }; }
-    | function '{' '}' { $$ = { body: [], args: $1.args, type: 'func' }; }
-    | NAME_SOFT '=>' '{' '}'  { $$ = { body: [], args: [$1], type: 'func' }; }
+    | function '{' '}'             { $$ = { body: [], args: $1.args, type: 'func' }; }
+    | NAME_SOFT '=>' '{' '}'       { $$ = { body: [], args: [$1], type: 'func' }; }
     ;
 
 function
@@ -126,14 +126,14 @@ assign
 right_part
     : simple_right_part                        { $$ = $1; }
     | right_part BINARY right_part             { $$ = { left: $1, right: $3, operation: $2, type: 'binary' }; }
-    | right_part '?' right_part ':' right_part { $$ = { type: 'if', true: $3, condition: $1, false: $5 }; }
-    | '!' '(' right_part ')'                   { $$ = { type: 'not', value: $3 } }
-    | '(' right_part ')'                       { $$ = $2; }
-    | TYPEOF '(' right_part ')'                { $$ = { type: 'typeof', value: $3 } }
+    | right_part '?' right_part ':' right_part { $$ = { type: 'if', ternar: true, true: $3, condition: $1, false: $5 }; }
+    | '!' '(' right_part ')'                   { $3.braced = true; $$ = { type: 'not', value: $3 } }
+    | '(' right_part ')'                       { $2.braced = true; $$ = $2; }
+    | TYPEOF '(' right_part ')'                { $3.braced = true; $$ = { type: 'typeof', value: $3 }; }
     | func                                     { $$ = $1; }
     | CLASS sequence                           { $$ = { type: 'class', ctor: $2 } }
-    | '(' right_part ')' sequence_tail         { $$ = { operands: [].concat([$2], $4), type: 'sequence' } }
-    | '(' right_part ')' call_right            { $$ = { type: 'call', func: $2, args: $4 } }
+    | '(' right_part ')' sequence_tail         { $2.braced = true; $$ = { operands: [].concat([$2], $4), type: 'sequence' }; }
+    | '(' right_part ')' call_right            { $2.braced = true; $$ = { type: 'call', func: $2, args: $4 }; }
     ;
 
 value  
@@ -165,16 +165,16 @@ sequence
     ;
 
 sequence_tail
-    : '.' NAME_SOFT                                          { $$ = [{ name: $2, type: 'context' }]; }
-    | '.' call                                               { $$ = [$2] }
-    | '[' right_part ']'                                      { $$ = [{ name: $2, type: 'context' }] }
-    | '[' right_part ']' '()'                                 { $$ = [{ func: $2, args: [], type: 'call' }]; } 
-    | '[' right_part ']' '(' call_args ')'                    { $$ = [{ func: $2, args: $5, type: 'call' }]; } 
-    | sequence_tail '.' NAME_SOFT                            { $$ = [].concat($1,[{ name: $3, type: 'context' }]); }
-    | sequence_tail '.' call                                 { $$ = [].concat($1,[$3]); }
-    | sequence_tail '[' right_part ']'                    { $$ = [].concat($1, { name: $3, type: 'context' }); }
-    | sequence_tail '[' right_part ']' '()'               { $$ = [].concat($1,[{ func: $3, args: [], type: 'call' }]); }
-    | sequence_tail '[' right_part ']' '(' call_args ')'  { $$ = [].concat($1,[{ func: $3, args: $6, type: 'call' }]); }
+    : '.' NAME_SOFT                                       { $$ = [{ name: $2, type: 'context' }]; }
+    | '.' call                                            { $$ = [$2] }
+    | '[' right_part ']'                                  { $$ = [{ name: $2, enumerable: true, type: 'context' }] }
+    | '[' right_part ']' '()'                             { $$ = [{ func: $2, enumerable: true, args: [], type: 'call' }]; } 
+    | '[' right_part ']' '(' call_args ')'                { $$ = [{ func: $2, enumerable: true, args: $5, type: 'call' }]; } 
+    | sequence_tail '.' NAME_SOFT                         { $$ = [].concat($1,[{ name: $3, type: 'context' }]); }
+    | sequence_tail '.' call                              { $$ = [].concat($1,[$3]); }
+    | sequence_tail '[' right_part ']'                    { $$ = [].concat($1, { name: $3, enumerable: true, type: 'context' }); }
+    | sequence_tail '[' right_part ']' '()'               { $$ = [].concat($1,[{ func: $3, enumerable: true, args: [], type: 'call' }]); }
+    | sequence_tail '[' right_part ']' '(' call_args ')'  { $$ = [].concat($1,[{ func: $3, enumerable: true, args: $6, type: 'call' }]); }
     ;
 
 right_part_value

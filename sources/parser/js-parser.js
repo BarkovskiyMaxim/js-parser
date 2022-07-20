@@ -138,25 +138,25 @@ case 27:
  this.$ = { left: $$[$0-2], right: $$[$0], operation: $$[$0-1], type: 'binary' }; 
 break;
 case 28:
- this.$ = { type: 'if', true: $$[$0-2], condition: $$[$0-4], false: $$[$0] }; 
+ this.$ = { type: 'if', ternar: true, true: $$[$0-2], condition: $$[$0-4], false: $$[$0] }; 
 break;
 case 29:
- this.$ = { type: 'not', value: $$[$0-1] } 
+ $$[$0-1].braced = true; this.$ = { type: 'not', value: $$[$0-1] } 
 break;
-case 30: case 66:
- this.$ = $$[$0-1]; 
+case 30:
+ $$[$0-1].braced = true; this.$ = $$[$0-1]; 
 break;
 case 31:
- this.$ = { type: 'typeof', value: $$[$0-1] } 
+ $$[$0-1].braced = true; this.$ = { type: 'typeof', value: $$[$0-1] }; 
 break;
 case 33:
  this.$ = { type: 'class', ctor: $$[$0] } 
 break;
 case 34:
- this.$ = { operands: [].concat([$$[$0-2]], $$[$0]), type: 'sequence' } 
+ $$[$0-2].braced = true; this.$ = { operands: [].concat([$$[$0-2]], $$[$0]), type: 'sequence' }; 
 break;
 case 35:
- this.$ = { type: 'call', func: $$[$0-2], args: $$[$0] } 
+ $$[$0-2].braced = true; this.$ = { type: 'call', func: $$[$0-2], args: $$[$0] }; 
 break;
 case 36:
  this.$ = parseFloat($$[$0]); 
@@ -201,13 +201,13 @@ case 50: case 61: case 62: case 63:
  this.$ = [$$[$0]] 
 break;
 case 51:
- this.$ = [{ name: $$[$0-1], type: 'context' }] 
+ this.$ = [{ name: $$[$0-1], enumerable: true, type: 'context' }] 
 break;
 case 52:
- this.$ = [{ func: $$[$0-2], args: [], type: 'call' }]; 
+ this.$ = [{ func: $$[$0-2], enumerable: true, args: [], type: 'call' }]; 
 break;
 case 53:
- this.$ = [{ func: $$[$0-4], args: $$[$0-1], type: 'call' }]; 
+ this.$ = [{ func: $$[$0-4], enumerable: true, args: $$[$0-1], type: 'call' }]; 
 break;
 case 54:
  this.$ = [].concat($$[$0-2],[{ name: $$[$0], type: 'context' }]); 
@@ -216,13 +216,13 @@ case 55:
  this.$ = [].concat($$[$0-2],[$$[$0]]); 
 break;
 case 56:
- this.$ = [].concat($$[$0-3], { name: $$[$0-1], type: 'context' }); 
+ this.$ = [].concat($$[$0-3], { name: $$[$0-1], enumerable: true, type: 'context' }); 
 break;
 case 57:
- this.$ = [].concat($$[$0-4],[{ func: $$[$0-2], args: [], type: 'call' }]); 
+ this.$ = [].concat($$[$0-4],[{ func: $$[$0-2], enumerable: true, args: [], type: 'call' }]); 
 break;
 case 58:
- this.$ = [].concat($$[$0-6],[{ func: $$[$0-4], args: $$[$0-1], type: 'call' }]); 
+ this.$ = [].concat($$[$0-6],[{ func: $$[$0-4], enumerable: true, args: $$[$0-1], type: 'call' }]); 
 break;
 case 60:
  this.$ = [{ value: $$[$0], type: 'value' }] 
@@ -232,6 +232,9 @@ case 64:
 break;
 case 65:
  this.$ = []; 
+break;
+case 66:
+ this.$ = $$[$0-1]; 
 break;
 case 69:
  this.$ = { fields: $$[$0-1], type: 'obj' }; 

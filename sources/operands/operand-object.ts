@@ -1,3 +1,4 @@
+import { BaseOperand } from "./baseOperand"
 import { Operands } from "./operand-mapper"
 
 type ObjectFields = { 
@@ -5,7 +6,7 @@ type ObjectFields = {
     value: Operands
 }
 
-export type OperandObject = {
+export type OperandObject = BaseOperand & {
     type: 'obj',
     fields: ObjectFields[]
 }

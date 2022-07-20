@@ -801,7 +801,7 @@ test('fix context for empty string', () => {
     expect(_execute(jsParser.parse(func))([[1, 2]])).toEqual(0);
 })
 
-test('replace processor test', () => {
+test('replace processor collect names test', () => {
     let func = `function($context, $element) { 
         return {
             'dxSelectBox':function(){
@@ -820,7 +820,6 @@ test('replace processor test', () => {
             }
         }
     }`;
-    const parserResult = jsParser.parse(func);
     const names: string[] = [];
     const existsNames: string[] = [];
     new ReplaceVariableProcessor([], (name, exists) => {
@@ -829,7 +828,90 @@ test('replace processor test', () => {
         } else {
             existsNames.push(name);
         }
-    }).process(parserResult);
+        return name;
+    }).process(func);
     expect(names).toEqual(['$root', 'editableObject', '$root', '$root', '$root', 'testVar'])
     expect(existsNames).toEqual(['value', 'showValue', '$element'])
+})
+
+test('replace processor replace names test', () => {
+    let func = `function($context, $element) { 
+        return {
+            'dxSelectBox':function(){
+                return {
+                    dataSource:$root.controlsStore.dataSource,
+                    value:editableObject,
+                    displayExpr: function(value){
+                        var showValue = value || $root.editableObject();
+                        return $root.dx._static.getControlFullName(showValue)
+                    },
+                    dropDownOptions:{ 
+                        container:$root.getPopupContainer($element, testVar)
+                    },
+                    useItemTextAsTitle:true
+                } 
+            }
+        }
+    }`;
+    const result = new ReplaceVariableProcessor([], (name, exists) => {
+        if (!exists) {
+            return 'notex.' + name;
+        } else {
+            return 'ex.' + name;
+        }
+    }).process(func);
+    expect(result).toEqual(`function($context,$element){ return {'dxSelectBox':function(){ return {'dataSource':notex.$root.controlsStore.dataSource,'value':notex.editableObject,'displayExpr':function(value){ var showValue = ex.value || notex.$root.editableObject();return notex.$root.dx._static.getControlFullName(ex.showValue) },'dropDownOptions':{'container':notex.$root.getPopupContainer(ex.$element,notex.testVar)},'useItemTextAsTitle':true} }} }`)
+})
+
+test('replace processor replace names in if operator test', () => {
+    let func = `function($context, $element) { 
+        if(a > $context) {
+            return a;
+        } else if(a < $context) {
+            return $context;
+        }
+        return a > $context ? 1 : 2;
+    }`;
+    const result = new ReplaceVariableProcessor([], (name, exists) => {
+        if (!exists) {
+            return 'notex.' + name;
+        } else {
+            return 'ex.' + name;
+        }
+    }).process(func);
+    expect(result).toEqual(`function($context,$element){ if(notex.a > ex.$context){ return notex.a }else { if(notex.a < ex.$context){ return ex.$context } };return notex.a > ex.$context ? 1 : 2 }`)
+})
+
+test('replace processor replace names in [] test', () => {
+    let result = new ReplaceVariableProcessor([], (name, exists) => {
+        if (!exists) {
+            return 'notex.' + name;
+        } else {
+            return 'ex.' + name;
+        }
+    }).process(`function(a) {
+        return a.test['b'].c;
+    }`);
+    expect(result).toEqual(`function(a){ return ex.a.test['b'].c }`)
+
+    result = new ReplaceVariableProcessor([], (name, exists) => {
+        if (!exists) {
+            return 'notex.' + name;
+        } else {
+            return 'ex.' + name;
+        }
+    }).process(`function(a, d) {
+        return a.test[d].c;
+    }`);
+    expect(result).toEqual(`function(a,d){ return ex.a.test[ex.d].c }`)
+})
+
+test('serialize undefined and null value test', () => {
+    const processor = new ReplaceVariableProcessor();
+    expect(processor.process(`function(a) {
+        return null;
+    }`)).toEqual(`function(a){ return null }`);
+    expect(processor.process(`function(a) {
+        return undefined;
+    }`)).toEqual(`function(a){ return undefined }`);
 })
