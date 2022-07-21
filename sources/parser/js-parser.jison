@@ -5,7 +5,7 @@
 
 \s+                         /* skip whitespace */
 (["'])(?:(?=(\\?))\2.)*?\1  return 'STRING'
-^[-]?[0-9]+(\.[0-9]+([mfMF]{1})?|[bsiluBSILU]{1})?               return 'NUMBER'
+[0-9]+(\.[0-9]+([mfMF]{1})?|[bsiluBSILU]{1})?               return 'NUMBER'
 "true"                      return 'BOOLEAN'
 "false"                     return 'BOOLEAN'
 "null"                      return 'NULL'
@@ -34,20 +34,20 @@
 ":"                         return ':'
 "?"                         return '?'
 
-">"                         return 'BINARY'
-"||"                        return 'BINARY'
-"&&"                        return 'BINARY'
-">="                        return 'BINARY'
-"<"                         return 'BINARY'
-"<="                        return 'BINARY'
-"!=="                       return 'BINARY'
-"!="                        return 'BINARY'
-"==="                       return 'BINARY'
-"=="                        return 'BINARY'
-"*"                         return 'BINARY'
-"/"                         return 'BINARY'
-"-"                         return 'BINARY'
-"+"                         return 'BINARY'
+">"                         return '>'
+"||"                        return '||'
+"&&"                        return '&&'
+">="                        return '>='
+"<"                         return '<'
+"<="                        return '<='
+"!=="                       return '!=='
+"!="                        return '!='
+"==="                       return '==='
+"=="                        return '=='
+"*"                         return '*'
+"/"                         return '/'
+"-"                         return '-'
+"+"                         return '+'
 "="                         return 'ASSIGN'
 
 "!"                         return '!'
@@ -61,7 +61,7 @@
 
 %right        '?' ':'
 %right        '!'
-%left         BINARY
+%left         '>' '||' '&&' '>=' '<' '<=' '!==' '!=' '===' '==' '*' '/' '-' '+'         
 %left         TYPEOF
 %left         '.'
 %right        ASSIGN
@@ -80,17 +80,17 @@ result
     ;
 
 func
-    : function '{' body '}'        { $$ = { body: $3, args: $1.args, type: 'func' }; }
-    | NAME_SOFT '=>' right_part    { $$ = { body: [$3], args: [$1], type: 'func' }; }
-    | NAME_SOFT '=>' '{' body '}'  { $$ = { body: $4, args: [$1], type: 'func' }; }
-    | function '{' '}'             { $$ = { body: [], args: $1.args, type: 'func' }; }
-    | NAME_SOFT '=>' '{' '}'       { $$ = { body: [], args: [$1], type: 'func' }; }
+    : function '{' body '}'        { $$ = { body: $3, args: $1.args, arrow: $1.arrow, type: 'func' }; }
+    | NAME_SOFT '=>' right_part    { $$ = { body: [$3], args: [$1], return: true, arrow: 'name', type: 'func' }; }
+    | NAME_SOFT '=>' '{' body '}'  { $$ = { body: $4, args: [$1], type: 'func', arrow: 'name'  }; }
+    | function '{' '}'             { $$ = { body: [], args: $1.args, arrow: $1.arrow, type: 'func' }; }
+    | NAME_SOFT '=>' '{' '}'       { $$ = { body: [], args: [$1], type: 'func', arrow: 'name' }; }
     ;
 
 function
     : FUNC '(' arguments ')'   { $$ = { args: $3 }; }
     | FUNC '()'                { $$ = { args: [] }; }
-    | '()' '=>'                { $$ = { args: [] }; }
+    | '()' '=>'                { $$ = { args: [], arrow: 'braced' }; }
     ;
 
 arguments
@@ -122,9 +122,27 @@ assign
     | sequence ASSIGN right_part      { $$ = { assignTo: $1.operands, value: $3, type: 'assign' }; }
     ;
 
+binary 
+    : right_part '>' right_part   { $$ = { left: $1, right: $3, operation: $2, type: 'binary' }; }     
+    | right_part '||' right_part  { $$ = { left: $1, right: $3, operation: $2, type: 'binary' }; }     
+    | right_part '&&' right_part  { $$ = { left: $1, right: $3, operation: $2, type: 'binary' }; }     
+    | right_part '>=' right_part  { $$ = { left: $1, right: $3, operation: $2, type: 'binary' }; }     
+    | right_part '<' right_part   { $$ = { left: $1, right: $3, operation: $2, type: 'binary' }; }     
+    | right_part '<=' right_part  { $$ = { left: $1, right: $3, operation: $2, type: 'binary' }; }     
+    | right_part '!==' right_part { $$ = { left: $1, right: $3, operation: $2, type: 'binary' }; }     
+    | right_part '!=' right_part  { $$ = { left: $1, right: $3, operation: $2, type: 'binary' }; }     
+    | right_part '===' right_part { $$ = { left: $1, right: $3, operation: $2, type: 'binary' }; }     
+    | right_part '==' right_part  { $$ = { left: $1, right: $3, operation: $2, type: 'binary' }; }     
+    | right_part '*' right_part   { $$ = { left: $1, right: $3, operation: $2, type: 'binary' }; }     
+    | right_part '/' right_part   { $$ = { left: $1, right: $3, operation: $2, type: 'binary' }; }     
+    | right_part '-' right_part   { $$ = { left: $1, right: $3, operation: $2, type: 'binary' }; }     
+    | right_part '+' right_part   { $$ = { left: $1, right: $3, operation: $2, type: 'binary' }; }     
+    | right_part '=' right_part   { $$ = { left: $1, right: $3, operation: $2, type: 'binary' }; }
+    ;
+
 right_part
     : simple_right_part                        { $$ = $1; }
-    | right_part BINARY right_part             { $$ = { left: $1, right: $3, operation: $2, type: 'binary' }; }
+    | binary                                   { $$ = $1; }
     | right_part '?' right_part ':' right_part { $$ = { type: 'if', ternar: true, true: $3, condition: $1, false: $5 }; }
     | '!' '(' right_part ')'                   { $3.braced = true; $$ = { type: 'not', value: $3 } }
     | '(' right_part ')'                       { $2.braced = true; $$ = $2; }
@@ -137,6 +155,7 @@ right_part
 
 value  
     : NUMBER          { $$ = parseFloat($1); }
+    | '-' NUMBER      { $$ = parseFloat('-' + $2); }
     | process_string  { $$ = $1 }
     | BOOLEAN         { $$ = $1 === 'true' }
     | NULL            { $$ = null; }

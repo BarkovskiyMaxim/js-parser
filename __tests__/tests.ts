@@ -954,3 +954,21 @@ test('parse string value test', () => {
     var res = jsParser.parse("function($context, $data) { return{ 'text':function(){return $root.getLocalization('Specify the report\\'s title','ASPxReportsStringId.ReportDesigner_Wizard_SpecifyReportTitle') }}}");
     expect(!!res).toEqual(true);
 })
+
+test('parse - operation test', () => {
+    var res = jsParser.parse("function($context, $element) { return { 'foreach':function(){return rows()[rows().length-1].cells }}}");
+    expect(!!res).toEqual(true);
+})
+
+test('serialize arrow function test', () => {
+    const processor = new ReplaceVariableProcessor([], (name, ex) => {
+        if (ex) return 'ex.' + name;
+        return 'notex.'+ name;
+    });
+    expect(processor.process(`function(items) {
+        return items.some(x => !x);
+    }`)).toEqual(`function(items){ return ex.items.some(x => !ex.x) }`);
+    expect(processor.process(`function(items) {
+        return items.some(() => { return !x });
+    }`)).toEqual(`function(items){ return ex.items.some(() => { return !notex.x }) }`);
+})

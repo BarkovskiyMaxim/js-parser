@@ -18,6 +18,17 @@ import { OperandWith } from "../operands/operand-with";
 export class Serializer {
 
     serializeFunction(operand: OperandFunction) {
+        if(operand.arrow) {
+            let args = operand.args.join(',');
+            if(operand.arrow === 'braced') {
+                args = `(${args})`
+            }
+            let body = this.serialize(operand.body);
+            if(!operand.return) {
+                body = `{ ${body} }`;
+            }
+            return `${args} => ${body}`;
+        }
         return `function(${operand.args.join(',')}){ ${this.serialize(operand.body)} }`;
     }
 
