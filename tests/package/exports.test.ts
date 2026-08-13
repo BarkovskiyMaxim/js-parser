@@ -19,7 +19,13 @@ describe('package manifest', () => {
     expect(manifest.type).toBe('commonjs');
     expect(manifest.main).toBe('./dist/index.js');
     expect(manifest.types).toBe('./dist/index.d.ts');
-    expect(manifest.files).toEqual(['dist', 'README.md', 'LICENSE']);
+    expect(manifest.files).toEqual([
+      'dist',
+      'README.md',
+      'SECURITY.md',
+      'docs/knockout-aot.md',
+      'LICENSE',
+    ]);
     expect(manifest.exports).toMatchObject({
       '.': {
         import: {

@@ -21,8 +21,4 @@ jobs:
           node-version: ${{ matrix.node }}
           cache: npm
       - run: npm ci
-      - run: npm run typecheck
-      - run: npm run lint
-      - run: npm test
-      - run: npm run verify:package
-      - run: npm run verify:browser
+      - run: npm run verify

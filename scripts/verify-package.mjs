@@ -95,6 +95,10 @@ assert.equal(root.compile('1 + 2;').execute(), 3);
     'utf8',
   ));
   assert.equal(installed.name, 'js-code-parser');
+  await Promise.all([
+    readFile(join(temp, 'node_modules/js-code-parser/SECURITY.md'), 'utf8'),
+    readFile(join(temp, 'node_modules/js-code-parser/docs/knockout-aot.md'), 'utf8'),
+  ]);
 } finally {
   await rm(temp, { recursive: true, force: true });
 }

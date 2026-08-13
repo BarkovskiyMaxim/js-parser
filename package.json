@@ -13,6 +13,8 @@
   "files": [
     "dist",
     "README.md",
+    "SECURITY.md",
+    "docs/knockout-aot.md",
     "LICENSE"
   ],
   "exports": {
@@ -79,11 +81,13 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "lint": "eslint sources __tests__ tests vitest.config.mts",
+    "lint": "eslint sources __tests__ tests scripts vitest.config.mts",
     "lint:package": "publint",
     "verify:package": "npm run build && npm run lint:package && node scripts/verify-package.mjs",
     "build:browser-fixture": "node scripts/build-browser-fixture.mjs",
-    "verify:browser": "node scripts/verify-browser-csp.mjs"
+    "verify:browser": "node scripts/verify-browser-csp.mjs",
+    "verify:dynamic-code": "npm run build && npm run build:browser-fixture && node scripts/check-dynamic-code.mjs",
+    "verify": "npm run typecheck && npm run lint && npm test && npm run verify:package && npm run verify:browser && npm run verify:dynamic-code"
   },
   "dependencies": {
     "@babel/generator": "^7.29.8",
