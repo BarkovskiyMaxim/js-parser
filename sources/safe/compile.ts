@@ -1,5 +1,6 @@
 import type { NormalizedProgram } from '../compiler/ast';
 import type { GenerateProgramOptions } from '../compiler/generator';
+import type { ModuleArtifact } from '../compiler/generator';
 import {
   transformSource,
   type Diagnostic,
@@ -21,12 +22,17 @@ export interface CompileOptions extends TransformSourceOptions {
   policy?: SafePolicy;
 }
 
+export interface PlainModuleOptions extends GenerateProgramOptions {
+  mode: 'plain';
+}
+
 export interface CompiledProgram {
   readonly ast: NormalizedProgram;
   readonly ir: SafeProgram;
   readonly diagnostics: readonly Diagnostic[];
   execute(context?: Readonly<Record<string, unknown>>): unknown;
   toString(options?: GenerateProgramOptions): string;
+  toModule(options: PlainModuleOptions): ModuleArtifact;
 }
 
 const policyWithContext = (
@@ -75,6 +81,8 @@ export function compile(
       executeProgram(ir, policyWithContext(policy, context))
     ),
     toString: transformed.toString,
+    toModule: ({ mode: _mode, ...generateOptions }: PlainModuleOptions) => (
+      transformed.toModule(generateOptions)
+    ),
   });
 }
-
