@@ -48,3 +48,4 @@ export type {
   SyntaxPolicy,
   ValuePermissions,
 } from './safe/policy';
+export { validateProgram } from './safe/validate';
