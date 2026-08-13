@@ -470,6 +470,7 @@ import { resolve } from 'node:path';
 import { describe, expect, test } from 'vitest';
 
 type PackageJson = {
+  type?: string;
   main?: string;
   types?: string;
   files?: string[];
@@ -482,25 +483,34 @@ const manifest = JSON.parse(
 
 describe('package manifest', () => {
   test('publishes the root and all legacy path families', () => {
+    expect(manifest.type).toBe('commonjs');
     expect(manifest.main).toBe('./dist/index.js');
     expect(manifest.types).toBe('./dist/index.d.ts');
     expect(manifest.files).toEqual(['dist', 'README.md', 'LICENSE']);
     expect(manifest.exports).toMatchObject({
       '.': {
-        types: './dist/index.d.ts',
-        require: './dist/index.js',
+        require: {
+          types: './dist/index.d.ts',
+          default: './dist/index.js',
+        },
       },
       './executors/*': {
-        types: './dist/executors/*.d.ts',
-        require: './dist/executors/*.js',
+        require: {
+          types: './dist/executors/*.d.ts',
+          default: './dist/executors/*.js',
+        },
       },
       './parser/*': {
-        types: './dist/parser/*.d.ts',
-        require: './dist/parser/*.js',
+        require: {
+          types: './dist/parser/*.d.ts',
+          default: './dist/parser/*.js',
+        },
       },
       './operands/*': {
-        types: './dist/operands/*.d.ts',
-        require: './dist/operands/*.js',
+        require: {
+          types: './dist/operands/*.d.ts',
+          default: './dist/operands/*.js',
+        },
       },
     });
   });
@@ -597,23 +607,32 @@ Add these exact fields to `package.json`:
 {
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "type": "commonjs",
   "files": ["dist", "README.md", "LICENSE"],
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "require": "./dist/index.js"
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
     },
     "./executors/*": {
-      "types": "./dist/executors/*.d.ts",
-      "require": "./dist/executors/*.js"
+      "require": {
+        "types": "./dist/executors/*.d.ts",
+        "default": "./dist/executors/*.js"
+      }
     },
     "./parser/*": {
-      "types": "./dist/parser/*.d.ts",
-      "require": "./dist/parser/*.js"
+      "require": {
+        "types": "./dist/parser/*.d.ts",
+        "default": "./dist/parser/*.js"
+      }
     },
     "./operands/*": {
-      "types": "./dist/operands/*.d.ts",
-      "require": "./dist/operands/*.js"
+      "require": {
+        "types": "./dist/operands/*.d.ts",
+        "default": "./dist/operands/*.js"
+      }
     },
     "./package.json": "./package.json"
   }

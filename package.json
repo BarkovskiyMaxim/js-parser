@@ -7,6 +7,7 @@
   },
   "homepage": "https://github.com/BarkovskiyMaxim/js-parser",
   "license": "MIT",
+  "type": "commonjs",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
@@ -16,20 +17,28 @@
   ],
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "require": "./dist/index.js"
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
     },
     "./executors/*": {
-      "types": "./dist/executors/*.d.ts",
-      "require": "./dist/executors/*.js"
+      "require": {
+        "types": "./dist/executors/*.d.ts",
+        "default": "./dist/executors/*.js"
+      }
     },
     "./parser/*": {
-      "types": "./dist/parser/*.d.ts",
-      "require": "./dist/parser/*.js"
+      "require": {
+        "types": "./dist/parser/*.d.ts",
+        "default": "./dist/parser/*.js"
+      }
     },
     "./operands/*": {
-      "types": "./dist/operands/*.d.ts",
-      "require": "./dist/operands/*.js"
+      "require": {
+        "types": "./dist/operands/*.d.ts",
+        "default": "./dist/operands/*.js"
+      }
     },
     "./package.json": "./package.json"
   },
@@ -42,6 +51,7 @@
     "jison": "0.4.18",
     "jsdom": "^27.0.0",
     "knockout": "^3.5.3",
+    "publint": "^0.3.23",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.46.1",
     "vitest": "^4.1.10"
@@ -51,6 +61,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "lint": "eslint sources __tests__ tests vitest.config.mts"
+    "lint": "eslint sources __tests__ tests vitest.config.mts",
+    "lint:package": "publint",
+    "verify:package": "npm run build && npm run lint:package && node scripts/verify-package.mjs"
   }
 }
