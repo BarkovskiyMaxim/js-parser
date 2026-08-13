@@ -60,7 +60,14 @@ export type {
 export { executeProgram } from './safe/interpreter';
 export { compile } from './safe/compile';
 export type {
+  CompiledModuleOptions,
   CompiledProgram,
   CompileOptions,
+  InstrumentedModuleOptions,
   PlainModuleOptions,
 } from './safe/compile';
+export {
+  createInstrumentedModule,
+  executeSerializedProgram,
+} from './safe/module';
+export type { InstrumentedModuleGenerationOptions } from './safe/module';
