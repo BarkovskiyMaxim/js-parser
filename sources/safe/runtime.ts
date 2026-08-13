@@ -10,6 +10,15 @@ const reflectiveKeys = new Set<PropertyKey>([
   'arguments',
 ]);
 
+const ambientValues = new Set<unknown>([
+  globalThis,
+  globalThis.Function,
+  globalThis.eval,
+  Reflect.get(globalThis, 'window'),
+  Reflect.get(globalThis, 'self'),
+  Reflect.get(globalThis, 'process'),
+].filter((value) => value !== undefined));
+
 const deny = (rule: string): never => {
   throw new SafeJavaScriptError(
     'RUNTIME_POLICY_VIOLATION',
@@ -21,6 +30,10 @@ const deny = (rule: string): never => {
 const checkKey = (key: PropertyKey) => {
   if (reflectiveKeys.has(key)) deny('property.reflective');
 };
+
+export function rejectAmbientValue(value: unknown, rule: string): void {
+  if (ambientValues.has(value)) deny(rule);
+}
 
 const permits = (
   capability: AllowedValue | undefined,
@@ -35,7 +48,9 @@ export function readProperty(
 ): unknown {
   checkKey(key);
   if (!permits(capability, 'read', key)) deny('property.read');
-  return Reflect.get(Object(receiver), key, receiver);
+  const value = Reflect.get(Object(receiver), key, receiver);
+  rejectAmbientValue(value, 'capability.ambient-result');
+  return value;
 }
 
 export function constructValue(
@@ -45,7 +60,9 @@ export function constructValue(
 ): unknown {
   if (capability?.permissions.construct !== true) deny('value.construct');
   if (typeof constructor !== 'function') deny('value.construct');
-  return Reflect.construct(constructor as Function, args);
+  const value = Reflect.construct(constructor as Function, args);
+  rejectAmbientValue(value, 'capability.ambient-result');
+  return value;
 }
 
 export function writeProperty(
@@ -72,5 +89,7 @@ export function callProperty(
   if (!permits(capability, 'call', key)) deny('property.call');
   const method = Reflect.get(Object(receiver), key, receiver);
   if (typeof method !== 'function') deny('property.call');
-  return Reflect.apply(method, receiver, args);
+  const value = Reflect.apply(method, receiver, args);
+  rejectAmbientValue(value, 'capability.ambient-result');
+  return value;
 }

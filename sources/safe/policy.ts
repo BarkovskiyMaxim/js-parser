@@ -1,3 +1,5 @@
+import { rejectAmbientValue } from './runtime';
+
 export interface ValuePermissions {
   read?: readonly PropertyKey[];
   write?: readonly PropertyKey[];
@@ -50,13 +52,7 @@ export function allowValue<T>(
   value: T,
   permissions: ValuePermissions = {},
 ): AllowedValue<T> {
-  if (value === globalThis) {
-    throw new SafeJavaScriptError(
-      'RUNTIME_POLICY_VIOLATION',
-      'Raw global objects cannot be capabilities',
-      { rule: 'capability.global-object' },
-    );
-  }
+  rejectAmbientValue(value, 'capability.ambient');
   return Object.freeze({
     value,
     permissions: Object.freeze({
@@ -88,4 +84,3 @@ export function normalizePolicy(
     }),
   });
 }
-import { SafeJavaScriptError } from './errors';

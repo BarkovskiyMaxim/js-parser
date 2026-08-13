@@ -29,7 +29,23 @@ assert.equal(typeof root.parseProgram, 'function');
 assert.equal(typeof root.transformSource, 'function');
 assert.equal(typeof root.generateProgram, 'function');
 assert.equal(typeof root.createReplaceVariablesTransform, 'function');
+assert.equal(typeof root.compile, 'function');
+assert.equal(typeof root.allowValue, 'function');
+assert.equal(typeof root.SafeJavaScriptError, 'function');
 assert.equal(root.ReplaceVariableProcessor, deep.ReplaceVariableProcessor);
+const strict = root.compile('Math.max(1, 4);', {
+  policy: {
+    globals: {
+      Math: root.allowValue(Math, { call: ['max'] }),
+    },
+  },
+});
+assert.equal(strict.execute(), 4);
+assert.throws(
+  () => root.compile('process;'),
+  (error) => error instanceof root.SafeJavaScriptError
+    && error.code === 'POLICY_GLOBAL_DENIED',
+);
 const transformed = root.transformSource(
   'const label = user?.name ?? "anonymous"',
   {
