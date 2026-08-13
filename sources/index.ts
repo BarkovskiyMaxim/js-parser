@@ -15,3 +15,13 @@ export type {
   SourceType,
   SyntaxPlugin,
 } from './compiler/ast';
+export { transformProgram, transformSource } from './compiler/transform';
+export type {
+  Diagnostic,
+  Preprocessor,
+  ProgramTransform,
+  SourceContext,
+  TransformContext,
+  TransformSourceOptions,
+  TransformSourceResult,
+} from './compiler/transform';
