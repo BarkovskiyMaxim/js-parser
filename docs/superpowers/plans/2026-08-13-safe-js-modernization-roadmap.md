@@ -9,4 +9,6 @@ This roadmap splits the approved design into four independently reviewable imple
 
 Detailed plan for phase 1: `docs/superpowers/plans/2026-08-13-compatibility-foundation.md`.
 
+Detailed plan for phase 2: `docs/superpowers/plans/2026-08-13-standard-parser-transform-pipeline.md`.
+
 Implementation runs in the isolated `codex/safe-js-modernization` branch. Each completed task is committed only after its verification checkpoint passes.
