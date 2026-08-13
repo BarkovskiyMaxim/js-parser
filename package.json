@@ -7,6 +7,32 @@
   },
   "homepage": "https://github.com/BarkovskiyMaxim/js-parser",
   "license": "MIT",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js"
+    },
+    "./executors/*": {
+      "types": "./dist/executors/*.d.ts",
+      "require": "./dist/executors/*.js"
+    },
+    "./parser/*": {
+      "types": "./dist/parser/*.d.ts",
+      "require": "./dist/parser/*.js"
+    },
+    "./operands/*": {
+      "types": "./dist/operands/*.d.ts",
+      "require": "./dist/operands/*.js"
+    },
+    "./package.json": "./package.json"
+  },
   "engines": {
     "node": ">=22"
   },
