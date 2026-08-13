@@ -15,6 +15,11 @@ export type {
   SourceType,
   SyntaxPlugin,
 } from './compiler/ast';
+export { generateProgram } from './compiler/generator';
+export type {
+  GeneratedProgram,
+  GenerateProgramOptions,
+} from './compiler/generator';
 export { transformProgram, transformSource } from './compiler/transform';
 export type {
   Diagnostic,

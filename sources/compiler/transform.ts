@@ -1,5 +1,9 @@
 import type { NormalizedProgram } from './ast';
 import {
+  generateProgram,
+  type GenerateProgramOptions,
+} from './generator';
+import {
   parseProgram,
   type ParseProgramOptions,
 } from './parser';
@@ -35,6 +39,7 @@ export interface TransformSourceOptions extends ParseProgramOptions {
 export interface TransformSourceResult {
   ast: NormalizedProgram;
   diagnostics: readonly Diagnostic[];
+  toString(options?: GenerateProgramOptions): string;
 }
 
 export function transformProgram(
@@ -71,6 +76,12 @@ export function transformSource(
     context,
   );
 
-  return { ast, diagnostics: [...context.diagnostics] };
+  return {
+    ast,
+    diagnostics: [...context.diagnostics],
+    toString: (generateOptions) => generateProgram(ast, {
+      filename: options.filename,
+      ...generateOptions,
+    }).code,
+  };
 }
-
