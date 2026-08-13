@@ -68,6 +68,7 @@
     "jison": "0.4.18",
     "jsdom": "^27.0.0",
     "knockout": "^3.5.3",
+    "playwright-core": "^1.62.1",
     "publint": "^0.3.23",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.46.1",
@@ -80,7 +81,9 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "eslint sources __tests__ tests vitest.config.mts",
     "lint:package": "publint",
-    "verify:package": "npm run build && npm run lint:package && node scripts/verify-package.mjs"
+    "verify:package": "npm run build && npm run lint:package && node scripts/verify-package.mjs",
+    "build:browser-fixture": "node scripts/build-browser-fixture.mjs",
+    "verify:browser": "node scripts/verify-browser-csp.mjs"
   },
   "dependencies": {
     "@babel/generator": "^7.29.8",

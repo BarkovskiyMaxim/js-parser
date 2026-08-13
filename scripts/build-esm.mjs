@@ -1,6 +1,7 @@
 import { build } from 'esbuild';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
+import { browserDefines } from './browser-defines.mjs';
 
 const outdir = new URL('../dist/esm/', import.meta.url);
 await mkdir(outdir, { recursive: true });
@@ -16,6 +17,7 @@ await build({
   outdir: fileURLToPath(outdir),
   sourcemap: true,
   legalComments: 'none',
+  define: browserDefines,
 });
 await writeFile(
   new URL('package.json', outdir),
