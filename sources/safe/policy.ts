@@ -2,14 +2,14 @@ export interface ValuePermissions {
   read?: readonly PropertyKey[];
   write?: readonly PropertyKey[];
   call?: readonly PropertyKey[];
-  construct?: readonly PropertyKey[];
+  construct?: boolean | readonly PropertyKey[];
 }
 
 export interface NormalizedValuePermissions {
   readonly read: readonly PropertyKey[];
   readonly write: readonly PropertyKey[];
   readonly call: readonly PropertyKey[];
-  readonly construct: readonly PropertyKey[];
+  readonly construct: boolean | readonly PropertyKey[];
 }
 
 export interface AllowedValue<T = unknown> {
@@ -63,7 +63,9 @@ export function allowValue<T>(
       read: freezeKeys(permissions.read),
       write: freezeKeys(permissions.write),
       call: freezeKeys(permissions.call),
-      construct: freezeKeys(permissions.construct),
+      construct: typeof permissions.construct === 'boolean'
+        ? permissions.construct
+        : freezeKeys(permissions.construct),
     }),
   });
 }
@@ -87,4 +89,3 @@ export function normalizePolicy(
   });
 }
 import { SafeJavaScriptError } from './errors';
-

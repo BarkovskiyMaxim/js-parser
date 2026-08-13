@@ -24,7 +24,7 @@ const checkKey = (key: PropertyKey) => {
 
 const permits = (
   capability: AllowedValue | undefined,
-  operation: 'read' | 'write' | 'call' | 'construct',
+  operation: 'read' | 'write' | 'call',
   key: PropertyKey,
 ) => capability?.permissions[operation].includes(key) === true;
 
@@ -36,6 +36,16 @@ export function readProperty(
   checkKey(key);
   if (!permits(capability, 'read', key)) deny('property.read');
   return Reflect.get(Object(receiver), key, receiver);
+}
+
+export function constructValue(
+  capability: AllowedValue | undefined,
+  constructor: unknown,
+  args: unknown[],
+): unknown {
+  if (capability?.permissions.construct !== true) deny('value.construct');
+  if (typeof constructor !== 'function') deny('value.construct');
+  return Reflect.construct(constructor as Function, args);
 }
 
 export function writeProperty(
@@ -64,4 +74,3 @@ export function callProperty(
   if (typeof method !== 'function') deny('property.call');
   return Reflect.apply(method, receiver, args);
 }
-

@@ -68,6 +68,22 @@ describe('runtime capability enforcement', () => {
     })).toBe(4);
   });
 
+  test('allows construction independently from direct calls', () => {
+    class Item {
+      constructor(readonly value: number) {}
+    }
+
+    expectRuntimeDenial(
+      () => execute('new Factory(2);', { Factory: allowValue(Item) }),
+      'value.construct',
+    );
+    const item = execute('new Factory(2);', {
+      Factory: allowValue(Item, { construct: true }),
+    });
+    expect(item).toBeInstanceOf(Item);
+    expect((item as Item).value).toBe(2);
+  });
+
   test.each([
     '__proto__',
     'prototype',
