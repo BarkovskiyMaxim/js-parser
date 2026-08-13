@@ -30,3 +30,5 @@ export type {
   TransformSourceOptions,
   TransformSourceResult,
 } from './compiler/transform';
+export { createReplaceVariablesTransform } from './compiler/transforms/replace-variables';
+export type { ReplaceVariableName } from './compiler/transforms/replace-variables';
