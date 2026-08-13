@@ -22,9 +22,23 @@ describe('package manifest', () => {
     expect(manifest.files).toEqual(['dist', 'README.md', 'LICENSE']);
     expect(manifest.exports).toMatchObject({
       '.': {
+        import: {
+          types: './dist/index.d.mts',
+          default: './dist/esm/index.js',
+        },
         require: {
           types: './dist/index.d.ts',
           default: './dist/index.js',
+        },
+      },
+      './runtime': {
+        import: {
+          types: './dist/runtime.d.mts',
+          default: './dist/esm/runtime.js',
+        },
+        require: {
+          types: './dist/runtime.d.ts',
+          default: './dist/runtime.js',
         },
       },
       './executors/*': {

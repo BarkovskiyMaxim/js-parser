@@ -17,9 +17,23 @@
   ],
   "exports": {
     ".": {
+      "import": {
+        "types": "./dist/index.d.mts",
+        "default": "./dist/esm/index.js"
+      },
       "require": {
         "types": "./dist/index.d.ts",
         "default": "./dist/index.js"
+      }
+    },
+    "./runtime": {
+      "import": {
+        "types": "./dist/runtime.d.mts",
+        "default": "./dist/esm/runtime.js"
+      },
+      "require": {
+        "types": "./dist/runtime.d.ts",
+        "default": "./dist/runtime.js"
       }
     },
     "./executors/*": {
@@ -49,6 +63,7 @@
     "@types/babel__generator": "^7.27.0",
     "@types/babel__traverse": "^7.28.0",
     "@types/node": "^26.2.0",
+    "esbuild": "^0.28.2",
     "eslint": "^9.39.5",
     "jison": "0.4.18",
     "jsdom": "^27.0.0",
@@ -59,7 +74,7 @@
     "vitest": "^4.1.10"
   },
   "scripts": {
-    "build": "node scripts/clean.mjs && tsc -p tsconfig.build.json && node scripts/copy-parser.mjs",
+    "build": "node scripts/clean.mjs && tsc -p tsconfig.build.json && node scripts/copy-parser.mjs && node scripts/build-esm.mjs",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc -p tsconfig.json --noEmit",

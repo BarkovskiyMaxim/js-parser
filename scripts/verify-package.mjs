@@ -68,12 +68,24 @@ assert.match(output, /Math\\.max/);
 assert.match(output, /\\$context\\.\\$data\\.value/);
 assert.doesNotMatch(output, /eval\\(|new Function/);
 `);
+  await writeFile(join(temp, 'contract.mjs'), `
+import assert from 'node:assert/strict';
+import * as root from 'js-code-parser';
+import { executeSerializedProgram } from 'js-code-parser/runtime';
+assert.equal(typeof root.compile, 'function');
+assert.equal(typeof executeSerializedProgram, 'function');
+assert.equal(root.compile('1 + 2;').execute(), 3);
+`);
   execFileSync('npm', ['install', '--ignore-scripts', tarball], {
     cwd: temp,
     stdio: 'inherit',
     shell: process.platform === 'win32',
   });
   execFileSync(process.execPath, [join(temp, 'contract.cjs')], {
+    cwd: temp,
+    stdio: 'inherit',
+  });
+  execFileSync(process.execPath, [join(temp, 'contract.mjs')], {
     cwd: temp,
     stdio: 'inherit',
   });
