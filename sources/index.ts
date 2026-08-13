@@ -49,3 +49,10 @@ export type {
   ValuePermissions,
 } from './safe/policy';
 export { validateProgram } from './safe/validate';
+export { lowerProgram } from './safe/lower';
+export type {
+  SafeExpression,
+  SafeNode,
+  SafeProgram,
+  SafeStatement,
+} from './safe/ir';
