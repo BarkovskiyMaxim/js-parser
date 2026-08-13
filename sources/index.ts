@@ -57,3 +57,5 @@ export type {
   SafeStatement,
 } from './safe/ir';
 export { executeProgram } from './safe/interpreter';
+export { compile } from './safe/compile';
+export type { CompiledProgram, CompileOptions } from './safe/compile';

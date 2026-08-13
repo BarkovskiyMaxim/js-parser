@@ -49,6 +49,50 @@ Preprocessors receive strings and run before parsing. AST transforms run in
 their declared order and may mutate the current program or return a replacement
 program. None of these stages executes the input source.
 
+## Strict execution API
+
+`compile()` validates the final transformed program, lowers it to versioned
+Safe IR, and executes it without ambient browser or Node.js globals:
+
+```js
+const { allowValue, compile } = require('js-code-parser');
+
+const program = compile('Math.max(input, 0)', {
+  policy: {
+    globals: {
+      Math: allowValue(Math, { call: ['max'] }),
+      input: allowValue(0),
+    },
+    syntax: {
+      functions: false,
+      loops: false,
+      classes: false,
+      imports: false,
+    },
+    limits: {
+      operations: 10_000,
+      callDepth: 32,
+      allocations: 1_000,
+    },
+  },
+});
+
+program.execute({ input: 4 }); // 4
+program.ast;
+program.ir;
+```
+
+Policy is deny-by-default. Property `read`, `write`, method `call`, and direct
+`construct` permissions are independent. Reflective keys such as
+`constructor`, `prototype`, and `__proto__` are always denied. Execution
+context can replace values only for capabilities already declared by policy;
+it cannot add ambient globals.
+
+Operation, call-depth, and allocation budgets stop interpreted code. An
+explicitly allowed host method is trusted: synchronous JavaScript cannot be
+preempted while execution is inside that host function, so only expose narrow,
+bounded capabilities.
+
 ## Security boundary
 
 The legacy evaluator and plain generated output are CSP-compatible because the
