@@ -13,4 +13,6 @@ Detailed plan for phase 2: `docs/superpowers/plans/2026-08-13-standard-parser-tr
 
 Detailed plan for phase 3: `docs/superpowers/plans/2026-08-13-strict-policy-safe-ir-runtime.md`.
 
+Detailed plan for phase 4: `docs/superpowers/plans/2026-08-13-aot-browser-release-hardening.md`.
+
 Implementation runs in the isolated `codex/safe-js-modernization` branch. Each completed task is committed only after its verification checkpoint passes.
