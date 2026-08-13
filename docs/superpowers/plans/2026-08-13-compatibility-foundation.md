@@ -6,7 +6,7 @@
 
 **Architecture:** Keep the current Jison parser, operands, evaluator, processor, and serializer unchanged during this phase. Add regression and package-contract boundaries around them, then modernize tooling and package them as CommonJS through explicit legacy subpath exports. Parser replacement, strict policy, Safe IR, ESM, and browser runtime work belong to later roadmap phases.
 
-**Tech Stack:** Node.js 22/24, TypeScript 7.0.2, Vitest 4.1.10, jsdom 27.0.0, Knockout 3.5.3, ESLint 10.8.1, typescript-eslint 8.67.0, publint 0.3.23, npm.
+**Tech Stack:** Node.js 22/24, TypeScript 5.9.3, Vitest 4.1.10, jsdom 27.0.0, Knockout 3.5.3, ESLint 9.39.5, typescript-eslint 8.46.1, publint 0.3.23, npm.
 
 ## Global Constraints
 
@@ -95,7 +95,7 @@ Run:
 
 ```powershell
 npm uninstall jest ts-jest ts-node @types/jest
-npm install --save-dev typescript@7.0.2 vitest@4.1.10 jsdom@27.0.0 @types/node@26.2.0
+npm install --save-dev typescript@5.9.3 vitest@4.1.10 jsdom@27.0.0 @types/node@26.2.0
 ```
 
 Expected: `package-lock.json` is regenerated in the current npm lockfile format and no `jest`, `ts-jest`, or `ts-node` direct dependency remains.
@@ -361,7 +361,7 @@ git commit -m "Capture consumer compatibility contract"
 Run:
 
 ```powershell
-npm install --save-dev eslint@10.8.1 typescript-eslint@8.67.0
+npm install --save-dev eslint@9.39.5 typescript-eslint@8.46.1
 ```
 
 - [ ] **Step 2: Add the lint configuration**

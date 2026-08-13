@@ -128,7 +128,7 @@ export class Evaluator {
         return currentContext[name as string];
     }
 
-    evalValue(operand: OperandValue, context: jsContext[]) {
+    evalValue(operand: OperandValue, _context: jsContext[]) {
         return operand.value;
     }
 
