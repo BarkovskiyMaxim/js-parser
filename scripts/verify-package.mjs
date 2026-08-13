@@ -25,7 +25,25 @@ try {
 const assert = require('node:assert/strict');
 const root = require('js-code-parser');
 const deep = require('js-code-parser/executors/processor');
+assert.equal(typeof root.parseProgram, 'function');
+assert.equal(typeof root.transformSource, 'function');
+assert.equal(typeof root.generateProgram, 'function');
+assert.equal(typeof root.createReplaceVariablesTransform, 'function');
 assert.equal(root.ReplaceVariableProcessor, deep.ReplaceVariableProcessor);
+const transformed = root.transformSource(
+  'const label = user?.name ?? "anonymous"',
+  {
+    sourceType: 'script',
+    transforms: [root.createReplaceVariablesTransform(
+      [],
+      (name, exists) => exists ? name : 'scope.' + name,
+    )],
+  },
+).toString({ compact: true });
+assert.equal(
+  transformed,
+  'const label=scope.user?.name??"anonymous";',
+);
 const output = new deep.ReplaceVariableProcessor(
   ['Math'],
   (name, exists) => exists ? name : '$context.$data.' + name,
