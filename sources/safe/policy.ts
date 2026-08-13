@@ -50,6 +50,13 @@ export function allowValue<T>(
   value: T,
   permissions: ValuePermissions = {},
 ): AllowedValue<T> {
+  if (value === globalThis) {
+    throw new SafeJavaScriptError(
+      'RUNTIME_POLICY_VIOLATION',
+      'Raw global objects cannot be capabilities',
+      { rule: 'capability.global-object' },
+    );
+  }
   return Object.freeze({
     value,
     permissions: Object.freeze({
@@ -79,4 +86,5 @@ export function normalizePolicy(
     }),
   });
 }
+import { SafeJavaScriptError } from './errors';
 

@@ -56,3 +56,4 @@ export type {
   SafeProgram,
   SafeStatement,
 } from './safe/ir';
+export { executeProgram } from './safe/interpreter';
