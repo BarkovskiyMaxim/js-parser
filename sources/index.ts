@@ -32,3 +32,30 @@ export type {
 } from './compiler/transform';
 export { createReplaceVariablesTransform } from './compiler/transforms/replace-variables';
 export type { ReplaceVariableName } from './compiler/transforms/replace-variables';
+export { SafeJavaScriptError } from './safe/errors';
+export type {
+  SafeJavaScriptErrorCode,
+  SafeJavaScriptErrorMetadata,
+  SourceRange,
+} from './safe/errors';
+export { allowValue, normalizePolicy } from './safe/policy';
+export type {
+  AllowedValue,
+  NormalizedSafePolicy,
+  NormalizedValuePermissions,
+  ResourceLimits,
+  SafePolicy,
+  SyntaxPolicy,
+  ValuePermissions,
+} from './safe/policy';
+export { validateProgram } from './safe/validate';
+export { lowerProgram } from './safe/lower';
+export type {
+  SafeExpression,
+  SafeNode,
+  SafeProgram,
+  SafeStatement,
+} from './safe/ir';
+export { executeProgram } from './safe/interpreter';
+export { compile } from './safe/compile';
+export type { CompiledProgram, CompileOptions } from './safe/compile';
