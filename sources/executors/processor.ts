@@ -14,6 +14,9 @@ import { OperandSequence } from "../operands/operand-sequence";
 import { OperandTypeOf } from "../operands/operand-typeof";
 import { parse } from "../parser/js-parser";
 import { Serializer } from "./serializer";
+import { parseProgram } from "../compiler/parser";
+import { transformSource } from "../compiler/transform";
+import { createReplaceVariablesTransform } from "../compiler/transforms/replace-variables";
 
 export class ReplaceVariableProcessor {
     constructor(private _functionArgs: string[] = [], private _replaceName: (variableName: string, existsInFunctionArgs: boolean) => string = (_) => _) {
@@ -139,8 +142,24 @@ export class ReplaceVariableProcessor {
     }
 
     process(jscode: string): string {
-        var operands = parse(jscode);
-        this._process(operands);
-        return new Serializer().serialize(operands)
+        try {
+            var operands = parse(jscode);
+            this._process(operands);
+            return new Serializer().serialize(operands)
+        } catch (legacyError) {
+            try {
+                parseProgram(jscode, { sourceType: 'script' });
+            } catch {
+                throw legacyError;
+            }
+
+            return transformSource(jscode, {
+                sourceType: 'script',
+                transforms: [createReplaceVariablesTransform(
+                    this._functionArgs,
+                    this._replaceName,
+                )],
+            }).toString({ compact: true });
+        }
     }
 }
