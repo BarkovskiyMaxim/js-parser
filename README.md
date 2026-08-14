@@ -82,6 +82,13 @@ program.ast;
 program.ir;
 ```
 
+For build artifacts, `program.toModule({ mode: 'plain' })` emits trusted plain
+JavaScript. `program.toModule({ mode: 'instrumented' })` emits an ESM artifact
+containing versioned Safe IR and importing `js-code-parser/runtime`; the caller
+supplies capabilities when invoking its exported `execute(policy)` function.
+Both modes avoid dynamic code generation, but only instrumented mode retains
+runtime policy enforcement.
+
 Policy is deny-by-default. Property `read`, `write`, method `call`, and direct
 `construct` permissions are independent. Reflective keys such as
 `constructor`, `prototype`, and `__proto__` are always denied. Execution
@@ -100,6 +107,9 @@ library does not introduce dynamic code generation. Plain output is still
 ordinary JavaScript and is not a sandbox for hostile input. Strict
 deny-by-default execution will be introduced through a separate additive API;
 legacy behavior will not silently change.
+
+See [Knockout AOT](docs/knockout-aot.md) and [Security Policy](SECURITY.md) for
+deployment guidance and the supported threat boundary.
 
 ## Development
 

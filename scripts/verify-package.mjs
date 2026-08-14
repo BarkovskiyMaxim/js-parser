@@ -68,6 +68,14 @@ assert.match(output, /Math\\.max/);
 assert.match(output, /\\$context\\.\\$data\\.value/);
 assert.doesNotMatch(output, /eval\\(|new Function/);
 `);
+  await writeFile(join(temp, 'contract.mjs'), `
+import assert from 'node:assert/strict';
+import * as root from 'js-code-parser';
+import { executeSerializedProgram } from 'js-code-parser/runtime';
+assert.equal(typeof root.compile, 'function');
+assert.equal(typeof executeSerializedProgram, 'function');
+assert.equal(root.compile('1 + 2;').execute(), 3);
+`);
   execFileSync('npm', ['install', '--ignore-scripts', tarball], {
     cwd: temp,
     stdio: 'inherit',
@@ -77,12 +85,20 @@ assert.doesNotMatch(output, /eval\\(|new Function/);
     cwd: temp,
     stdio: 'inherit',
   });
+  execFileSync(process.execPath, [join(temp, 'contract.mjs')], {
+    cwd: temp,
+    stdio: 'inherit',
+  });
 
   const installed = JSON.parse(await readFile(
     join(temp, 'node_modules/js-code-parser/package.json'),
     'utf8',
   ));
   assert.equal(installed.name, 'js-code-parser');
+  await Promise.all([
+    readFile(join(temp, 'node_modules/js-code-parser/SECURITY.md'), 'utf8'),
+    readFile(join(temp, 'node_modules/js-code-parser/docs/knockout-aot.md'), 'utf8'),
+  ]);
 } finally {
   await rm(temp, { recursive: true, force: true });
 }

@@ -6,12 +6,15 @@ export interface GenerateProgramOptions {
   compact?: boolean;
   filename?: string;
   sourceMaps?: boolean;
+  source?: string;
 }
 
-export interface GeneratedProgram {
+export interface ModuleArtifact {
   code: string;
   map: GeneratorResult['map'];
 }
+
+export type GeneratedProgram = ModuleArtifact;
 
 export function generateProgram(
   program: NormalizedProgram,
@@ -20,8 +23,9 @@ export function generateProgram(
   const result = generate(program, {
     compact: options.compact ?? false,
     filename: options.filename,
+    sourceFileName: options.source === undefined ? undefined : options.filename,
     sourceMaps: options.sourceMaps ?? false,
-  });
+  }, options.source);
 
   return {
     code: result.code,

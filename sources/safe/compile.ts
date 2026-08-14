@@ -1,5 +1,6 @@
 import type { NormalizedProgram } from '../compiler/ast';
 import type { GenerateProgramOptions } from '../compiler/generator';
+import type { ModuleArtifact } from '../compiler/generator';
 import {
   transformSource,
   type Diagnostic,
@@ -9,6 +10,7 @@ import { SafeJavaScriptError } from './errors';
 import { executeProgram } from './interpreter';
 import type { SafeProgram } from './ir';
 import { lowerProgram } from './lower';
+import { createInstrumentedModule } from './module';
 import {
   allowValue,
   normalizePolicy,
@@ -21,15 +23,27 @@ export interface CompileOptions extends TransformSourceOptions {
   policy?: SafePolicy;
 }
 
+export interface PlainModuleOptions extends GenerateProgramOptions {
+  mode: 'plain';
+}
+
+export interface InstrumentedModuleOptions {
+  mode: 'instrumented';
+  runtimeImport?: string;
+}
+
+export type CompiledModuleOptions = PlainModuleOptions | InstrumentedModuleOptions;
+
 export interface CompiledProgram {
   readonly ast: NormalizedProgram;
   readonly ir: SafeProgram;
   readonly diagnostics: readonly Diagnostic[];
   execute(context?: Readonly<Record<string, unknown>>): unknown;
   toString(options?: GenerateProgramOptions): string;
+  toModule(options: CompiledModuleOptions): ModuleArtifact;
 }
 
-const policyWithContext = (
+export const policyWithContext = (
   policy: NormalizedSafePolicy,
   context: Readonly<Record<string, unknown>>,
 ): NormalizedSafePolicy => {
@@ -75,6 +89,12 @@ export function compile(
       executeProgram(ir, policyWithContext(policy, context))
     ),
     toString: transformed.toString,
+    toModule: (moduleOptions: CompiledModuleOptions) => {
+      if (moduleOptions.mode === 'plain') {
+        const { mode: _mode, ...generateOptions } = moduleOptions;
+        return transformed.toModule(generateOptions);
+      }
+      return createInstrumentedModule(ir, moduleOptions);
+    },
   });
 }
-

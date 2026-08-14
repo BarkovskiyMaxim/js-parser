@@ -40,6 +40,7 @@ export interface TransformSourceResult {
   ast: NormalizedProgram;
   diagnostics: readonly Diagnostic[];
   toString(options?: GenerateProgramOptions): string;
+  toModule(options?: GenerateProgramOptions): ReturnType<typeof generateProgram>;
 }
 
 export function transformProgram(
@@ -81,7 +82,13 @@ export function transformSource(
     diagnostics: [...context.diagnostics],
     toString: (generateOptions) => generateProgram(ast, {
       filename: options.filename,
+      source: processedSource,
       ...generateOptions,
     }).code,
+    toModule: (generateOptions) => generateProgram(ast, {
+      filename: options.filename,
+      source: processedSource,
+      ...generateOptions,
+    }),
   };
 }
