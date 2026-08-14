@@ -1,3 +1,7 @@
 sources/*.js
 dist/
 node_modules/
+.worktrees/
+.superpowers/brainstorm/
+coverage/
+*.tgz

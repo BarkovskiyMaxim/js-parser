@@ -7,16 +7,62 @@
   },
   "homepage": "https://github.com/BarkovskiyMaxim/js-parser",
   "license": "MIT",
+  "type": "commonjs",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "exports": {
+    ".": {
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    },
+    "./executors/*": {
+      "require": {
+        "types": "./dist/executors/*.d.ts",
+        "default": "./dist/executors/*.js"
+      }
+    },
+    "./parser/*": {
+      "require": {
+        "types": "./dist/parser/*.d.ts",
+        "default": "./dist/parser/*.js"
+      }
+    },
+    "./operands/*": {
+      "require": {
+        "types": "./dist/operands/*.d.ts",
+        "default": "./dist/operands/*.js"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "engines": {
+    "node": ">=22"
+  },
   "devDependencies": {
-    "@types/jest": "27.5.1",
+    "@types/node": "^26.2.0",
+    "eslint": "^9.39.5",
     "jison": "0.4.18",
-    "jest": "27.5.1",
-    "typescript": "4.7.2",
-    "ts-jest": "28.0.3",
-    "ts-node": "10.8.0"
+    "jsdom": "^27.0.0",
+    "knockout": "^3.5.3",
+    "publint": "^0.3.23",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.46.1",
+    "vitest": "^4.1.10"
   },
   "scripts": {
-    "build": "tsc",
-    "test": "jest --watchAll"
+    "build": "node scripts/clean.mjs && tsc -p tsconfig.build.json && node scripts/copy-parser.mjs",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint sources __tests__ tests vitest.config.mts",
+    "lint:package": "publint",
+    "verify:package": "npm run build && npm run lint:package && node scripts/verify-package.mjs"
   }
 }
