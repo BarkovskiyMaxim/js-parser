@@ -39,7 +39,26 @@ const permits = (
   capability: AllowedValue | undefined,
   operation: 'read' | 'write' | 'call',
   key: PropertyKey,
-) => capability?.permissions[operation].includes(key) === true;
+) => {
+  const permission = capability?.permissions[operation];
+  return Array.isArray(permission) && permission.includes(key);
+};
+
+export function callValue(
+  capability: AllowedValue | undefined,
+  callable: unknown,
+  args: unknown[],
+): unknown {
+  if (capability?.permissions.call !== true) deny('value.call');
+  if (typeof callable !== 'function') deny('value.call');
+  const value = Reflect.apply(
+    callable as (...callArgs: unknown[]) => unknown,
+    undefined,
+    args,
+  );
+  rejectAmbientValue(value, 'capability.ambient-result');
+  return value;
+}
 
 export function readProperty(
   capability: AllowedValue | undefined,

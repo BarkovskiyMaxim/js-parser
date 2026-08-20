@@ -3,6 +3,7 @@ import type { SafeExpression, SafeProgram, SafeStatement } from './ir';
 import type { AllowedValue, NormalizedSafePolicy } from './policy';
 import {
   callProperty,
+  callValue,
   constructValue,
   readProperty,
   writeProperty,
@@ -221,8 +222,15 @@ const evaluateExpression = (
         ));
       }
       if (expression.callee) {
-        const callee = evaluateExpression(expression.callee, environment, state).value;
-        if (isRuntimeFunction(callee)) return invokeRuntimeFunction(callee, args, state);
+        const callee = evaluateExpression(expression.callee, environment, state);
+        if (isRuntimeFunction(callee.value)) {
+          return invokeRuntimeFunction(callee.value, args, state);
+        }
+        return plain(callValue(
+          callee.capability,
+          callee.value,
+          args.map((arg) => arg.value),
+        ));
       }
       throw new SafeJavaScriptError(
         'RUNTIME_POLICY_VIOLATION',

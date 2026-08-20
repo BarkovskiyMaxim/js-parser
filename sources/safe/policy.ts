@@ -1,17 +1,18 @@
 import { rejectAmbientValue } from './runtime';
+import { SafeJavaScriptError } from './errors';
 
 export interface ValuePermissions {
   read?: readonly PropertyKey[];
   write?: readonly PropertyKey[];
-  call?: readonly PropertyKey[];
-  construct?: boolean | readonly PropertyKey[];
+  call?: boolean | readonly PropertyKey[];
+  construct?: boolean;
 }
 
 export interface NormalizedValuePermissions {
   readonly read: readonly PropertyKey[];
   readonly write: readonly PropertyKey[];
-  readonly call: readonly PropertyKey[];
-  readonly construct: boolean | readonly PropertyKey[];
+  readonly call: boolean | readonly PropertyKey[];
+  readonly construct: boolean;
 }
 
 export interface AllowedValue<T = unknown> {
@@ -48,29 +49,46 @@ const freezeKeys = (keys: readonly PropertyKey[] | undefined) => (
   Object.freeze([...(keys ?? [])])
 );
 
+const allowedValues = new WeakSet<object>();
+
+const rejectInvalidCapability = (): never => {
+  throw new SafeJavaScriptError(
+    'RUNTIME_POLICY_VIOLATION',
+    'Policy capability was not created by allowValue',
+    { rule: 'capability.invalid' },
+  );
+};
+
 export function allowValue<T>(
   value: T,
   permissions: ValuePermissions = {},
 ): AllowedValue<T> {
   rejectAmbientValue(value, 'capability.ambient');
-  return Object.freeze({
+  const capability = Object.freeze({
     value,
     permissions: Object.freeze({
       read: freezeKeys(permissions.read),
       write: freezeKeys(permissions.write),
-      call: freezeKeys(permissions.call),
-      construct: typeof permissions.construct === 'boolean'
-        ? permissions.construct
-        : freezeKeys(permissions.construct),
-    }),
+      call: typeof permissions.call === 'boolean'
+        ? permissions.call
+        : freezeKeys(permissions.call),
+      construct: permissions.construct ?? false,
+      }),
   });
+  allowedValues.add(capability);
+  return capability;
 }
 
 export function normalizePolicy(
   policy: SafePolicy = {},
 ): NormalizedSafePolicy {
+  const globals = { ...(policy.globals ?? {}) };
+  for (const capability of Object.values(globals)) {
+    if (!allowedValues.has(capability)) rejectInvalidCapability();
+    rejectAmbientValue(capability.value, 'capability.ambient');
+  }
   return Object.freeze({
-    globals: Object.freeze({ ...(policy.globals ?? {}) }),
+    globals: Object.freeze(globals),
     syntax: Object.freeze({
       functions: policy.syntax?.functions ?? false,
       loops: policy.syntax?.loops ?? false,
