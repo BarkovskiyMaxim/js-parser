@@ -27,3 +27,15 @@ test('executes lexical closures, branches, loops, and returns', () => {
   `)).toBe(13);
 });
 
+test('binds safe method receivers and preserves lexical arrow this', () => {
+  expect(run(`
+    const counter = {
+      value: 4,
+      add: function (amount) {
+        const read = () => this.value;
+        return read() + amount;
+      }
+    };
+    counter.add(3);
+  `)).toBe(7);
+});

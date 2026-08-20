@@ -5,13 +5,16 @@ import {
   callProperty,
   callValue,
   constructValue,
+  readOwnedProperty,
   readProperty,
+  writeOwnedProperty,
   writeProperty,
 } from './runtime';
 
 interface RuntimeValue {
   value: unknown;
   capability?: AllowedValue;
+  owned?: true;
 }
 
 interface RuntimeFunction {
@@ -19,6 +22,8 @@ interface RuntimeFunction {
   readonly params: string[];
   readonly body: SafeStatement[];
   readonly closure: Environment;
+  readonly thisMode: 'dynamic' | 'lexical';
+  readonly lexicalThis?: RuntimeValue;
 }
 
 interface RuntimeState {
@@ -26,6 +31,7 @@ interface RuntimeState {
   callDepth: number;
   allocations: number;
   readonly policy: NormalizedSafePolicy;
+  readonly ownedValues: WeakSet<object>;
 }
 
 type Completion =
@@ -36,7 +42,10 @@ type Completion =
 class Environment {
   private readonly values = new Map<string, RuntimeValue>();
 
-  constructor(private readonly parent?: Environment) {}
+  constructor(
+    private readonly parent?: Environment,
+    private readonly thisValue?: RuntimeValue,
+  ) {}
 
   declare(name: string, value: RuntimeValue): void {
     this.values.set(name, value);
@@ -53,9 +62,22 @@ class Environment {
     }
     return this.parent?.write(name, value) ?? false;
   }
+
+  readThis(): RuntimeValue {
+    return this.thisValue ?? this.parent?.readThis() ?? plain(undefined);
+  }
 }
 
 const plain = (value: unknown): RuntimeValue => ({ value });
+const owned = (value: object, state: RuntimeState): RuntimeValue => {
+  state.ownedValues.add(value);
+  return { value, owned: true };
+};
+const restoreOwnership = (value: unknown, state: RuntimeState): RuntimeValue => (
+  (typeof value === 'object' && value !== null && state.ownedValues.has(value))
+    ? { value, owned: true }
+    : plain(value)
+);
 const normal = (value: RuntimeValue = plain(undefined)): Completion => ({
   type: 'normal',
   value,
@@ -133,11 +155,15 @@ const invokeRuntimeFunction = (
   func: RuntimeFunction,
   args: RuntimeValue[],
   state: RuntimeState,
+  receiver: RuntimeValue = plain(undefined),
 ): RuntimeValue => {
   state.callDepth += 1;
   if (state.callDepth > state.policy.limits.callDepth) exceed('callDepth');
   try {
-    const local = new Environment(func.closure);
+    const local = new Environment(
+      func.closure,
+      func.thisMode === 'lexical' ? func.lexicalThis : receiver,
+    );
     func.params.forEach((param, index) => local.declare(param, args[index] ?? plain(undefined)));
     const completion = executeStatements(func.body, local, state);
     if (completion.type === 'throw') throw completion.value.value;
@@ -155,6 +181,7 @@ const evaluateExpression = (
   tick(state);
   switch (expression.kind) {
     case 'literal': return plain(expression.value);
+    case 'this': return environment.readThis();
     case 'readVariable': return readVariable(expression.name, environment, state.policy);
     case 'binary': {
       const left = evaluateExpression(expression.left, environment, state).value;
@@ -188,13 +215,18 @@ const evaluateExpression = (
     case 'readProperty': {
       const object = evaluateExpression(expression.object, environment, state);
       const key = propertyKey(evaluateExpression(expression.key, environment, state).value);
-      return plain(readProperty(object.capability, object.value, key));
+      const value = object.owned
+        ? readOwnedProperty(object.value, key)
+        : readProperty(object.capability, object.value, key);
+      return restoreOwnership(value, state);
     }
     case 'writeProperty': {
       const object = evaluateExpression(expression.object, environment, state);
       const key = propertyKey(evaluateExpression(expression.key, environment, state).value);
       const value = evaluateExpression(expression.value, environment, state).value;
-      return plain(writeProperty(object.capability, object.value, key, value));
+      return plain(object.owned
+        ? writeOwnedProperty(object.value, key, value)
+        : writeProperty(object.capability, object.value, key, value));
     }
     case 'writeVariable': {
       const value = evaluateExpression(expression.value, environment, state);
@@ -214,6 +246,12 @@ const evaluateExpression = (
       if (expression.receiver && expression.key) {
         const receiver = evaluateExpression(expression.receiver, environment, state);
         const key = propertyKey(evaluateExpression(expression.key, environment, state).value);
+        if (receiver.owned) {
+          const method = readOwnedProperty(receiver.value, key);
+          if (isRuntimeFunction(method)) {
+            return invokeRuntimeFunction(method, args, state, receiver);
+          }
+        }
         return plain(callProperty(
           receiver.capability,
           receiver.value,
@@ -245,13 +283,17 @@ const evaluateExpression = (
         params: expression.params,
         body: expression.body,
         closure: environment,
+        thisMode: expression.thisMode,
+        lexicalThis: expression.thisMode === 'lexical'
+          ? environment.readThis()
+          : undefined,
       } satisfies RuntimeFunction);
     }
     case 'array': {
       allocate(state);
-      return plain(expression.values.map((value) => (
+      return owned(expression.values.map((value) => (
         evaluateExpression(value, environment, state).value
-      )));
+      )), state);
     }
     case 'object': {
       allocate(state);
@@ -259,7 +301,7 @@ const evaluateExpression = (
       for (const entry of expression.entries) {
         object[entry.key] = evaluateExpression(entry.value, environment, state).value;
       }
-      return plain(object);
+      return owned(object, state);
     }
     case 'construct': {
       const constructor = evaluateExpression(expression.constructor, environment, state);
@@ -343,6 +385,7 @@ export function executeProgram(
     callDepth: 0,
     allocations: policy.limits.allocations,
     policy,
+    ownedValues: new WeakSet(),
   };
   const completion = executeStatements(program.body, new Environment(), state);
   if (completion.type === 'throw') throw completion.value.value;

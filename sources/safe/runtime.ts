@@ -72,6 +72,16 @@ export function readProperty(
   return value;
 }
 
+export function readOwnedProperty(
+  receiver: unknown,
+  key: PropertyKey,
+): unknown {
+  checkKey(key);
+  const value = Reflect.get(Object(receiver), key, receiver);
+  rejectAmbientValue(value, 'capability.ambient-result');
+  return value;
+}
+
 export function constructValue(
   capability: AllowedValue | undefined,
   constructor: unknown,
@@ -92,6 +102,18 @@ export function writeProperty(
 ): unknown {
   checkKey(key);
   if (!permits(capability, 'write', key)) deny('property.write');
+  if (!Reflect.set(Object(receiver), key, value, receiver)) {
+    deny('property.write');
+  }
+  return value;
+}
+
+export function writeOwnedProperty(
+  receiver: unknown,
+  key: PropertyKey,
+  value: unknown,
+): unknown {
+  checkKey(key);
   if (!Reflect.set(Object(receiver), key, value, receiver)) {
     deny('property.write');
   }

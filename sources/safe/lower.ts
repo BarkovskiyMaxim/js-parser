@@ -45,6 +45,7 @@ const lowerFunction = (
     name: t.isArrowFunctionExpression(node) ? undefined : node.id?.name,
     params,
     body,
+    thisMode: t.isArrowFunctionExpression(node) ? 'lexical' : 'dynamic',
     range: rangeOf(node),
   };
 };
@@ -58,6 +59,7 @@ function lowerExpression(node: t.Expression): SafeExpression {
     return { kind: 'literal', value: node.value, range };
   }
   if (t.isNullLiteral(node)) return { kind: 'literal', value: null, range };
+  if (t.isThisExpression(node)) return { kind: 'this', range };
   if (t.isBinaryExpression(node) || t.isLogicalExpression(node)) {
     return {
       kind: 'binary',

@@ -25,9 +25,9 @@ export type SafeExpression =
   | (SafeNode & { kind: 'writeProperty'; object: SafeExpression; key: SafeExpression; value: SafeExpression })
   | (SafeNode & { kind: 'binary'; operator: string; left: SafeExpression; right: SafeExpression })
   | (SafeNode & { kind: 'unary'; operator: string; argument: SafeExpression })
+  | (SafeNode & { kind: 'this' })
   | (SafeNode & { kind: 'call'; callee?: SafeExpression; receiver?: SafeExpression; key?: SafeExpression; args: SafeExpression[] })
   | (SafeNode & { kind: 'construct'; constructor: SafeExpression; args: SafeExpression[] })
-  | (SafeNode & { kind: 'function'; name?: string; params: string[]; body: SafeStatement[] })
+  | (SafeNode & { kind: 'function'; name?: string; params: string[]; body: SafeStatement[]; thisMode: 'dynamic' | 'lexical' })
   | (SafeNode & { kind: 'array'; values: SafeExpression[] })
   | (SafeNode & { kind: 'object'; entries: Array<{ key: string; value: SafeExpression }> });
-
