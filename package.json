@@ -86,7 +86,7 @@
     "verify:package": "npm run build && npm run lint:package && node scripts/verify-package.mjs",
     "build:browser-fixture": "node scripts/build-browser-fixture.mjs",
     "verify:browser": "node scripts/verify-browser-csp.mjs",
-    "verify:dynamic-code": "npm run build && npm run build:browser-fixture && node scripts/check-dynamic-code.mjs",
+    "verify:dynamic-code": "npm run build:browser-fixture && node scripts/check-dynamic-code.mjs",
     "verify": "npm run typecheck && npm run lint && npm test && npm run verify:package && npm run verify:browser && npm run verify:dynamic-code"
   },
   "dependencies": {

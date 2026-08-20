@@ -26,9 +26,9 @@ Operation, call-depth, and allocation limits stop interpreted code with
   ordinary JavaScript. It is not policy-enforced after loading.
 - Instrumented modules serialize Safe IR and retain interpreter checks,
   including validation of declared per-execution context overrides.
-- An explicitly allowed host method or constructor is trusted. Synchronous
-  JavaScript cannot be preempted while executing inside that host function.
-  Expose only narrow, bounded capabilities.
+- An explicitly allowed host method, standalone callable, or constructor is
+  trusted. Synchronous JavaScript cannot be preempted while executing inside
+  that host function. Expose only narrow, bounded capabilities.
 - Resource limits count runtime operations and allocations; they are not a
   byte-accurate process memory limit.
 

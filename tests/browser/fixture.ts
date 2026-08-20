@@ -2,11 +2,11 @@ const root = document.documentElement;
 
 const verify = async () => {
   try {
-    const runtimeUrl = '/runtime.js';
+    const rootUrl = '/index.js';
     const instrumentedUrl = '/instrumented.js';
     const plainUrl = '/plain.js';
     const [{ allowValue }, { execute }, { binding }] = await Promise.all([
-      import(runtimeUrl),
+      import(rootUrl),
       import(instrumentedUrl),
       import(plainUrl),
     ]);

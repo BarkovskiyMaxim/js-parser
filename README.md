@@ -99,9 +99,9 @@ context can replace values only for capabilities already declared by policy;
 it cannot add ambient globals.
 
 Operation, call-depth, and allocation budgets stop interpreted code. An
-explicitly allowed host method is trusted: synchronous JavaScript cannot be
-preempted while execution is inside that host function, so only expose narrow,
-bounded capabilities.
+explicitly allowed host method, standalone callable, or constructor is trusted:
+synchronous JavaScript cannot be preempted while execution is inside that host
+function, so only expose narrow, bounded capabilities.
 
 ## Security boundary
 
