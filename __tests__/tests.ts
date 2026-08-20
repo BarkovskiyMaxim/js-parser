@@ -972,3 +972,4 @@ test('serialize arrow function test', () => {
         return items.some(() => { return !x });
     }`)).toEqual(`function(items){ return ex.items.some(() => { return !notex.x }) }`);
 })
+// @vitest-environment jsdom

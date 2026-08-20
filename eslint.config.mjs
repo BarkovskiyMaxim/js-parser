@@ -29,6 +29,16 @@ export default tseslint.config(
     },
   },
   {
+    files: ['scripts/**/*.mjs'],
+    languageOptions: {
+      globals: {
+        console: 'readonly',
+        process: 'readonly',
+        URL: 'readonly',
+      },
+    },
+  },
+  {
     files: ['__tests__/**/*.ts'],
     rules: {
       '@typescript-eslint/no-unused-vars': 'off',
