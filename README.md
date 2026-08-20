@@ -85,12 +85,15 @@ program.ir;
 For build artifacts, `program.toModule({ mode: 'plain' })` emits trusted plain
 JavaScript. `program.toModule({ mode: 'instrumented' })` emits an ESM artifact
 containing versioned Safe IR and importing `js-code-parser/runtime`; the caller
-supplies capabilities when invoking its exported `execute(policy)` function.
+supplies capabilities and optional declared context overrides through its
+exported `execute(policy, context)` function.
 Both modes avoid dynamic code generation, but only instrumented mode retains
 runtime policy enforcement.
 
-Policy is deny-by-default. Property `read`, `write`, method `call`, and direct
-`construct` permissions are independent. Reflective keys such as
+Policy is deny-by-default. Capabilities must be created by `allowValue()`;
+structurally similar objects are rejected. Property `read` and `write`
+allowlists, method `call` allowlists, direct `call: true`, and direct
+`construct: true` permissions are independent. Reflective keys such as
 `constructor`, `prototype`, and `__proto__` are always denied. Execution
 context can replace values only for capabilities already declared by policy;
 it cannot add ambient globals.

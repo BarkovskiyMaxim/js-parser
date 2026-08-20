@@ -23,6 +23,9 @@ if (!executablePath) throw new Error('No installed Chromium-family browser was f
 const files = {
   '/': ['../tests/browser/fixtures/csp.html', 'text/html; charset=utf-8'],
   '/fixture.js': ['../.tmp/browser-csp/fixture.js', 'text/javascript; charset=utf-8'],
+  '/instrumented.js': ['../.tmp/browser-csp/instrumented.js', 'text/javascript; charset=utf-8'],
+  '/plain.js': ['../.tmp/browser-csp/plain.js', 'text/javascript; charset=utf-8'],
+  '/runtime.js': ['../.tmp/browser-csp/runtime.js', 'text/javascript; charset=utf-8'],
 };
 const server = createServer(async (request, response) => {
   const entry = files[request.url ?? '/'];
@@ -68,4 +71,3 @@ try {
   await browser?.close();
   await new Promise((resolve) => server.close(resolve));
 }
-

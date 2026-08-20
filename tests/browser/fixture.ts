@@ -1,32 +1,31 @@
-import {
-  allowValue,
-  compile,
-  ReplaceVariableProcessor,
-} from '../../sources/index';
-
 const root = document.documentElement;
 
-try {
-  const transformed = new ReplaceVariableProcessor(
-    [],
-    (name, exists) => exists ? name : `$context.$data.${name}`,
-  ).process('function($context){return value}');
-  if (!transformed.includes('$context.$data.value')) {
-    throw new Error('Legacy AOT transform failed');
+const verify = async () => {
+  try {
+    const runtimeUrl = '/runtime.js';
+    const instrumentedUrl = '/instrumented.js';
+    const plainUrl = '/plain.js';
+    const [{ allowValue }, { execute }, { binding }] = await Promise.all([
+      import(runtimeUrl),
+      import(instrumentedUrl),
+      import(plainUrl),
+    ]);
+    if (binding({ $data: { value: 7 } }) !== 7) {
+      throw new Error('Plain Knockout AOT execution failed');
+    }
+    const result = execute(
+      { globals: { input: allowValue(0) } },
+      { input: 4 },
+    );
+    if (result !== 5) throw new Error('Instrumented CSP execution failed');
+
+    root.dataset.status = 'passed';
+    document.querySelector('output')!.textContent = 'passed';
+  } catch (error) {
+    root.dataset.status = 'failed';
+    document.querySelector('output')!.textContent = String(error);
+    console.error(error);
   }
+};
 
-  const result = compile('Math.max(1, 4);', {
-    policy: {
-      globals: { Math: allowValue(Math, { call: ['max'] }) },
-    },
-  }).execute();
-  if (result !== 4) throw new Error('Strict execution failed');
-
-  root.dataset.status = 'passed';
-  document.querySelector('output')!.textContent = 'passed';
-} catch (error) {
-  root.dataset.status = 'failed';
-  document.querySelector('output')!.textContent = String(error);
-  console.error(error);
-}
-
+void verify();
