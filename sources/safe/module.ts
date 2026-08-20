@@ -1,7 +1,11 @@
 import type { ModuleArtifact } from '../compiler/generator';
 import { executeProgram } from './interpreter';
 import type { SafeProgram } from './ir';
-import { normalizePolicy, type SafePolicy } from './policy';
+import {
+  normalizePolicy,
+  policyWithContext,
+  type SafePolicy,
+} from './policy';
 
 export interface InstrumentedModuleGenerationOptions {
   runtimeImport?: string;
@@ -17,8 +21,12 @@ const serializeForJavaScript = (value: unknown): string => (
 export function executeSerializedProgram(
   ir: SafeProgram,
   policy: SafePolicy = {},
+  context: Readonly<Record<string, unknown>> = {},
 ): unknown {
-  return executeProgram(ir, normalizePolicy(policy));
+  return executeProgram(
+    ir,
+    policyWithContext(normalizePolicy(policy), context),
+  );
 }
 
 export function createInstrumentedModule(
@@ -30,7 +38,7 @@ export function createInstrumentedModule(
   const code = [
     `import { executeSerializedProgram } from ${JSON.stringify(runtimeImport)};`,
     `export const ir = ${serializedIr};`,
-    'export const execute = (policy = {}) => executeSerializedProgram(ir, policy);',
+    'export const execute = (policy = {}, context = {}) => executeSerializedProgram(ir, policy, context);',
   ].join('\n');
   return { code, map: null };
 }

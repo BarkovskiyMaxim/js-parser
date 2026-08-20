@@ -102,3 +102,26 @@ export function normalizePolicy(
     }),
   });
 }
+
+export function policyWithContext(
+  policy: NormalizedSafePolicy,
+  context: Readonly<Record<string, unknown>>,
+): NormalizedSafePolicy {
+  const globals = { ...policy.globals };
+  for (const [name, value] of Object.entries(context)) {
+    const capability = globals[name];
+    if (!capability) {
+      throw new SafeJavaScriptError(
+        'RUNTIME_POLICY_VIOLATION',
+        'Execution context contains an undeclared capability',
+        { rule: 'context.global' },
+      );
+    }
+    globals[name] = allowValue(value, capability.permissions);
+  }
+  return normalizePolicy({
+    globals,
+    syntax: policy.syntax,
+    limits: policy.limits,
+  });
+}
