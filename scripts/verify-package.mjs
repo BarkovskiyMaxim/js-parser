@@ -75,6 +75,14 @@ import { executeSerializedProgram } from 'js-code-parser/runtime';
 assert.equal(typeof root.compile, 'function');
 assert.equal(typeof executeSerializedProgram, 'function');
 assert.equal(root.compile('1 + 2;').execute(), 3);
+const contextual = root.compile('input + 1;', {
+  policy: { globals: { input: root.allowValue(0) } },
+});
+assert.equal(executeSerializedProgram(
+  contextual.ir,
+  { globals: { input: root.allowValue(0) } },
+  { input: 4 },
+), 5);
 `);
   execFileSync('npm', ['install', '--ignore-scripts', tarball], {
     cwd: temp,

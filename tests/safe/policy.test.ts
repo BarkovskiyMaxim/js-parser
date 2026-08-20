@@ -3,6 +3,7 @@ import { SafeJavaScriptError } from '../../sources/safe/errors';
 import {
   allowValue,
   normalizePolicy,
+  type AllowedValue,
 } from '../../sources/safe/policy';
 
 describe('strict policy primitives', () => {
@@ -29,7 +30,7 @@ describe('strict policy primitives', () => {
       read,
       write: ['result'],
       call: ['run'],
-      construct: ['Item'],
+      construct: true,
     });
     read.push('secret');
 
@@ -37,10 +38,36 @@ describe('strict policy primitives', () => {
       read: ['value'],
       write: ['result'],
       call: ['run'],
-      construct: ['Item'],
+      construct: true,
     });
     expect(Object.isFrozen(capability.permissions)).toBe(true);
     expect(Object.isFrozen(capability.permissions.read)).toBe(true);
+  });
+
+  test('does not expose property-key construction permissions', () => {
+    // @ts-expect-error Construction permission applies to the capability value.
+    const capability = allowValue(class Item {}, { construct: ['Item'] });
+
+    expect(capability.value).toBeTypeOf('function');
+  });
+
+  test('rejects capabilities that were not created by allowValue', () => {
+    const forgedCapability: AllowedValue = {
+      value: globalThis,
+      permissions: {
+        read: [],
+        write: [],
+        call: ['setTimeout'],
+        construct: false,
+      },
+    };
+
+    expect(() => normalizePolicy({
+      globals: { host: forgedCapability },
+    })).toThrow(expect.objectContaining({
+      code: 'RUNTIME_POLICY_VIOLATION',
+      rule: 'capability.invalid',
+    }));
   });
 
   test('stable errors do not expose runtime values', () => {

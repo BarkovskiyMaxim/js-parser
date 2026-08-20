@@ -68,6 +68,18 @@ describe('runtime capability enforcement', () => {
     })).toBe(4);
   });
 
+  test('requires explicit permission for direct capability calls', () => {
+    const increment = (value: number) => value + 1;
+
+    expectRuntimeDenial(
+      () => execute('increment(2);', { increment: allowValue(increment) }),
+      'value.call',
+    );
+    expect(execute('increment(2);', {
+      increment: allowValue(increment, { call: true }),
+    })).toBe(3);
+  });
+
   test('allows construction independently from direct calls', () => {
     class Item {
       constructor(readonly value: number) {}

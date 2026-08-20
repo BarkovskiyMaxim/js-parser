@@ -39,7 +39,26 @@ const permits = (
   capability: AllowedValue | undefined,
   operation: 'read' | 'write' | 'call',
   key: PropertyKey,
-) => capability?.permissions[operation].includes(key) === true;
+) => {
+  const permission = capability?.permissions[operation];
+  return Array.isArray(permission) && permission.includes(key);
+};
+
+export function callValue(
+  capability: AllowedValue | undefined,
+  callable: unknown,
+  args: unknown[],
+): unknown {
+  if (capability?.permissions.call !== true) deny('value.call');
+  if (typeof callable !== 'function') deny('value.call');
+  const value = Reflect.apply(
+    callable as (...callArgs: unknown[]) => unknown,
+    undefined,
+    args,
+  );
+  rejectAmbientValue(value, 'capability.ambient-result');
+  return value;
+}
 
 export function readProperty(
   capability: AllowedValue | undefined,
@@ -48,6 +67,16 @@ export function readProperty(
 ): unknown {
   checkKey(key);
   if (!permits(capability, 'read', key)) deny('property.read');
+  const value = Reflect.get(Object(receiver), key, receiver);
+  rejectAmbientValue(value, 'capability.ambient-result');
+  return value;
+}
+
+export function readOwnedProperty(
+  receiver: unknown,
+  key: PropertyKey,
+): unknown {
+  checkKey(key);
   const value = Reflect.get(Object(receiver), key, receiver);
   rejectAmbientValue(value, 'capability.ambient-result');
   return value;
@@ -73,6 +102,18 @@ export function writeProperty(
 ): unknown {
   checkKey(key);
   if (!permits(capability, 'write', key)) deny('property.write');
+  if (!Reflect.set(Object(receiver), key, value, receiver)) {
+    deny('property.write');
+  }
+  return value;
+}
+
+export function writeOwnedProperty(
+  receiver: unknown,
+  key: PropertyKey,
+  value: unknown,
+): unknown {
+  checkKey(key);
   if (!Reflect.set(Object(receiver), key, value, receiver)) {
     deny('property.write');
   }

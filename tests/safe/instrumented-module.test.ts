@@ -55,6 +55,23 @@ describe('instrumented Safe IR modules', () => {
     })).toThrowError(/denied/i);
   });
 
+  test('applies declared context overrides at execution time', async () => {
+    (globalThis as Record<string, unknown>).__safeRuntime = executeSerializedProgram;
+    const runtimeImport = dataUrl(`
+      export const executeSerializedProgram = (...args) =>
+        globalThis.__safeRuntime(...args);
+    `);
+    const artifact = compile('input + 1;', {
+      policy: { globals: { input: allowValue(0) } },
+    }).toModule({ mode: 'instrumented', runtimeImport });
+    const generated = await import(dataUrl(artifact.code));
+
+    expect(generated.execute(
+      { globals: { input: allowValue(0) } },
+      { input: 4 },
+    )).toBe(5);
+  });
+
   test('contains only serialized IR and no dynamic or native source', () => {
     const artifact = compile('1 + 2;').toModule({ mode: 'instrumented' });
 

@@ -6,15 +6,13 @@ import {
   type Diagnostic,
   type TransformSourceOptions,
 } from '../compiler/transform';
-import { SafeJavaScriptError } from './errors';
 import { executeProgram } from './interpreter';
 import type { SafeProgram } from './ir';
 import { lowerProgram } from './lower';
 import { createInstrumentedModule } from './module';
 import {
-  allowValue,
   normalizePolicy,
-  type NormalizedSafePolicy,
+  policyWithContext,
   type SafePolicy,
 } from './policy';
 import { validateProgram } from './validate';
@@ -42,29 +40,6 @@ export interface CompiledProgram {
   toString(options?: GenerateProgramOptions): string;
   toModule(options: CompiledModuleOptions): ModuleArtifact;
 }
-
-export const policyWithContext = (
-  policy: NormalizedSafePolicy,
-  context: Readonly<Record<string, unknown>>,
-): NormalizedSafePolicy => {
-  const globals = { ...policy.globals };
-  for (const [name, value] of Object.entries(context)) {
-    const capability = globals[name];
-    if (!capability) {
-      throw new SafeJavaScriptError(
-        'RUNTIME_POLICY_VIOLATION',
-        'Execution context contains an undeclared capability',
-        { rule: 'context.global' },
-      );
-    }
-    globals[name] = allowValue(value, capability.permissions);
-  }
-  return normalizePolicy({
-    globals,
-    syntax: policy.syntax,
-    limits: policy.limits,
-  });
-};
 
 export function compile(
   source: string,
